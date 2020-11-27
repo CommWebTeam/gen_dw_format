@@ -12,6 +12,7 @@ The current formatting checks done are as follows (the user can select which to 
 - replaces word's em dashes with regular dashes.
 - removes the referential links that Dreamweaver generates (which don't properly function).
 - replaces Dreamweaver-generated center and right alignment with their respective WET classes.
+- joins consecutive em and strong tags that are only separated by spaces.
 - ensures that internal links to the OSFI website are relative, and adds rel=external to external links. This ignores links that have keywords indicating footnotes, table of contents, already existing internal links, and email addresses.
 - replaces the formatting for Dreamweaver-generated table of contents with WET table of contents. This uses helper functions from the footnote_formatter tool.
 
