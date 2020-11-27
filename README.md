@@ -13,7 +13,7 @@ The current formatting checks done are as follows (the user can select which to 
 - removes the referential links that Dreamweaver generates (which don't properly function).
 - replaces Dreamweaver-generated center and right alignment with their respective WET classes.
 - joins consecutive em and strong tags that are only separated by spaces.
-- ensures that internal links to the OSFI website are relative, and adds rel=external to external links. This ignores links that have keywords indicating footnotes, table of contents, already existing internal links, and email addresses.
+- ensures that internal links to the OSFI website are relative, and adds rel=external to external links. This ignores links that have keywords indicating footnotes, table of contents, already existing internal links, or email addresses.
 - replaces the formatting for Dreamweaver-generated table of contents with WET table of contents. This uses helper functions from the footnote_formatter tool.
 
-This is not intended to be an in-depth formatting tool and only covers some basic initial steps. I sometimes split regex statements up into multiple calls for clarity, but all of these checks except for the last two can be done in a single regex statement.
+This is not intended to be an in-depth formatting tool and only covers some basic initial steps. I sometimes split regex statements up into multiple calls for clarity, but most of these checks can be done in one or two regex statements.

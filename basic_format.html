@@ -15,6 +15,9 @@ function format_file() {
 	file_reader_content = new FileReader()
 	content_str = document.getElementById("html_file").files[0]
 	file_reader_content.onload = function(event) {
+		/*
+		line-by-line checks
+		*/
 		html_list = event.target.result.split("\n")
 		// make space hexcode consistent
 		if (document.getElementById("space_format").checked) {
@@ -26,8 +29,13 @@ function format_file() {
 		}
 		// remove empty tags
 		if (document.getElementById("empty_line").checked) {
-			html_list = replace_arr(html_list, /(<[a-zA-Z0-9]*>)+(<\/[a-zA-Z0-9]*>)+/g, "")
-			html_list = replace_arr(html_list, /(<[a-zA-Z0-9]*> *)+( *(&nbsp;)*)+( *<\/[a-zA-Z0-9]*>)+/g, " ")
+			empty_tag_regex = /<[a-zA-Z0-9]*><\/[a-zA-Z0-9]*>/g
+			space_tag_regex = /<[a-zA-Z0-9]*> *(&nbsp;)* *<\/[a-zA-Z0-9]*>/g
+			// replace empty tags until there are none left
+			while (in_arr(html_list, empty_tag_regex) || in_arr(html_list, space_tag_regex)) {
+				html_list = replace_arr(html_list, empty_tag_regex, "")
+				html_list = replace_arr(html_list, space_tag_regex, " ")
+			}
 		}
 		// replace fancy quotes
 		if (document.getElementById("quotes").checked) {
@@ -65,7 +73,21 @@ function format_file() {
 		if (document.getElementById("ref_links").checked) {
 			html_list = html_list.map(fix_ref_links)
 		}
+		/*
+		multi-line checks
+		*/
 		html_doc_str = html_list.join("\n").replaceAll("\r\n", "\n")
+		// join consecutive lists
+		if (document.getElementById("consecutive_lists").checked) {
+			ol_str = `</ol>
+ *<ol>`
+            ul_str = `</ul>
+ *<ul>`
+			ol_regex = new RegExp(ol_str, "g")
+			ul_regex = new RegExp(ul_str, "g")
+			html_doc_str = html_doc_str.replaceAll(ol_regex, "").replaceAll(ul_regex, "")
+			console.log()
+		}
 		// fix footnotes
 		if (document.getElementById("footnotes").checked) {
 			footnote_top_regex = '<a href="#_ftn[0-9]+" name="_ftnref[0-9]+" title="">(.*?)</a>'
@@ -122,6 +144,9 @@ File to format:
 <br>
 <input type="checkbox" id="ref_links" name="ref_links" checked>
 <label for="ref_links">Make osfi links referential and make other links external</label>
+<br>
+<input type="checkbox" id="consecutive_lists" name="consecutive_lists" checked>
+<label for="consecutive_lists">Join consecutive ol/ul tags</label>
 <br>
 <input type="checkbox" id="footnotes" name="footnotes">
 <label for="footnotes">Format (English) footnotes</label>
