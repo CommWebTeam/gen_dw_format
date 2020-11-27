@@ -23,3 +23,13 @@ function fix_ref_links(html_line) {
 	}
 	return edited_line
 }
+
+// change italics to citations if there is a link on the line
+function change_link_em_to_cite(html_line) {
+	edited_line = html_line
+	if (edited_line.includes("<a ") || edited_line.includes("<a>")) {
+        edited_line = edited_line.replaceAll("<em>", "<cite>")
+        edited_line = edited_line.replaceAll("</em>", "</cite>")
+    }
+	return edited_line
+}

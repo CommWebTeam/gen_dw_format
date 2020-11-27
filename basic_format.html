@@ -8,7 +8,7 @@
 <script src="https://commwebteam.github.io/util/array_helpers.js"></script> 
 <script src="https://commwebteam.github.io/util/download.js"></script> 
 <script src="https://commwebteam.github.io/footnote_formatter/footnote_helpers.js"></script> 
-<script src="fix_ref_links.js"></script> 
+<script src="basic_format_helpers.js"></script> 
 <script>
 // get lists of contents and replace English terms with French terms
 function format_file() {
@@ -68,6 +68,10 @@ function format_file() {
 		if (document.getElementById("consecutive_em").checked) {
 			html_list = replace_arr(html_list, /<\/em>( *)<em>/g, "$1")
 			html_list = replace_arr(html_list, /<\/strong>( *)<strong>/g, "$1")
+		}
+		// change italics to cite if the line has a link
+		if (document.getElementById("consecutive_em").checked) {
+			html_list = html_list.map(change_link_em_to_cite)
 		}
 		// fix referential and external links
 		if (document.getElementById("ref_links").checked) {
@@ -141,6 +145,9 @@ File to format:
 <br>
 <input type="checkbox" id="consecutive_em" name="consecutive_em" checked>
 <label for="consecutive_em">Join em and strong that are only separated by spaces</label>
+<br>
+<input type="checkbox" id="cite_link" name="cite_link" checked>
+<label for="cite_link">Change em to cite on lines that have links</label>
 <br>
 <input type="checkbox" id="ref_links" name="ref_links" checked>
 <label for="ref_links">Make osfi links referential and make other links external</label>
