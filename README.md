@@ -8,9 +8,11 @@ The current formatting checks done are as follows (the user can select which to 
 - replaces all multispaces with single spaces. You should probably apply source formatting in Dreamweaver to fix indentation if you include this check.
 - removes empty tags with no attributes, and replaces all tags that do not have attributes and consist solely of spaces or nbsp; with a single regular space.
 - replaces word's fancy quotes with regular quotes.
+- replaces the HTML entities for fancy quotes rsquo, lsquo, rdquo, and ldquo with regular quotes.
 - replaces word's em dashes with regular dashes.
 - removes the referential links that Dreamweaver generates (which don't properly function).
-- ensures that internal links to the OSFI website are relative, and adds rel=external to external links. It also ignores links with a few keywords indicating footnotes, table of contents, already existing internal links, and email addresses.
+- replaces Dreamweaver-generated center and right alignment with their respective WET classes.
+- ensures that internal links to the OSFI website are relative, and adds rel=external to external links. This ignores links that have keywords indicating footnotes, table of contents, already existing internal links, and email addresses.
 - replaces the formatting for Dreamweaver-generated table of contents with WET table of contents. This uses helper functions from the footnote_formatter tool.
 
 This is not intended to be an in-depth formatting tool and only covers some basic initial steps. I sometimes split regex statements up into multiple calls for clarity, but all of these checks except for the last two can be done in a single regex statement.

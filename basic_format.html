@@ -51,6 +51,11 @@ function format_file() {
 		if (document.getElementById("dw_ref").checked) {
 			html_list = replace_arr(html_list, /<a name="_Ref[0-9]+">(.*?)<\/a>/g, "$1")
 		}
+		// fix align-center and align-right
+		if (document.getElementById("align").checked) {
+			html_list = replace_arr(html_list, /align="center"/g, 'class="align-center"')
+			html_list = replace_arr(html_list, /align="right"/g, 'class="align-right"')
+		}
 		// fix referential and external links
 		if (document.getElementById("ref_links").checked) {
 			html_list = html_list.map(fix_ref_links)
@@ -103,6 +108,9 @@ File to format:
 <br>
 <input type="checkbox" id="dw_ref" name="dw_ref" checked>
 <label for="dw_ref">Remove Dreamweaver-generated _Ref links</label>
+<br>
+<input type="checkbox" id="align" name="align" checked>
+<label for="align">Change center and right alignment to WET class</label>
 <br>
 <input type="checkbox" id="ref_links" name="ref_links" checked>
 <label for="ref_links">Make osfi links referential and make other links external</label>
