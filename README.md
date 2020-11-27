@@ -7,13 +7,21 @@ The current formatting checks done are as follows (the user can select which to 
 - make all space hexcodes consistent by converting invisible non-breaking spaces (when it just looks like a regular space in the editor) into regular spaces.
 - replaces all multispaces with single spaces. You should probably apply source formatting in Dreamweaver to fix indentation if you include this check.
 - removes empty tags with no attributes, and replaces all tags that do not have attributes and consist solely of spaces or nbsp; with a single regular space.
+
 - replaces word's fancy quotes with regular quotes.
 - replaces the HTML entities for fancy quotes rsquo, lsquo, rdquo, and ldquo with regular quotes.
 - replaces word's em dashes with regular dashes.
+
+- joins consecutive em and strong tags that are only separated by spaces into a single tag.
+- changes em tags to cite tags on lines that have links.
+- changes all em tags to cite tags.
+- changes all em tags to i tags. Changing to cite tags takes precedence if one of the prior two checks are performed.
+- changes all strong tags to b tags.
+
 - removes the referential links that Dreamweaver generates (which don't properly function).
-- replaces Dreamweaver-generated center and right alignment with their respective WET classes.
-- joins consecutive em and strong tags that are only separated by spaces.
 - ensures that internal links to the OSFI website are relative, and adds rel=external to external links. This ignores links that have keywords indicating footnotes, table of contents, already existing internal links, or email addresses.
+- replaces Dreamweaver-generated center and right alignment with their respective WET classes.
+- joins consecutive lists (ol and ul tags) into a single list.
 - replaces the formatting for Dreamweaver-generated table of contents with WET table of contents. This uses helper functions from the footnote_formatter tool.
 
 This is not intended to be an in-depth formatting tool and only covers some basic initial steps. I sometimes split regex statements up into multiple calls for clarity, but most of these checks can be done in one or two regex statements.

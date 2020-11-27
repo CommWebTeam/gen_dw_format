@@ -1,4 +1,3 @@
-
 <!doctype html>
 <html>
 <head>
@@ -55,15 +54,6 @@ function format_file() {
 		if (document.getElementById("emdash").checked) {
 			html_list = replace_arr(html_list, "–", "-")
 		}
-		// remove _Ref links
-		if (document.getElementById("dw_ref").checked) {
-			html_list = replace_arr(html_list, /<a name="_Ref[0-9]+">(.*?)<\/a>/g, "$1")
-		}
-		// fix align-center and align-right
-		if (document.getElementById("align").checked) {
-			html_list = replace_arr(html_list, /align="center"/g, 'class="align-center"')
-			html_list = replace_arr(html_list, /align="right"/g, 'class="align-right"')
-		}
 		// join consecutive em/strong
 		if (document.getElementById("consecutive_em").checked) {
 			html_list = replace_arr(html_list, /<\/em>( *)<em>/g, "$1")
@@ -73,9 +63,33 @@ function format_file() {
 		if (document.getElementById("consecutive_em").checked) {
 			html_list = html_list.map(change_link_em_to_cite)
 		}
+		// change italics to cite
+		if (document.getElementById("default_cite").checked) {
+			html_list = replace_arr(html_list, "<em>", "<cite>")
+			html_list = replace_arr(html_list, "</em>", "</cite>")
+		}
+		// change italics to i
+		if (document.getElementById("default_i").checked) {
+			html_list = replace_arr(html_list, "<em>", "<i>")
+			html_list = replace_arr(html_list, "</em>", "</i>")
+		}
+		// change bold to b
+		if (document.getElementById("default_b").checked) {
+			html_list = replace_arr(html_list, "<strong>", "<b>")
+			html_list = replace_arr(html_list, "</strong>", "</b>")
+		}
+		// remove _Ref links
+		if (document.getElementById("dw_ref").checked) {
+			html_list = replace_arr(html_list, /<a name="_Ref[0-9]+">(.*?)<\/a>/g, "$1")
+		}
 		// fix referential and external links
 		if (document.getElementById("ref_links").checked) {
 			html_list = html_list.map(fix_ref_links)
+		}
+		// fix align-center and align-right
+		if (document.getElementById("align").checked) {
+			html_list = replace_arr(html_list, /align="center"/g, 'class="align-center"')
+			html_list = replace_arr(html_list, /align="right"/g, 'class="align-right"')
 		}
 		/*
 		multi-line checks
@@ -115,52 +129,66 @@ function format_file() {
 
 <body>
 <form>
-File to format:
-<input id="html_file" type="file">
-<br>
-<br>
-<input type="checkbox" id="space_format" name="space_format" checked>
-<label for="space_format">Make space formatting consistent</label>
-<br>
-<input type="checkbox" id="multispace" name="multispace" checked>
-<label for="multispace">Get rid of multiple consecutive spaces (other than indents)</label>
-<br>
-<input type="checkbox" id="empty_line" name="empty_line" checked>
-<label for="empty_line">Remove attribute-less empty tags/tags that only have spaces and nbsp;</label>
-<br>
-<input type="checkbox" id="quotes" name="quotes">
-<label for="quotes">Replace fancy quotes with straight quotes</label>
-<br>
-<input type="checkbox" id="quote_entities" name="quote_entities">
-<label for="quote_entities">Replace fancy quote HTML entities with straight quotes</label>
-<br>
-<input type="checkbox" id="emdash" name="emdash" checked>
-<label for="emdash">Replace em dashes with regular dashes</label>
-<br>
-<input type="checkbox" id="dw_ref" name="dw_ref" checked>
-<label for="dw_ref">Remove Dreamweaver-generated _Ref links</label>
-<br>
-<input type="checkbox" id="align" name="align" checked>
-<label for="align">Change center and right alignment to WET class</label>
-<br>
-<input type="checkbox" id="consecutive_em" name="consecutive_em" checked>
-<label for="consecutive_em">Join em and strong that are only separated by spaces</label>
-<br>
-<input type="checkbox" id="cite_link" name="cite_link" checked>
-<label for="cite_link">Change em to cite on lines that have links</label>
-<br>
-<input type="checkbox" id="ref_links" name="ref_links" checked>
-<label for="ref_links">Make osfi links referential and make other links external</label>
-<br>
-<input type="checkbox" id="consecutive_lists" name="consecutive_lists" checked>
-<label for="consecutive_lists">Join consecutive ol/ul tags</label>
-<br>
-<input type="checkbox" id="footnotes" name="footnotes">
-<label for="footnotes">Format (English) footnotes</label>
-<br>
+  File to format:
+  <input id="html_file" type="file">
+  <br>
+  <br>
+  <input type="checkbox" id="space_format" name="space_format" checked>
+  <label for="space_format">Make space formatting consistent</label>
+  <br>
+  <input type="checkbox" id="multispace" name="multispace" checked>
+  <label for="multispace">Get rid of multiple consecutive spaces (other than indents)</label>
+  <br>
+  <input type="checkbox" id="empty_line" name="empty_line" checked>
+  <label for="empty_line">Remove attribute-less empty tags/tags that only have spaces and nbsp;</label>
+  <br>
+  <br>
+  <input type="checkbox" id="quotes" name="quotes">
+  <label for="quotes">Replace fancy quotes with straight quotes</label>
+  <br>
+  <input type="checkbox" id="quote_entities" name="quote_entities">
+  <label for="quote_entities">Replace fancy quote HTML entities with straight quotes</label>
+  <br>
+  <input type="checkbox" id="emdash" name="emdash" checked>
+  <label for="emdash">Replace em dashes with regular dashes</label>
+  <br>
+  <br>
+  <input type="checkbox" id="consecutive_em" name="consecutive_em" checked>
+  <label for="consecutive_em">Join em and strong that are only separated by spaces</label>
+  <br>
+  <input type="checkbox" id="cite_link" name="cite_link" checked>
+  <label for="cite_link">Change em to cite on lines that have links</label>
+  <br>
+  <input type="checkbox" id="default_cite" name="default_cite">
+  <label for="default_cite">Change all em to cite by default</label>
+  <br>
+  <input type="checkbox" id="default_i" name="default_i">
+  <label for="default_i">Change all em to i by default</label>
+  <br>
+  <input type="checkbox" id="default_b" name="default_b">
+  <label for="default_b">Change all strong to b by default</label>
+  <br>
+  <br>
+  <input type="checkbox" id="dw_ref" name="dw_ref" checked>
+  <label for="dw_ref">Remove Dreamweaver-generated _Ref links</label>
+  <br>
+  <input type="checkbox" id="ref_links" name="ref_links" checked>
+  <label for="ref_links">Make osfi links referential and other links external</label>
+  <br>
+  <input type="checkbox" id="align" name="align" checked>
+  <label for="align">Change center and right alignment to WET class</label>
+  <br>
+  <input type="checkbox" id="consecutive_lists" name="consecutive_lists" checked>
+  <label for="consecutive_lists">Join consecutive ol/ul tags</label>
+  <br>
+  <input type="checkbox" id="footnotes" name="footnotes">
+  <label for="footnotes">Format (English) footnotes</label>
+  <br>
 </form>
 <button onclick="format_file()">Download formatted file</button>
-<br><br>
+<br>
+<br>
 <p>This tool performs some quick formatting on Dreamweaver documents pasted from word. It is NOT for general use since it takes shortcuts assuming Dreamweaver formatting.</p>
 <p>Check the console for any errors if nothing is loading.</p>
-</body></html>
+</body>
+</html>
