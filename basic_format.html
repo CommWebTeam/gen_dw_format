@@ -24,9 +24,10 @@ function format_file() {
 		if (document.getElementById("multispace").checked) {
 			html_list = replace_arr(html_list, /  +/g, " ")
 		}
-		// remove empty lines
+		// remove empty tags
 		if (document.getElementById("empty_line").checked) {
-			html_list = replace_arr(html_list, /<[^>]*> *&nbsp; *<\/[^>]*>/g, "")
+			html_list = replace_arr(html_list, /(<[a-zA-Z0-9]*>)+(<\/[a-zA-Z0-9]*>)+/g, "")
+			html_list = replace_arr(html_list, /(<[a-zA-Z0-9]*> *)+( *(&nbsp;)*)+( *<\/[a-zA-Z0-9]*>)+/g, " ")
 		}
 		// replace fancy quotes
 		if (document.getElementById("quotes").checked) {
@@ -34,6 +35,13 @@ function format_file() {
 			html_list = replace_arr(html_list, "’", "'")
 			html_list = replace_arr(html_list, "“", '"')
 			html_list = replace_arr(html_list, "”", '"')
+		}
+		// replace fancy quote html entities
+		if (document.getElementById("quote_entities").checked) {
+			html_list = replace_arr(html_list, "&rsquo;", "'")
+			html_list = replace_arr(html_list, "&lsquo;", "'")
+			html_list = replace_arr(html_list, "&rdquo;", '"')
+			html_list = replace_arr(html_list, "&ldquo;", '"')
 		}
 		// replace emdashes
 		if (document.getElementById("emdash").checked) {
@@ -82,10 +90,13 @@ File to format:
 <label for="multispace">Get rid of multiple consecutive spaces (other than indents)</label>
 <br>
 <input type="checkbox" id="empty_line" name="empty_line" checked>
-<label for="empty_line">Remove tags that only consist of nbsp;</label>
+<label for="empty_line">Remove attribute-less empty tags/tags that only have spaces and nbsp;</label>
 <br>
 <input type="checkbox" id="quotes" name="quotes" checked>
 <label for="quotes">Replace fancy quotes with straight quotes</label>
+<br>
+<input type="checkbox" id="quote_entities" name="quote_entities">
+<label for="quote_entities">Replace fancy quote HTML entities with straight quotes</label>
 <br>
 <input type="checkbox" id="emdash" name="emdash" checked>
 <label for="emdash">Replace em dashes with regular dashes</label>
