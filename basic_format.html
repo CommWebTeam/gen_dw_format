@@ -1,0 +1,107 @@
+
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Quick Dreamweaver formatting</title>
+<script src="../util/str_format_helpers.js"></script> 
+<script src="../util/array_helpers.js"></script> 
+<script src="../util/download.js"></script> 
+<script src="../footnotes/footnote_helpers.js"></script> 
+<script src="fix_ref_links.js"></script> 
+<script>
+// get lists of contents and replace English terms with French terms
+function format_file() {
+	file_reader_content = new FileReader()
+	content_str = document.getElementById("html_file").files[0]
+	file_reader_content.onload = function(event) {
+		html_list = event.target.result.split("\n")
+		// make space hexcode consistent
+		if (document.getElementById("space_format").checked) {
+			html_list = replace_arr(html_list, /[  ]+/g, " ")
+		}
+		// remove multispaces
+		if (document.getElementById("multispace").checked) {
+			html_list = replace_arr(html_list, /  +/g, " ")
+		}
+		// remove empty lines
+		if (document.getElementById("empty_line").checked) {
+			html_list = replace_arr(html_list, /<[^>]*> *&nbsp; *<\/[^>]*>/g, "")
+		}
+		// replace fancy quotes
+		if (document.getElementById("quotes").checked) {
+			html_list = replace_arr(html_list, "‘", "'")
+			html_list = replace_arr(html_list, "’", "'")
+			html_list = replace_arr(html_list, "“", '"')
+			html_list = replace_arr(html_list, "”", '"')
+		}
+		// replace emdashes
+		if (document.getElementById("emdash").checked) {
+			html_list = replace_arr(html_list, "–", "-")
+		}
+		// remove _Ref links
+		if (document.getElementById("dw_ref").checked) {
+			html_list = replace_arr(html_list, /<a name="_Ref[0-9]+">(.*?)<\/a>/g, "$1")
+		}
+		// fix referential and external links
+		if (document.getElementById("ref_links").checked) {
+			html_list = html_list.map(fix_ref_links)
+		}
+		html_doc_str = html_list.join("\n").replaceAll("\r\n", "\n")
+		// fix footnotes
+		if (document.getElementById("footnotes").checked) {
+			footnote_top_regex = '<a href="#_ftn[0-9]+" name="_ftnref[0-9]+" title="">(.*?)</a>'
+			footnote_bot_regex = `<div id="ftn[0-9]+">(<br>)* *
+* *(
+ *<ul> *
+ *<li>)*(<p>)*<a href="#_ftnref[0-9]+" name="_ftn[0-9]+" title=""> *</a>((\n*.)*?)(</p> *
+)* *(</li> *
+ *</ul> *
+ *)* *</div>`
+			html_doc_str = replace_footnote_str(html_doc_str, footnote_top_regex, footnote_bot_regex, 4, "")
+			html_doc_str = add_footnote_div(html_doc_str)
+			html_doc_str = add_consecutive_commas(html_doc_str)
+		}
+		download(html_doc_str, "formatted.html", "text/html")
+	}
+	file_reader_content.readAsText(content_str)
+}
+</script>
+</head>
+
+<body>
+<form>
+File to format:
+<input id="html_file" type="file">
+<br>
+<br>
+<input type="checkbox" id="space_format" name="space_format" checked>
+<label for="space_format">Make space formatting consistent</label>
+<br>
+<input type="checkbox" id="multispace" name="multispace" checked>
+<label for="multispace">Get rid of multiple consecutive spaces (other than indents)</label>
+<br>
+<input type="checkbox" id="empty_line" name="empty_line" checked>
+<label for="empty_line">Remove tags that only consist of nbsp;</label>
+<br>
+<input type="checkbox" id="quotes" name="quotes" checked>
+<label for="quotes">Replace fancy quotes with straight quotes</label>
+<br>
+<input type="checkbox" id="emdash" name="emdash" checked>
+<label for="emdash">Replace em dashes with regular dashes</label>
+<br>
+<input type="checkbox" id="dw_ref" name="dw_ref" checked>
+<label for="dw_ref">Remove Dreamweaver-generated _Ref links</label>
+<br>
+<input type="checkbox" id="ref_links" name="ref_links" checked>
+<label for="ref_links">Make osfi links referential and make other links external</label>
+<br>
+<input type="checkbox" id="footnotes" name="footnotes">
+<label for="footnotes">Format (English) footnotes</label>
+<br>
+</form>
+<button onclick="format_file()">Download formatted file</button>
+<br><br>
+<p>This tool performs some quick formatting on Dreamweaver documents pasted from word. It is NOT for general use since it takes shortcuts assuming Dreamweaver formatting.</p>
+<p>Check the console for any errors if nothing is loading.</p>
+</body></html>
