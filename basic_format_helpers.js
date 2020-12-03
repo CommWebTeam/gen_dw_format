@@ -120,7 +120,7 @@ function fix_ref_links(html_line) {
 	let edited_line = html_line;
 	// get links
 	let orig_links = html_line.match(/<a (.*?)>/g);
-	if (orig_links == null) {
+	if (orig_links === null) {
 		orig_links = [];
 	}
 	for (i = 0; i < orig_links.length; i++) {
