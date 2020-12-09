@@ -71,6 +71,10 @@ function format_file() {
 		if (document.getElementById("dw_ref").checked) {
 			html_list = replace_arr(html_list, /<a name="_Ref[0-9]+">(.*?)<\/a>/g, "$1");
 		}
+		// remove logiterms
+		if (document.getElementById("logiterms").checked) {
+			html_list = replace_arr(html_list, /<a name="lt_[a-zA-z0-9]+">(.*?)<\/a>/g, "$1");
+		}
 		// fix referential and external links
 		if (document.getElementById("ref_links").checked) {
 			html_list = html_list.map(fix_ref_links);
@@ -125,13 +129,14 @@ function fix_ref_links(html_line) {
 	}
 	for (i = 0; i < orig_links.length; i++) {
 		let curr_link = orig_links[i];
+		let new_link = curr_link;
 		// make internal links relative
 		if (curr_link.includes("osfi-bsif.gc.ca")) {
-			let new_link = curr_link.replaceAll(/(https*:\/\/)*(www.)*osfi-bsif.gc.ca/g, "");
+			new_link = curr_link.replaceAll(/(https*:\/\/)*(www.)*osfi-bsif.gc.ca/g, "");
 		}
 		else {
 			// add rel to external links, excluding footnotes and toc
-			let new_link = curr_link;
+			new_link = curr_link;
 			if (!curr_link.includes("_ftn") && !curr_link.includes("_Toc") && !curr_link.includes("toc_") && !curr_link.includes("fnb") && !curr_link.includes('href="/') && !curr_link.includes("mailto")) {
 				new_link = curr_link.replace(/rel *= *"external"/g, "").replace(/<a /g, '<a rel="external" ');
 			}
