@@ -24,4 +24,6 @@ The current formatting checks done are as follows (the user can select which to 
 - joins consecutive lists (ol and ul tags) into a single list.
 - replaces the formatting for Dreamweaver-generated table of contents with WET table of contents. This uses helper functions from the footnote_formatter tool.
 
-This is not intended to be an in-depth formatting tool and only covers some basic initial steps. I sometimes split regex statements up into multiple calls for clarity, but most of these checks can be done in one or two regex statements.
+I sometimes split regex statements up into multiple calls for clarity, but most of these checks can be done in one or two regex statements.
+
+This is not intended to be an in-depth formatting tool and only covers some basic initial steps.
