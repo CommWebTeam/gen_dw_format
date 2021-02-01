@@ -1,0 +1,36 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Format table of contents</title>
+</head>
+
+<body>
+<form>
+  HTML file:
+  <input id="html_file" type="file" />
+  <br>
+  <br>
+  (Optional) Enter which line the Table of Contents starts on in the HTML file:
+  <input id="toc_start" type="number" value=""/>
+  <br>
+  <br>
+  (Optional) Enter which line the Table of Contents ends on in the HTML file:&nbsp;
+  <input id="toc_end" type="number" value=""/>
+  <br>
+  <br>
+  If the above values aren't filled in, the tool will search for the first two lines between &lt;br clear="all"> in the document that also contain &lt;br> (this seems to be how table of contents are formatted from what I've seen).
+  <br>
+  <br>
+</form>
+<button type="button" onclick="format_toc()">Download with WET table of contents</button>
+<br>
+<br>
+<p>This application takes in an HTML file with default Dreamweaver table of contents formatting and reformats the table of contents to follow WET guidelines. It also generates clearer links for the table of contents, and replaces the old links in the main document with these new links.</p>
+<p>It assumes Dreamweaver toc link formatting (#_Toc) initially to find IDs.</p>
+<p>Note that since this code adds/removes tags while making pretty specific assumptions about formatting / tags used, the immediate output might not be a perfectly formatted document if the original Dreamweaver paste is malformed enough. Be sure to go through the document and manually fix any resulting errors.</p>
+<script src="https://commwebteam.github.io/util/format_helpers.js"></script> 
+<script src="https://commwebteam.github.io/util/download.js"></script>
+<script src="format_toc_array.js"></script>
+</body>
+</html>
