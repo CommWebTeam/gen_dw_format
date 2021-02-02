@@ -19,16 +19,21 @@
   <input id="toc_end" type="number" value=""/>
   <br>
   <br>
-  If the above values aren't filled in, the tool will search for the first two lines between &lt;br clear="all"> in the document that also contain &lt;br> (this seems to be how table of contents are formatted from what I've seen).
+  Include any lines that should be part of the formatted table of contents, e.g. the header that states "Table of Contents". If the above values aren't filled in, the tool will search for the first two lines between &lt;br clear="all"> in the document that also contain &lt;br> (this seems to be how table of contents are formatted from what I've seen).
   <br>
+  <br>
+  <input type="checkbox" id="list_indent" name="list_indent" checked>
+  <label for="list_indent">Search for list numberings to generate links and indent the table with</label>
   <br>
 </form>
 <button type="button" onclick="format_toc()">Download with WET table of contents</button>
 <br>
 <br>
+<p>---</p>
 <p>This application takes in an HTML file with default Dreamweaver table of contents formatting and reformats the table of contents to follow WET guidelines. It also generates clearer links for the table of contents, and replaces the old links in the main document with these new links.</p>
 <p>It assumes Dreamweaver toc link formatting (#_Toc) initially to find IDs.</p>
-<p>Note that since this code adds/removes tags while making pretty specific assumptions about formatting / tags used, the immediate output might not be a perfectly formatted document if the original Dreamweaver paste is malformed enough. Be sure to go through the document and manually fix any resulting errors.</p>
+<p>Note that since this code adds/removes tags while making specific assumptions about formatting / tags used, the immediate output may not be a properly formatted document if the original Dreamweaver paste is malformed enough. Be sure to go through the document and manually fix any resulting errors - Dreamweaver is helpful for this.</p>
+<p>If the option to search for list numberings is selected, the tool checks each line in the table of contents to see if it starts with a list number, e.g. 3.1. This list numbering is then used for the ID for that table of contents link, e.g. href="toc_3.1". In addition, the number of periods in that list number is used to decide indentation, e.g. 3.1.2 is indentated one more level than 3.1. Currently, only formats using periods to indicate indentation are supported. If a line does not have a list number, then it uses the indentation + 1 of the last line that does.</p>
 <script src="https://commwebteam.github.io/util/format_helpers.js"></script> 
 <script src="https://commwebteam.github.io/util/download.js"></script>
 <script src="format_toc_array.js"></script>
