@@ -18,11 +18,11 @@ function format_toc_table_no_list(toc_arr) {
     let link_ids = [];
     let header_contents = [];
     let header_levels = [];
-    // use array index for ids, and set level to always be 1
+    // use array index for ids, and set level to always be 3 (for h3)
     for (let i = 0; i < toc_arr.length; i++) {
         link_ids.push("toc_" + i);
         header_contents.push(toc_arr[i]);
-        header_levels.push(1);
+        header_levels.push(3);
     }
     // create list of html lines
     let toc_html_lines = ["<ol>"];
