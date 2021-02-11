@@ -112,6 +112,31 @@ function format_file() {
 			html_doc_str = add_footnote_div(html_doc_str);
 			html_doc_str = add_consecutive_commas(html_doc_str);
 		}
+		// translate links and footnotes to French
+		if (document.getElementById("translate").checked) {
+			html_doc_str = html_doc_str.replaceAll("/eng/", "/fra/");
+			html_doc_str = html_doc_str.replaceAll("/Eng/", "/Fra/");
+			html_doc_str = html_doc_str.replaceAll("Return to footnote", "Retour à la référence de la note de bas de page");
+			html_doc_str = html_doc_str.replaceAll("Footnotes", "Notes de bas de page");
+			html_doc_str = html_doc_str.replaceAll("Footnote", "Note de bas de page");
+		}
+		// fix script tags
+		if (document.getElementById("fake_script_tag").checked) {
+			html_doc_str = html_doc_str.replaceAll(/&lt;(sup.*?)&gt;/g, "<$1>");
+			html_doc_str = html_doc_str.replaceAll(/&lt;(\/sup)&gt;/g, "<$1>");
+			html_doc_str = html_doc_str.replaceAll(/&lt;(sub.*?)&gt;/g, "<$1>");
+			html_doc_str = html_doc_str.replaceAll(/&lt;(\/sub)&gt;/g, "<$1>");
+			// join consecutive subscripts/superscripts
+			html_doc_str = html_doc_str.replaceAll(/<\/sub>( *)<sub>/g, "$1");
+			html_doc_str = html_doc_str.replaceAll(/<\/sup>( *)<sup>/g, "$1");
+		}
+		// fix math tags
+		if (document.getElementById("fake_math_tag").checked) {
+			html_doc_str = html_doc_str.replaceAll(/&lt;(math.*?)&gt;/g, "<$1>");
+			html_doc_str = html_doc_str.replaceAll(/&lt;(\/math)&gt;/g, "<$1>");
+			html_doc_str = html_doc_str.replaceAll(/&lt;(m[ion].*?)&gt;/g, "<$1>");
+			html_doc_str = html_doc_str.replaceAll(/&lt;(\/m[ion])&gt;/g, "<$1>");
+		}
 		download(html_doc_str, "formatted.html", "text/html");
 	}
 	file_reader_content.readAsText(content_str);

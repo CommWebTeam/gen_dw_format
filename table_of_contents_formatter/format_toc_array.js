@@ -13,6 +13,8 @@ function format_toc() {
 
 /* helpers */
 
+// get indentation from list numbering
+
 // formats a table of contents table without checking for lists
 function format_toc_table_no_list(toc_arr) {
     let link_ids = [];

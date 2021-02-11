@@ -65,12 +65,23 @@
   <input type="checkbox" id="footnotes" name="footnotes">
   <label for="footnotes">Format (English) footnotes</label>
   <br>
+  <br>
+  <input type="checkbox" id="translate" name="translate">
+  <label for="translate">Translate internal links and footnote structure to French</label>
+  <br>
+  <br>
+  <input type="checkbox" id="fake_script_tag" name="fake_script_tag" checked>
+  <label for="fake_script_tag">Convert visual superscript/subscript tags (with &amp;lt; and so on) to actual tags</label>
+  <br>
+  <input type="checkbox" id="fake_math_tag" name="fake_math_tag" checked>
+  <label for="fake_math_tag">Convert visual math tags (with &amp;lt; and so on) to actual tags - to be used alongside the macro</label>
+  <br>
 </form>
 <button onclick="format_file()">Download formatted file</button>
 <br>
 <br>
 <p>This tool performs some quick formatting on Dreamweaver documents pasted from word. It is NOT for general use since it takes shortcuts assuming Dreamweaver formatting.</p>
-<p>Check the console for any errors if nothing is loading.</p>
+<p>Check the console (ctrl+shift+i) for any errors if nothing is loading.</p>
 <script src="https://commwebteam.github.io/util/format_helpers.js"></script> 
 <script src="https://commwebteam.github.io/util/download.js"></script> 
 <script src="https://commwebteam.github.io/footnote_formatter/footnote_helpers.js"></script> 
