@@ -3,139 +3,90 @@ function format_file() {
 	let file_reader_content = new FileReader();
 	let content_str = document.getElementById("html_file").files[0];
 	file_reader_content.onload = function(event) {
-		/*
-		line-by-line checks
-		*/
-		let html_list = event.target.result.split("\n");
+		let html_doc_str = event.target.result.replaceAll("\r\n", "\n");
 		// make space hexcode consistent
 		if (document.getElementById("space_format").checked) {
-			html_list = replace_arr(html_list, /[  ]+/g, " ")
+			html_doc_str = replace_invisible_nbsp(html_doc_str);
 		}
 		// remove multispaces
 		if (document.getElementById("multispace").checked) {
-			html_list = replace_arr(html_list, /  +/g, " ")
+			html_doc_str = remove_multispace(html_doc_str);
 		}
 		// remove empty tags
 		if (document.getElementById("empty_line").checked) {
-			const empty_tag_regex = /<[a-zA-Z0-9]*><\/[a-zA-Z0-9]*>/g;
-			const space_tag_regex = /<[a-zA-Z0-9]*> *(&nbsp;)* *<\/[a-zA-Z0-9]*>/g;
-			// replace empty tags until there are none left
-			while (in_arr(html_list, empty_tag_regex) || in_arr(html_list, space_tag_regex)) {
-				html_list = replace_arr(html_list, empty_tag_regex, "");
-				html_list = replace_arr(html_list, space_tag_regex, " ");
-			}
+			html_doc_str = rm_empty_tags(html_doc_str);
 		}
 		// replace fancy quotes
 		if (document.getElementById("quotes").checked) {
-			html_list = replace_arr(html_list, "‘", "'");
-			html_list = replace_arr(html_list, "’", "'");
-			html_list = replace_arr(html_list, "“", '"');
-			html_list = replace_arr(html_list, "”", '"');
+			html_doc_str = replace_fancy_quotes(html_doc_str);
 		}
 		// replace fancy quote html entities
 		if (document.getElementById("quote_entities").checked) {
-			html_list = replace_arr(html_list, "&rsquo;", "'");
-			html_list = replace_arr(html_list, "&lsquo;", "'");
-			html_list = replace_arr(html_list, "&rdquo;", '"');
-			html_list = replace_arr(html_list, "&ldquo;", '"');
+			html_doc_str = replace_fancy_quote_entities(html_doc_str);
 		}
 		// replace emdashes
 		if (document.getElementById("emdash").checked) {
-			html_list = replace_arr(html_list, "–", "-");
-		}
-		// join consecutive em/strong
-		if (document.getElementById("consecutive_em").checked) {
-			html_list = replace_arr(html_list, /<\/em>( *)<em>/g, "$1");
-			html_list = replace_arr(html_list, /<\/strong>( *)<strong>/g, "$1");
+			html_doc_str = replace_dashes(html_doc_str);
 		}
 		// change italics to cite if the line has a link
-		if (document.getElementById("consecutive_em").checked) {
-			html_list = html_list.map(change_link_em_to_cite);
+		if (document.getElementById("cite_link").checked) {
+			html_doc_str = change_link_em_to_cite(html_doc_str);
 		}
 		// change italics to cite
 		if (document.getElementById("default_cite").checked) {
-			html_list = replace_arr(html_list, "<em>", "<cite>");
-			html_list = replace_arr(html_list, "</em>", "</cite>");
+			html_doc_str = default_tag(html_doc_str, "em", "cite");
 		}
 		// change italics to i
 		if (document.getElementById("default_i").checked) {
-			html_list = replace_arr(html_list, "<em>", "<i>");
-			html_list = replace_arr(html_list, "</em>", "</i>");
+			html_doc_str = default_tag(html_doc_str, "em", "i");
 		}
 		// change bold to b
 		if (document.getElementById("default_b").checked) {
-			html_list = replace_arr(html_list, "<strong>", "<b>");
-			html_list = replace_arr(html_list, "</strong>", "</b>");
+			html_doc_str = default_tag(html_doc_str, "strong", "b");
+		}
+		// join consecutive em/strong
+		if (document.getElementById("consecutive_em").checked) {
+			html_doc_str = join_em_strong(html_doc_str);
+		}
+		// join consecutive lists
+		if (document.getElementById("consecutive_lists").checked) {
+			html_doc_str = join_lists(html_doc_str);
 		}
 		// remove _Ref links
 		if (document.getElementById("dw_ref").checked) {
-			html_list = replace_arr(html_list, /<a name="_Ref[0-9]+">(.*?)<\/a>/g, "$1");
+			html_doc_str = remove_ref_links(html_doc_str);
+		}
+		// remove _Toc links
+		if (document.getElementById("dw_toc").checked) {
+			html_doc_str = remove_toc_links(html_doc_str);
 		}
 		// remove logiterms
 		if (document.getElementById("logiterms").checked) {
-			html_list = replace_arr(html_list, /<a name="lt_[a-zA-z0-9]+">(.*?)<\/a>/g, "$1");
+			html_doc_str = remove_logiterms(html_doc_str);
 		}
 		// fix referential and external links
 		if (document.getElementById("ref_links").checked) {
-			html_list = html_list.map(fix_ref_links);
+			html_doc_str = fix_ref_links(html_doc_str);
 		}
 		// fix align-center and align-right
 		if (document.getElementById("align").checked) {
-			html_list = replace_arr(html_list, /align="center"/g, 'class="align-center"');
-			html_list = replace_arr(html_list, /align="right"/g, 'class="align-right"');
-		}
-		/*
-		multi-line checks
-		*/
-		let html_doc_str = html_list.join("\n").replaceAll("\r\n", "\n");
-		// join consecutive lists
-		if (document.getElementById("consecutive_lists").checked) {
-			const ol_str = `</ol>
- *<ol>`;
-      const ul_str = `</ul>
- *<ul>`;
-			const ol_regex = new RegExp(ol_str, "g");
-			const ul_regex = new RegExp(ul_str, "g");
-			html_doc_str = html_doc_str.replaceAll(ol_regex, "").replaceAll(ul_regex, "");
+			html_doc_str = fix_align(html_doc_str);
 		}
 		// fix footnotes
 		if (document.getElementById("footnotes").checked) {
-			const footnote_top_regex = '<a href="#_ftn[0-9]+" name="_ftnref[0-9]+" title="">(.*?)</a>';
-			const footnote_bot_regex = `<div id="ftn[0-9]+">(<br>)* *
-* *(
- *<ul> *
- *<li>)*(<p>)*<a href="#_ftnref[0-9]+" name="_ftn[0-9]+" title=""> *</a>((\n*.)*?)(</p> *
-)* *(</li> *
- *</ul> *
- *)* *</div>`;
-			html_doc_str = replace_footnote_str(html_doc_str, footnote_top_regex, footnote_bot_regex, 4, "");
-			html_doc_str = add_footnote_div(html_doc_str);
-			html_doc_str = add_consecutive_commas(html_doc_str);
+			html_doc_str = fix_footnotes(html_doc_str);
 		}
 		// translate links and footnotes to French
 		if (document.getElementById("translate").checked) {
-			html_doc_str = html_doc_str.replaceAll("/eng/", "/fra/");
-			html_doc_str = html_doc_str.replaceAll("/Eng/", "/Fra/");
-			html_doc_str = html_doc_str.replaceAll("Return to footnote", "Retour à la référence de la note de bas de page");
-			html_doc_str = html_doc_str.replaceAll("Footnotes", "Notes de bas de page");
-			html_doc_str = html_doc_str.replaceAll("Footnote", "Note de bas de page");
+			html_doc_str = translate_to_fr(html_doc_str);
 		}
 		// fix script tags
 		if (document.getElementById("fake_script_tag").checked) {
-			html_doc_str = html_doc_str.replaceAll(/&lt;(sup.*?)&gt;/g, "<$1>");
-			html_doc_str = html_doc_str.replaceAll(/&lt;(\/sup)&gt;/g, "<$1>");
-			html_doc_str = html_doc_str.replaceAll(/&lt;(sub.*?)&gt;/g, "<$1>");
-			html_doc_str = html_doc_str.replaceAll(/&lt;(\/sub)&gt;/g, "<$1>");
-			// join consecutive subscripts/superscripts
-			html_doc_str = html_doc_str.replaceAll(/<\/sub>( *)<sub>/g, "$1");
-			html_doc_str = html_doc_str.replaceAll(/<\/sup>( *)<sup>/g, "$1");
+			html_doc_str = fix_fake_scripts(html_doc_str);
 		}
 		// fix math tags
 		if (document.getElementById("fake_math_tag").checked) {
-			html_doc_str = html_doc_str.replaceAll(/&lt;(math.*?)&gt;/g, "<$1>");
-			html_doc_str = html_doc_str.replaceAll(/&lt;(\/math)&gt;/g, "<$1>");
-			html_doc_str = html_doc_str.replaceAll(/&lt;(m[ion].*?)&gt;/g, "<$1>");
-			html_doc_str = html_doc_str.replaceAll(/&lt;(\/m[ion])&gt;/g, "<$1>");
+			html_doc_str = fix_fake_math(html_doc_str);
 		}
 		download(html_doc_str, "formatted.html", "text/html");
 	}
@@ -144,14 +95,108 @@ function format_file() {
 
 /* helpers */
 
+// remove empty tags
+function rm_empty_tags(html_str) {
+	let edited_html_str = html_str;
+	const empty_tag_regex = /<[a-zA-Z0-9]*><\/[a-zA-Z0-9]*>/g;
+	const space_tag_regex = /<[a-zA-Z0-9]*> *(&nbsp;)* *<\/[a-zA-Z0-9]*>/g;
+	// replace empty tags until there are none left
+	while (empty_tag_regex.test(edited_html_str) || space_tag_regex.test(edited_html_str)) {
+		edited_html_str = edited_html_str.replaceAll(empty_tag_regex, "");
+		edited_html_str = edited_html_str.replaceAll(space_tag_regex, " ");
+	}
+	return edited_html_str;
+}
+
+// replace fancy quotes
+function replace_fancy_quotes(html_str) {
+	let edited_html_str = html_str.replaceAll("‘", "'");
+	edited_html_str = edited_html_str.replaceAll("’", "'");
+	edited_html_str = edited_html_str.replaceAll("“", '"');
+	edited_html_str = edited_html_str.replaceAll("”", '"');
+	return edited_html_str;
+}
+
+// replace fancy quote html entities
+function replace_fancy_quote_entities(html_str) {
+	let edited_html_str = html_str.replaceAll("&rsquo;", "'");
+	edited_html_str = edited_html_str.replaceAll("&lsquo;", "'");
+	edited_html_str = edited_html_str.replaceAll("&rdquo;", '"');
+	edited_html_str = edited_html_str.replaceAll("&ldquo;", '"');
+	return edited_html_str;
+}
+
+// replace emdashes with regular dashes
+function replace_dashes(html_str) {
+	return html_str.replaceAll("–", "-");
+}
+
+// change italics to citations if there is a link on the line
+function change_link_em_to_cite_helper(html_line) {
+	let edited_html_line = html_line.split("\n");
+	if (edited_html_line.includes("<a ") || edited_html_line.includes("<a>")) {
+        edited_html_line = edited_html_line.replaceAll("<em>", "<cite>");
+        edited_html_line = edited_html_line.replaceAll("</em>", "</cite>");
+    }
+	return edited_html_line.join("\n");
+}
+
+// change italics to citations if there is a link in the html
+function change_link_em_to_cite(html_str) {
+	let html_arr = html_str.split("\n");
+	html_arr = html_arr.map(change_link_em_to_cite_helper);
+	return html_arr.join("\n");
+}
+
+// change instances of one tag to another
+function default_tag(html_str, old_tag, new_tag) {
+	let edited_html_str = html_str.replaceAll("<" + old_tag + ">", "<" + new_tag + ">");
+	edited_html_str = edited_html_str.replaceAll("</" + old_tag + ">", "</" + new_tag + ">");
+	return edited_html_str;
+}
+
+// join consecutive fonts
+function join_em_strong(html_str) {
+	let edited_html_str = html_str.replaceAll(/<\/em>( *)<em>/g, "$1");
+	edited_html_str = edited_html_str.replaceAll(/<\/strong>( *)<strong>/g, "$1");
+	return edited_html_str;
+}
+
+// join consecutive lists
+function join_lists(html_str) {
+	const ol_str = `</ol>
+*<ol>`;
+		 const ul_str = `</ul>
+*<ul>`;
+	const ol_regex = new RegExp(ol_str, "g");
+	const ul_regex = new RegExp(ul_str, "g");
+	return html_str.replaceAll(ol_regex, "").replaceAll(ul_regex, "");
+}
+
+// remove reference links
+function remove_ref_links(html_str) {
+	return html_str.replaceAll(/<a name="_Ref[a-zA-z0-9]+">(.*?)<\/a>/g, "$1");
+}
+
+// remove toc links
+function remove_toc_links(html_str) {
+	return html_str.replaceAll(/<a name="_Toc[a-zA-z0-9]+">(.*?)<\/a>/g, "$1");
+}
+
+// remove logiterms
+function remove_logiterms(html_str) {
+	return html_str.replaceAll(/<a name="lt_[a-zA-z0-9]+">(.*?)<\/a>/g, "$1");
+}
+
 // fix referential and internal links in line
-function fix_ref_links(html_line) {
-	let edited_line = html_line;
+function fix_ref_links(html_str) {
+	let edited_html_str = html_str;
 	// get links
-	let orig_links = html_line.match(/<a (.*?)>/g);
+	let orig_links = html_str.match(/<a (.*?)>/g);
 	if (orig_links === null) {
 		orig_links = [];
 	}
+	// loop through links
 	for (i = 0; i < orig_links.length; i++) {
 		let curr_link = orig_links[i];
 		let new_link = curr_link;
@@ -160,23 +205,67 @@ function fix_ref_links(html_line) {
 			new_link = curr_link.replaceAll(/(https*:\/\/)*(www.)*osfi-bsif.gc.ca/g, "");
 		}
 		else {
-			// add rel to external links, excluding footnotes and toc
+			// add rel to external links, excluding footnotes, toc, internal links, and emails
 			new_link = curr_link;
-			if (!curr_link.includes("_ftn") && !curr_link.includes("_Toc") && !curr_link.includes("toc_") && !curr_link.includes("fnb") && !curr_link.includes('href="/') && !curr_link.includes("mailto")) {
+			if (!curr_link.includes("_ftn") && !curr_link.includes("_Toc") && !curr_link.includes("toc_") && !curr_link.includes("fnb") && !curr_link.includes('href *= *"/') && !curr_link.includes("mailto")) {
 				new_link = curr_link.replace(/rel *= *"external"/g, "").replace(/<a /g, '<a rel="external" ');
 			}
 		}
-		edited_line = edited_line.replaceAll(curr_link, new_link);
+		edited_html_str = edited_html_str.replaceAll(curr_link, new_link);
 	}
-	return edited_line;
+	return edited_html_str;
 }
 
-// change italics to citations if there is a link on the line
-function change_link_em_to_cite(html_line) {
-	let edited_line = html_line;
-	if (edited_line.includes("<a ") || edited_line.includes("<a>")) {
-        edited_line = edited_line.replaceAll("<em>", "<cite>");
-        edited_line = edited_line.replaceAll("</em>", "</cite>");
-    }
-	return edited_line;
+// fix alignment classes
+function fix_align(html_str) {
+	let edited_html_str = html_str.replaceAll(/align="center"/g, 'class="align-center"');
+	edited_html_str = edited_html_str.replaceAll(/align="right"/g, 'class="align-right"');
+	return edited_html_str;
+}
+
+// fix footnotes using functions from footnote_helpers.js
+function fix_footnotes(html_str) {
+	const footnote_top_regex = '<a href="#_ftn[0-9]+" name="_ftnref[0-9]+" title="">(.*?)</a>';
+	const footnote_bot_regex = `<div id="ftn[0-9]+">(<br>)* *
+* *(
+ *<ul> *
+ *<li>)*(<p>)*<a href="#_ftnref[0-9]+" name="_ftn[0-9]+" title=""> *</a>((\n*.)*?)(</p> *
+)* *(</li> *
+ *</ul> *
+ *)* *</div>`;
+	let edited_html_str = replace_footnote_str(html_str, footnote_top_regex, footnote_bot_regex, 4, "");
+	edited_html_str = add_footnote_div(edited_html_str);
+	edited_html_str = add_consecutive_commas(edited_html_str);
+	return edited_html_str;
+}
+
+// translate internal links and footnotes to French
+function translate_to_fr(html_str) {
+	let edited_html_str = html_str.replaceAll("/eng/", "/fra/");
+	edited_html_str = edited_html_str.replaceAll("/Eng/", "/Fra/");
+	edited_html_str = edited_html_str.replaceAll("Return to footnote", "Retour à la référence de la note de bas de page");
+	edited_html_str = edited_html_str.replaceAll("Footnotes", "Notes de bas de page");
+	edited_html_str = edited_html_str.replaceAll("Footnote", "Note de bas de page");
+	return edited_html_str;
+}
+
+// fix fake script tags
+function fix_fake_scripts(html_str) {
+	let edited_html_str = html_str.replaceAll(/&lt;(sup.*?)&gt;/g, "<$1>");
+	edited_html_str = edited_html_str.replaceAll(/&lt;(\/sup)&gt;/g, "<$1>");
+	edited_html_str = edited_html_str.replaceAll(/&lt;(sub.*?)&gt;/g, "<$1>");
+	edited_html_str = edited_html_str.replaceAll(/&lt;(\/sub)&gt;/g, "<$1>");
+	// join consecutive subscripts/superscripts
+	edited_html_str = edited_html_str.replaceAll(/<\/sub>( *)<sub>/g, "$1");
+	edited_html_str = edited_html_str.replaceAll(/<\/sup>( *)<sup>/g, "$1");
+	return edited_html_str;
+}
+
+// fix fake math tags
+function fix_fake_math(html_str) {
+	let edited_html_str = html_str.replaceAll(/&lt;(math.*?)&gt;/g, "<$1>");
+	edited_html_str = edited_html_str.replaceAll(/&lt;(\/math)&gt;/g, "<$1>");
+	edited_html_str = edited_html_str.replaceAll(/&lt;(m[ion].*?)&gt;/g, "<$1>");
+	edited_html_str = edited_html_str.replaceAll(/&lt;(\/m[ion])&gt;/g, "<$1>");
+	return edited_html_str;
 }
