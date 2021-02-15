@@ -53,14 +53,18 @@ This tool looks for strings indicating subscript/superscript tags in the html do
 
 1. Open the "replace" box in Word (ctrl+h).
 2. Select "More >>" for additional options.
-3. Select "Format", then "Font".
-4. Only check the "Superscript" box. Leave the "Subscript" box unchecked; all other boxes should be filled in, but not checked. 
-5. Click "OK". You are now searching for superscript text.
-6. Check "Use wildcards". This is a pattern searcher used by Word that is similar in use to regex.
-7. In the "Find what" box, enter ([!(^2)]). This is equivalent to ([^(^2)]) in regex, where ^2 is the character for a footnote/endnote in Word. In other words, we are searching for superscripts that aren't footnotes/endnotes.
+3. Check "Use wildcards". This is a pattern searcher used by Word that is similar to regex.
+4. In the "Find what" box, enter ([!(^2)]). This is equivalent to ([^(^2)]) in regex, where ^2 is the character for a footnote/endnote in Word. In other words, we are searching for superscripts that aren't footnotes/endnotes.
+5. While in the "Find what" box, select "Format", then "Font".
+6. Only check the "Superscript" box. Leave the "Subscript" box unchecked; all other boxes should be filled in, but not checked.
+7. Click "OK". You are now searching for superscript text.
 8. In the "Replace with" box, enter &lt;sup>\1&lt;/sup>. This is equivalent to &lt;sup>$1&lt;/sup> in regex.
-9. Click "Replace All" to surround all superscripts with &lt;sup> and &lt;/sup>.
-10. Repeat steps 1-9 for subscripts.
+9. While in the "Replace with" box, select "Format", then "Font".
+10. Only check the "Superscript" box. Leave the "Subscript" box unchecked; all other boxes should be filled in, but not checked.
+11. Click "OK". You are now replacing superscript text.
+12. Click "Replace All" to surround all superscripts with &lt;sup> and &lt;/sup>.
+
+Afterwards, repeat these steps for subscripts.
 
 ### Mathml
 
