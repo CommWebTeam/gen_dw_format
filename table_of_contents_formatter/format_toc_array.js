@@ -237,7 +237,7 @@ function format_toc_arr(html_str, input_start_line, input_end_line, use_list_ind
     for (let i = 0; i < ids_list.length; i++) {
         // search for tag that contains text of header, list numbering optional
         let header_regex = new RegExp("^((<.*?>)* *)*(" + escape_regex_chars(numberings_list[i]) + ")* *" + escape_regex_chars(headers_list[i]) + "( *(<.*?>)*)*$", "g");
-        // replace with header tag using the format (example): <h3 id="toc_3.1">3.1 Overview</h3>
+        // replace with header tag with a similar format to: <h3 id="toc_3.1">3.1 Overview</h3>
         let replacement = "<h" + header_levels_list[i] + ' id="' + ids_list[i] + '">' + numberings_list[i] + ' ' + headers_list[i] + "</h" + header_levels_list[i] + ">";
         html_arr = html_arr.map(x => x.replaceAll(header_regex, replacement));
     }
