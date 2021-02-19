@@ -1,3 +1,6 @@
+// list numbering regex
+const list_ind_regex = /^[0-9\.]+/g;
+
 // get uploaded file, fix toc div and links, and redownload
 function format_toc() {
     // read in uploaded file as string
@@ -13,26 +16,121 @@ function format_toc() {
 
 /* helpers */
 
-// get indentation from list numbering
+// formats a table of contents table while checking for list numberings
+function format_toc_table_list(toc_arr) {
+    // edge case - return empty arrays if toc_arr is empty
+    if (toc_arr.length === 0) {
+        return [[], [], [], []];
+    }
+    /*
+	============================
+	Generate ToC link IDs and levels (for indentation)
+	============================
+	*/
+    let link_ids = [];
+    let list_numberings = [];
+    let header_contents = [];
+    let header_levels = [];
+    // set values to use when headers do not have list numberings
+    let last_header_level = 1;
+    let default_id_counter = 0;
+    // try to use list numbering for id, and level of list numbering for header level
+    for (let i = 0; i < toc_arr.length; i++) {
+        let curr_line = toc_arr[i];
+        // set id to default counter value
+        let curr_id = default_id_counter;
+        // check if table line has a list numbering
+        if (list_ind_regex.test(curr_line)) {
+            // if so, use that as id instead (without consecutive periods)
+            curr_id = curr_line.match(list_ind_regex)[0].trim().replaceAll(/\.+/g, ".");
+            link_ids.push("toc_" + curr_id);
+            list_numberings.push(curr_id);
+            // get level of id based on periods followed by numbers
+            last_header_level = count_regex(curr_id, /\.[0-9]/g) + 2;
+            header_levels.push(last_header_level);
+        }
+        else {
+            // otherwise, increment internal id counter to keep it unique
+            link_ids.push("toc_nolist_" + curr_id);
+            list_numberings.push("");
+            default_id_counter++;
+            // set level of id to be previous properly generated header level + 1
+            header_levels.push(last_header_level + 1);
+        }
+        // get content without list numbering
+        header_contents.push(curr_line.replace(list_ind_regex, "").trim());
+    }
+	/*
+	============================
+	Format html lines of table with indentation
+	============================
+	*/
+    // create list of html lines (I'm doing this in a separate loop for clarity) - open the table list
+    let toc_html_lines = ["<ul>"];
+    // create counter for number of sublists to close after looping through all list elements
+    let sublist_counter = 0;
+    // set first list element - push its contents without closing the list element (in case the next element is a sublist)
+    toc_html_lines.push('<li><a href="#' + link_ids[0] + '">' + list_numberings[0] + " " + header_contents[0] + "</a>");
+    // store current header level to compare to in the next line
+    let prev_header_level = header_levels[0];
+    // loop through each line in the table, comparing level of current table line to level of previous table line
+    for (let i = 1; i < toc_arr.length; i++) {
+        curr_header_level = header_levels[i];
+        if (curr_header_level > prev_header_level) {
+            // if the level is greater, then it's part of a sublist, so open a sublist 
+            toc_html_lines.push("<ul>");
+            sublist_counter++;
+        }
+        else if (curr_header_level === prev_header_level) {
+            // if the level is equal, close list element of previous line
+            toc_html_lines.push("</li>");
+        }
+        else {
+            // otherwise, the level is smaller, so it ends the sublist of the previous line; close list element of previous line, and then the sublist, and then the list element containing the sublist
+            toc_html_lines.push("</li>");
+            toc_html_lines.push("</ul>");
+            toc_html_lines.push("</li>");
+            sublist_counter--;
+        }
+        // push current contents without closing the list element (in case the next element is a sublist)
+        toc_html_lines.push('<li><a href="#' + link_ids[i] + '">' + list_numberings[i] + " " + header_contents[i] + "</a>");
+        prev_header_level = curr_header_level;
+    }
+    // close final list element, then close all sublists, then close table list (expanded for clarity)
+    toc_html_lines.push("</li>");
+    for (let i = 0; i < sublist_counter; i++) {
+        toc_html_lines.push("</ul>");
+        toc_html_lines.push("</li>");
+    }
+    toc_html_lines.push("</ul>");
+    return [link_ids, list_numberings, header_contents, header_levels, toc_html_lines];
+}
+
 
 // formats a table of contents table without checking for lists
 function format_toc_table_no_list(toc_arr) {
     let link_ids = [];
+    let list_numberings = [];
     let header_contents = [];
     let header_levels = [];
-    // use array index for ids, and set level to always be 3 (for h3)
+    // loop through table lines
     for (let i = 0; i < toc_arr.length; i++) {
+        // use index for id
         link_ids.push("toc_" + i);
-        header_contents.push(toc_arr[i]);
+        // assume empty list numbering
+        list_numberings.push("");
+        // get content without list numbering
+        header_contents.push(toc_arr[i].replace(list_ind_regex, "").trim());
+        // set header level to a default of 3 (for h3)
         header_levels.push(3);
     }
     // create list of html lines
-    let toc_html_lines = ["<ol>"];
+    let toc_html_lines = ["<ul>"];
     for (let i = 0; i < toc_arr.length; i++) {
-        toc_html_lines.push('<li><a href="#' + link_ids[i] + '">' + header_contents[i] + "</a></li>");
+        toc_html_lines.push('<li><a href="#' + link_ids[i] + '">' + list_numberings[i] + " " + header_contents[i] + "</a></li>");
     }
-    toc_html_lines.push("</ol>");
-    return [link_ids, header_contents, header_levels, toc_html_lines];
+    toc_html_lines.push("</ul>");
+    return [link_ids, list_numberings, header_contents, header_levels, toc_html_lines];
 }
 
 // formats html document's table of contents to WET
@@ -46,9 +144,9 @@ function format_toc_arr(html_str, input_start_line, input_end_line, use_list_ind
     let cleaned_html_str = html_str.replaceAll(/<a name="_Ref[0-9]+">(.*?)<\/a>/g, "$1");
     cleaned_html_str = cleaned_html_str.replaceAll(/<a name="_Toc[0-9]+">(.*?)<\/a>/g, "$1");
     cleaned_html_str = cleaned_html_str.replaceAll(/<a name="lt_[a-zA-z0-9]+">(.*?)<\/a>/g, "$1");
-    // split html into lines and perform basic cleaning
+    // perform basic cleaning on html and split into lines
     cleaned_html_str = replace_special_chars(cleaned_html_str);
-    cleaned_html_str = rm_extra_space(cleaned_html_str);
+    cleaned_html_str = format_spacing(cleaned_html_str);
     let html_arr = cleaned_html_str.split("\n");
     html_arr = trim_arr(html_arr);
 	/*
@@ -103,7 +201,7 @@ function format_toc_arr(html_str, input_start_line, input_end_line, use_list_ind
     content_list = content_list_str.split("<br>");
     // remove other tags inside content list
     content_list = content_list.map(x => x.replaceAll(/<.*?>/g, ""));
-    content_list = content_list.map(x => rm_extra_space(x));
+    content_list = content_list.map(x => format_spacing(x));
     content_list = trim_arr(content_list);
     content_list = rm_empty_lines(content_list);
     /*
@@ -111,26 +209,36 @@ function format_toc_arr(html_str, input_start_line, input_end_line, use_list_ind
 	Get ids and headers of table and add to document
 	============================
     
-    format WET content list - both functions return an array of four arrays:
-    - the first with link ids
-    - the second with a list of the header values, same length as the first
-    - the third with a list of header level, same length as the first
-    - the fourth with the html lines for the formatted table of contents, could be a different length
+    format WET content list - both functions return an array of five arrays:
+    - an array of the link id for each entry in the table of contents
+    - in the same order, an array of the list numbering for each entry; same length as the first array
+    - in the same order, an array of the text for each entry, with list numberings removed; same length as the first array
+    - in the same order, an array of the level (indentation) of each entry; same length as the first array
+    - an array of html lines for the formatted table of contents; could be a different length
+
+    Each entry is to be formatted as so:
+    {<ul> based on level of indentation}
+        <li><a href="{link id}">{list numbering} {link text}</a></li>
+    {</ul> based on level of indentation}
     */
     let wet_table_info = [];
     if (use_list_indent) {
-
+        wet_table_info = format_toc_table_list(content_list);
     } else {
         wet_table_info = format_toc_table_no_list(content_list);
     }
     let ids_list = wet_table_info[0];
-    let headers_list = wet_table_info[1];
-    let header_levels_list = wet_table_info[2];
-    let table_html_lines = wet_table_info[3];
+    let numberings_list = wet_table_info[1];
+    let headers_list = wet_table_info[2];
+    let header_levels_list = wet_table_info[3];
+    console.log(header_levels_list)
+    let table_html_lines = wet_table_info[4];
     // add ids to headers appearing in the html document's body
     for (let i = 0; i < ids_list.length; i++) {
-        let header_regex = new RegExp("^((<.*?>)* *)" + headers_list[i] + "( *(<.*?>)*)$", "g");
-        let replacement = "<h" + header_levels_list[i] + ' id="' + ids_list[i] + '">' + headers_list[i] + "</h" + header_levels_list[i] + ">";
+        // search for tag that contains text of header, list numbering optional
+        let header_regex = new RegExp("^((<.*?>)* *)*(" + escape_regex_chars(numberings_list[i]) + ")* *" + escape_regex_chars(headers_list[i]) + "( *(<.*?>)*)*$", "g");
+        // replace with header tag using the format (example): <h3 id="toc_3.1">3.1 Overview</h3>
+        let replacement = "<h" + header_levels_list[i] + ' id="' + ids_list[i] + '">' + numberings_list[i] + ' ' + headers_list[i] + "</h" + header_levels_list[i] + ">";
         html_arr = html_arr.map(x => x.replaceAll(header_regex, replacement));
     }
     // replace original table lines with new table
@@ -139,107 +247,4 @@ function format_toc_arr(html_str, input_start_line, input_end_line, use_list_ind
     new_table_lines.push("</div>");
     let html_arr_replaced_table = html_arr.slice(0, start_line).concat(new_table_lines).concat(html_arr.slice(end_line + 1));
     return html_arr_replaced_table.join('\n');
-
-
-    // // arrays of toc links to find in main body and their replacements and indentations
-    // let toc_links = [];
-    // // id counter for toc elements that don't have list index
-    // let id_counter = 0;
-    // const list_ind_regex = /^[0-9\.]+/g;
-    // // loop through lines of unformatted toc
-    // for (i = toc_start_line; i < toc_end_line; i++) {
-    //     let curr_line = html_arr[i];
-    //     // check whether line has a toc link
-    //     if (curr_line.includes("#_Toc")) {
-    //         let old_link = curr_line.match(/_Toc[0-9]+/g)[0];
-    //         let toc_content = curr_line.replace(/.*<a href="#_Toc[0-9]+">(.*)<\/a>.*/g, "$1").trim();
-    //         // get previous line's indent
-    //         let prev_indent = 0;
-    //         if (toc_links.length > 0) {
-    //             prev_indent = toc_links[toc_links.length - 1].indentation;
-    //         }
-    //         // check if toc has list index and use this as id if so, otherwise use counter
-    //         if (list_ind_regex.test(toc_content)) {
-    //             let toc_ind = toc_content.match(list_ind_regex)[0].trim().replaceAll(/\.+/g, ".");
-    //             // get indentation based on periods in list index
-    //             let curr_indent = count_regex(toc_content, /\.[0-9]/g);
-    //         } else {
-    //             let toc_ind = id_counter;
-    //             id_counter++;
-    //             // set indentation to previous indentation if no list item
-    //             let curr_indent = prev_indent;
-    //         }
-    //         let new_link = "toc_" + toc_ind;
-    //         // add links to arrays of toc links
-    //         toc_links.push({orig_toc_link: old_link, new_toc_link: new_link, indentation: curr_indent, content: toc_content});
-    //     } else {
-    //         // add current line to previous contents if it doesn't have a link
-    //         if (toc_links.length >= 1) {
-    //             toc_links[toc_links.length - 1].content = toc_links[toc_links.length - 1].content + curr_line;
-    //         }
-    //     }
-    // }
-    // // add lines to array for toc
-    // let toc_arr = ['<div class="span-6 module-table-contents">', '<h3>Table of Contents</h3>', '<ol>'];
-    // let first_toc_line = '<li><a href="#' + toc_links[0].new_toc_link + '">' + toc_links[0].content + "</a>";
-    // toc_arr.push(first_toc_line);
-    // let open_ol = 1;
-    // for (i = 1; i < toc_links.length; i++) {
-    //     let curr_indent = toc_links[i].indentation;
-    //     let prev_indent = toc_links[i - 1].indentation;
-    //     let curr_line_edited = '<li><a href="#' + toc_links[i].new_toc_link + '">' + toc_links[i].content + "</a>";
-    //     // add indentation
-    //     if (curr_indent > prev_indent) {
-    //         toc_arr.push("<ol>");
-    //         toc_arr.push(curr_line_edited);
-    //         open_ol++;
-    //     }
-    //     else if (curr_indent < prev_indent) {
-    //         toc_arr.push("</li>" + "</ol>" + "</li>" + curr_line_edited);
-    //         open_ol--;
-    //     }
-    //     else { // tie - don't indent
-    //         toc_arr.push("</li>" + curr_line_edited);
-    //     }
-    // }
-    // // update html aray with new toc list
-    // for (i = 0; i < open_ol; i++) {
-    //     toc_arr.push("</li>");
-    //     toc_arr.push("</ol>");
-    // }
-    // toc_arr.push("</div>");
-    // // document without toc
-    // let output_arr = html_arr.slice(0, toc_start_line).concat(html_arr.slice(toc_end_line + 1));
-    // // replace all old links in the main body with new links
-    // for (i = 0; i < toc_links.length; i++) {
-    //     // find line with toc link
-    //     let link_ind = output_arr.findIndex(x => x.includes(toc_links[i].orig_toc_link));
-    //     let link_line = output_arr[link_ind].trim();
-    //     if (link_ind != -1) {
-    //         // remove old link
-    //         let old_link_regex = '<a name="' + toc_links[i].orig_toc_link + '"> *</a>';
-    //         link_line = link_line.replaceAll(old_link_regex, "");
-    //         // get header level
-    //         header_level = toc_links[i].indentation + 2;
-    //         // add header tag with id
-    //         link_line = '<h' + header_level + ' id="' + toc_links[i].new_toc_link + '">' + link_line + '</h' + header_level + '>';
-    //         // if line is part of a paragraph or list element, move it out
-    //         if (!link_line.includes("<p>") && link_line.includes("</p>")) {
-    //             link_line = "</p>" + link_line.replace("</p>", "");
-    //         }
-    //         if (link_line.includes("<p>") && !link_line.includes("</p>")) {
-    //             link_line = link_line.replace("<p>", "") + "<p>";
-    //         }
-    //         if (link_line.includes("<li>") && !link_line.includes("</li>")) {
-    //             link_line = link_line.replace("<li>", "") + "<li>";
-    //         }
-    //         if (!link_line.includes("<li>") && link_line.includes("</li>")) {
-    //             link_line = "</li>" + link_line.replace("</li>", "");
-    //         }
-    //     }
-    //     output_arr[link_ind] = link_line;
-    // }
-    // // add toc in
-    // output_arr = output_arr.slice(0, toc_start_line).concat(toc_arr).concat(output_arr.slice(toc_start_line + 1));
-    // return output_arr.join('\n');
 }
