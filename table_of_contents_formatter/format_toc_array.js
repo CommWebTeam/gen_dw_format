@@ -190,13 +190,13 @@ function format_toc_arr(html_str, input_start_line, input_end_line, use_list_ind
     // break content list up by <br>s
     content_list = content_list_str.split("<br>");
     // remove other tags inside content list
-    content_list = content_list.map(x => x.replaceAll(/<.*?>/g, ""));
+    content_list = replace_arr(content_list, /<.*?>/g, "");
     content_list = content_list.map(x => format_spacing(x));
     content_list = trim_arr(content_list);
     content_list = rm_empty_lines(content_list);
     /*
 	============================
-	Get content entries in table of contents and their links, and add to document
+	Add entries in table of contents to main document
 	============================
     Each entry in the table of contents is to be formatted as so:
     {<ul> based on level of indentation}
@@ -209,24 +209,37 @@ function format_toc_arr(html_str, input_start_line, input_end_line, use_list_ind
     } else {
         wet_table_info = get_toc_table_nonum(content_list);
     }
+    // replace certain tags (just <li> for now) with placeholders so they aren't treated as headers
+    const list_open_placeholder = "list_open_placeholder";
+    const list_close_placeholder = "list_close_placeholder";
+    html_arr = replace_arr(html_arr, "<li>", list_open_placeholder);
+    html_arr = replace_arr(html_arr, "</li>", list_close_placeholder);
     // add headers with ids to the html document's main body
     for (let i = 0; i < wet_table_info.length; i++) {
-        let curr_entry = wet_table_info[i];
-        let curr_numbering = curr_entry.list_numbering;
-        let curr_link = curr_entry.link_id;
-        let curr_level = curr_entry.indent_level;
-        let curr_content = curr_entry.content;
-        // search for tag that contains text of header, list numbering optional
+        let curr_numbering = wet_table_info[i].list_numbering;
+        let curr_link = wet_table_info[i].link_id;
+        let curr_level = wet_table_info[i].indent_level;
+        let curr_content = wet_table_info[i].content;
+        // search for tag or line that contains text of table of contents entry, list numbering optional
         let header_regex = new RegExp("^((<.*?>)* *)*(" + escape_regex_chars(curr_numbering) + ")* *" + escape_regex_chars(curr_content) + "( *(<.*?>)*)*$", "g");
         // replace with header tag following the formatting of <h3 id="toc_3.1">3.1 Overview</h3>
         let replacement = "<h" + curr_level + ' id="' + curr_link + '">' + curr_numbering + ' ' + curr_content + "</h" + curr_level + ">";
-        html_arr = html_arr.map(x => x.replaceAll(header_regex, replacement));
+        html_arr = replace_arr(html_arr, header_regex, replacement);
     }
-    // replace original table lines with new table
+    // add placeholder tags back in
+    html_arr = replace_arr(html_arr, list_open_placeholder, "<li>");
+    html_arr = replace_arr(html_arr, list_close_placeholder, "</li>");
+    /*
+	============================
+	Replace original table of contents lines with formatted table
+	============================
+    */
+    // generate html for formatted table
     let new_table_lines = ['<div class="span-6 module-table-contents">', "<h2>Table of Contents</h2>"];
     let entry_lines = create_toc_table(wet_table_info);
     new_table_lines = new_table_lines.concat(entry_lines);
     new_table_lines.push("</div>");
+    // add formatted table into document
     let html_arr_replaced_table = html_arr.slice(0, start_line).concat(new_table_lines).concat(html_arr.slice(end_line + 1));
     return html_arr_replaced_table.join('\n');
 }
