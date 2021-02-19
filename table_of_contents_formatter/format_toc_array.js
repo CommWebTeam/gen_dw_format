@@ -8,7 +8,7 @@ function format_toc() {
     let html_file = document.getElementById("html_file").files[0];
     file_reader.onload = function(event) {
         let html_str = event.target.result;
-        let edited_str = format_toc_arr(html_str, document.getElementById("toc_start").value, document.getElementById("toc_end").value, document.getElementById("list_indent").checked);
+        let edited_str = format_toc_arr(html_str, document.getElementById("toc_start").value, document.getElementById("toc_end").value, document.getElementById("list_indent").checked, document.getElementById("manual_list").checked);
         download(edited_str, "toc.html", "text/html");
     }
     file_reader.readAsText(html_file);
@@ -23,7 +23,7 @@ returns an array of objects with four values for each table of contents entry:
 - indentation level, based on list numbering
 - entry content without the list numbering
 */
-function get_toc_table_listnum(toc_arr) {
+function get_toc_table_listnum(toc_arr, manual_list) {
     let toc_values = [];
     // set values to use when an entry does not have a list numbering
     let last_indent_level = 1;
@@ -54,6 +54,10 @@ function get_toc_table_listnum(toc_arr) {
         }
         // get content without list numbering
         let content = curr_line.replace(list_ind_regex, "").trim();
+        // set list numbering back to blank if it was manually added in
+        if (manual_list) {
+            list_numbering = "";
+        }
         toc_values.push({list_numbering: list_numbering, link_id: link_id, indent_level: indent_level, content: content});
     }
     return toc_values;
@@ -124,7 +128,7 @@ function create_toc_table(toc_values) {
 
 
 // formats html document's table of contents to WET
-function format_toc_arr(html_str, input_start_line, input_end_line, use_list_indent) {
+function format_toc_arr(html_str, input_start_line, input_end_line, use_list_indent, manual_list) {
 	/*
 	============================
 	Initial cleanup
@@ -205,7 +209,7 @@ function format_toc_arr(html_str, input_start_line, input_end_line, use_list_ind
     */
     let wet_table_info = [];
     if (use_list_indent) {
-        wet_table_info = get_toc_table_listnum(content_list);
+        wet_table_info = get_toc_table_listnum(content_list, manual_list);
     } else {
         wet_table_info = get_toc_table_nonum(content_list);
     }
