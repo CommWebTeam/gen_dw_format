@@ -77,3 +77,89 @@ For the last check, the tool looks for the following strings:
 and replaces them with actual tags.
 
 Similarly to superscripts/subscripts, you can't copy a Word document with equations into Dreamweaver and have the equations formatted properly (assuming you want them formatted as mathml). Since you need to actually copy the equations one-by-one to have them written out as mathml instead of the default linear format, this is best done with a macro, which can be found [here](https://github.com/CommWebTeam/vba/blob/main/ReplaceMathML.vb). The linked macro replaces equations with their mathml code, which this tool then fixes the tags of once the Word document is pasted into Dreamweaver.
+
+# Dreamweaver Table of Contents Formatting
+
+Formats Dreamweaver table of contents tables and adds their links to the main body. (I'm considering integrating this with the general formatting tool, but it's a lot buggier/more involved.)
+
+[HTML document here.](table_of_contents_formatter/toc_format.html)
+
+This tool does two things:
+1. It formats the table containing the table of contents to fit WET standards.
+2. It looks for tags/lines with the same values as the entries in the table of contents, and converts them to headers containing IDs to be linked to by the table of contents.
+
+For step 2, &lt;li> tags in particular are ignored because headers are usually not formatted as list items, so those tags are usually false positives.
+
+Step 2 is very likely to produce false positives because it replaces *all* tags and lines, except for &lt;li>, that have the same value as each table of contents entry. These false positives will have to be manually fixed afterward. Since the IDs will be duplicated as well, this will show up as an error in the HTML structure, which should make them easier to locate in Dreamweaver. In addition, the tool will add a comment above every tag/line that is replaced that will contain the original value of the line, which should make it easier to figure out whether the replaced line was a false positive or not.
+
+Different Word documents produce very different content structures when pasted into Dreamweaver, but I've tried to go through a few different cases and work out some patterns. With that being said, this tool will still not be generally reliable.
+
+It is also not intended to consistently output well-structured HTML when it is replacing table of content entries in the main body with headers, since it simply replaces a line entirely. You will likely have to go through and fix any errors with the HTML structure yourself afterwards; the comments containing the original values above the lines that have been replaced should help with this as well.
+
+## Lines for the table of contents
+
+I have noticed that after pasting into Dreamweaver, each line (entry) in a table of contents is split up by &lt;br>. So within the lines of the document that contain the table of contents, I split by &lt;br> to get individual entries.
+
+If this assumption is incorrect, then the tool will not work.
+
+I have also noticed that the table of contents tables are usually surrounded by two lines that consist of &lt;br clear="all">. So if no inputs are provided for the start/end line positions of the table of contents in the HTML document, then the tool searches for a block of text between two &lt;br clear="all"> that contains at least two &lt;br>. If this does not properly find the lines of the HTML document that consist of the table of contents, then you should manually enter the start/end line positions.
+
+## Header IDs
+
+If the option for list numbering is selected:
+- If the table of contents entry is selected, the header IDs are formatted as "toc_*list numbering*", e.g. "toc_3.0" for "3.0 Overview".
+- Otherwise, the header IDs are formatted as "toc_nonum_*internal counter*", e.g. "toc_nonum_1" for "Overview".
+
+If the option for list numbering is not selected, then header IDs are all formatted as "toc_*internal counter*", e,g, "toc_1".
+
+In either case, the internal counter increments at each table of content entry that uses it to keep the IDs unique.
+
+## List numbering
+
+List numberings are only checked for if the option to do so is selected. If the option isn't selected, then the table of contents will have no indentation, and all of the headers produced will use h3.
+
+Most of the usefulness in the tool comes from its attempt at guessing the hierarchy of the table of contents, which it does using list numberings. These must be formatted with numbers and periods. The hierarchy is used to indent the table of contents in step 1, and to decide the level of the header being linked to by the table of contents in step 2.
+
+The level of a list numbering is based on how many times a period followed by a number appears. The lowest level is 2, for h2. For example:
+- "3" has a level of 2 because it has no periods, so it uses a header of h2.
+- "3.1" has a level of 3 because it has one period followed by a number, so it uses a header of h3.
+- "3.1.2" has a level of 4 because it has two periods followed by numbers.
+- "3.1.2." also has a level of 4 because the last period is not followed by a number.
+- "3.1.2.1" has a level of 5.
+
+Any initial list numberings are set to optional in the regex statement that searches for tags/lines consisting of entries in step 2. So if a table of content entry consists of "Overview", both of the following tags would match:
+- &lt;p>3.1 Overview&lt;/p>
+- &lt;p>Overview&lt;/p>
+
+### Entries without list numbering
+
+For table of contents entries that do not have list numberings, the tool uses the last list numbering that did exist + 1 for the level. If there have been no list numberings so far, then the tool uses a level of 2. For example, if the table of contents has the following entries:
+- Introduction
+- 3 Author's note
+- 3.0 Overview
+- 3.1.1 Definitions
+- Value 1
+- Value 2
+- 3.1.2 Rules
+
+Then the levels would be 2, 2, 3, 4, 5, 5, and 4.
+
+The list numbering value itself is set to a blank string.
+
+### Manual list numbering
+
+Some documents may not have list numberings, or they may be misformatted (not formatted with numbers and periods), so the tool wouldn't be able to indent the table of contents or choose header levels properly. In this case, you can manually add the list numberings into the Dreamweaver document after pasting it from Word.
+
+For example, if you had the following table of contents entries:
+- Introduction
+- Definitions
+
+and you wanted Definitions to be indented one level more than Introductions, you could manually add in list numberings yourself:
+- 1 Introduction
+- 1.1 Definitions
+
+If the option to remove manual list numbering is checked, then list numberings will be excluded from table of content entry text, as well as the headers that replace tags/lines in step 2. However, they will still be included as optional parts of the tag/line search regex used in step 2. So after generating the table of contents links with the manual list numberings, the table of contents entries would still be formatted as so:
+- Introduction
+- Definitions
+
+This option is ignored if the option to check list numberings isn't also selected.
