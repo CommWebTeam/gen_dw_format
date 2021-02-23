@@ -8,7 +8,7 @@ function format_toc() {
     let html_file = document.getElementById("html_file").files[0];
     file_reader.onload = function(event) {
         let html_str = event.target.result;
-        let edited_str = format_toc_arr(html_str, document.getElementById("toc_start").value, document.getElementById("toc_end").value, document.getElementById("list_indent").checked, document.getElementById("manual_list").checked);
+        let edited_str = format_toc_arr(html_str, document.getElementById("toc_start").value, document.getElementById("toc_end").value, document.getElementById("list_indent").checked, document.getElementById("manual_list").checked, document.getElementById("list_type").value);
         download(edited_str, "toc.html", "text/html");
     }
     file_reader.readAsText(html_file);
@@ -23,7 +23,7 @@ returns an array of objects with four values for each table of contents entry:
 - indentation level, based on list numbering
 - entry content without the list numbering
 */
-function get_toc_table_listnum(toc_arr, manual_list) {
+function get_toc_table_listnum(toc_arr) {
     let toc_values = [];
     // set values to use when an entry does not have a list numbering
     let last_indent_level = 1;
@@ -54,10 +54,6 @@ function get_toc_table_listnum(toc_arr, manual_list) {
         }
         // get content without list numbering
         let content = curr_line.replace(list_ind_regex, "").trim();
-        // set list numbering back to blank if it was manually added in
-        if (manual_list) {
-            list_numbering = "";
-        }
         toc_values.push({list_numbering: list_numbering, link_id: link_id, indent_level: indent_level, content: content});
     }
     return toc_values;
@@ -79,17 +75,54 @@ function get_toc_table_nonum(toc_arr) {
 }
 
 // generates html lines for table of contents table with indentation
-function create_toc_table(toc_values) {
+function create_toc_table(toc_values, manual_list, list_type) {
     // edge case - return empty array if input is empty
     if (toc_values.length === 0) {
         return [];
     }
+    // get list type from input
+    let list_open = "<ul>";
+    let list_close = "</ul>";
+    if (list_type === "no_bullet") {
+        list_open = "<ol list-bullet-none>";
+        list_close = "</ol>";
+    }
+    else if (list_type === "no_bullet") {
+        list_open = "<ol list-bullet-none>";
+        list_close = "</ol>";
+    }
+    if (list_type === "ol_numeric") {
+        list_open = "<ol list-numeric>";
+        list_close = "</ol>";
+    }
+    if (list_type === "ol_lower_alpha") {
+        list_open = "<ol list-lower-alpha>";
+        list_close = "</ol>";
+    }
+    if (list_type === "ol_upper_alpha") {
+        list_open = "<ol list-upper-alpha>";
+        list_close = "</ol>";
+    }
+    if (list_type === "ol_lower_roman") {
+        list_open = "<ol list-lower-roman>";
+        list_close = "</ol>";
+    } 
+    if (list_type === "ol_upper_roman") {
+        list_open = "<ol list-upper-roman>";
+        list_close = "</ol>";
+    }
     // create list of html lines - open the table list
-    let toc_html_lines = ["<ul>"];
+    let toc_html_lines = [list_open];
     // create counter for number of sublists to close after looping through all entries
     let sublist_counter = 0;
     // set first entry - push its contents without closing the list element (in case the next element is a sublist)
-    toc_html_lines.push('<li><a href="#' + toc_values[0].link_id + '">' + toc_values[0].list_numbering + " " + toc_values[0].content + "</a>");
+    if (manual_list) {
+        // exclude list value in replacement if it was manually input
+        toc_html_lines.push('<li><a href="#' + toc_values[0].link_id + '">' + toc_values[0].content + "</a>");
+    }
+    else {
+        toc_html_lines.push('<li><a href="#' + toc_values[0].link_id + '">' + toc_values[0].list_numbering + " " + toc_values[0].content + "</a>");
+    }
     // store current indent level to compare to in the next entry
     let prev_indent_level = toc_values[0].indent_level;
     // loop through each entry in the table, comparing current indent level to previous indent level
@@ -97,7 +130,7 @@ function create_toc_table(toc_values) {
         curr_indent_level = toc_values[i].indent_level;
         if (curr_indent_level > prev_indent_level) {
             // if the level is greater, then it's part of a sublist, so open a sublist 
-            toc_html_lines.push("<ul>");
+            toc_html_lines.push(list_open);
             sublist_counter++;
         }
         else if (curr_indent_level === prev_indent_level) {
@@ -107,28 +140,34 @@ function create_toc_table(toc_values) {
         else {
             // otherwise, the level is smaller, so it ends the sublist of the previous line; close list element of previous line, and then the sublist, and then the list element containing the sublist
             toc_html_lines.push("</li>");
-            toc_html_lines.push("</ul>");
+            toc_html_lines.push(list_close);
             toc_html_lines.push("</li>");
             sublist_counter--;
         }
         // push current contents without closing the list element (in case the next element is a sublist)
-        toc_html_lines.push('<li><a href="#' + toc_values[i].link_id + '">' + toc_values[i].list_numbering + " " + toc_values[i].content + "</a>");
+        if (manual_list) {
+            // exclude list value in replacement if it was manually input
+            toc_html_lines.push('<li><a href="#' + toc_values[i].link_id + '">' + toc_values[i].content + "</a>");
+        }
+        else {
+            toc_html_lines.push('<li><a href="#' + toc_values[i].link_id + '">' + toc_values[i].list_numbering + " " + toc_values[i].content + "</a>");
+        }
         prev_indent_level = curr_indent_level;
     }
     // close final list element, then close all sublists, then close table list (expanded for clarity)
     toc_html_lines.push("</li>");
     for (let i = 0; i < sublist_counter; i++) {
-        toc_html_lines.push("</ul>");
+        toc_html_lines.push(list_close);
         toc_html_lines.push("</li>");
     }
-    toc_html_lines.push("</ul>");
+    toc_html_lines.push(list_close);
     return toc_html_lines;
 }
 
 
 
 // formats html document's table of contents to WET
-function format_toc_arr(html_str, input_start_line, input_end_line, use_list_indent, manual_list) {
+function format_toc_arr(html_str, input_start_line, input_end_line, use_list_indent, manual_list, list_type) {
 	/*
 	============================
 	Initial cleanup
@@ -209,7 +248,7 @@ function format_toc_arr(html_str, input_start_line, input_end_line, use_list_ind
     */
     let wet_table_info = [];
     if (use_list_indent) {
-        wet_table_info = get_toc_table_listnum(content_list, manual_list);
+        wet_table_info = get_toc_table_listnum(content_list);
     } else {
         wet_table_info = get_toc_table_nonum(content_list);
     }
@@ -225,9 +264,17 @@ function format_toc_arr(html_str, input_start_line, input_end_line, use_list_ind
         let curr_level = wet_table_info[i].indent_level;
         let curr_content = wet_table_info[i].content;
         // search for tag or line that contains text of table of contents entry, list numbering optional
-        let header_regex = new RegExp("^((<.*?>)* *)*(" + escape_regex_chars(curr_numbering) + ")* *" + escape_regex_chars(curr_content) + "( *(<.*?>)*)*$", "g");
-        // replace with header tag following the formatting of <h3 id="toc_3.1">3.1 Overview</h3>
-        let replacement = "<h" + curr_level + ' id="' + curr_link + '">' + curr_numbering + ' ' + curr_content + "</h" + curr_level + ">";
+        let header_regex = new RegExp("^(((<.*?>)* *)*(" + escape_regex_chars(curr_numbering) + ")* *" + escape_regex_chars(curr_content) + "( *(<.*?>)*)*)$", "g");
+        // in the replacement string, include a comment of original tag for easier removal of false positives
+        let replacement =  "<!-- Original tag: $1 -->\n";
+        // replace original tag with header tag following the formatting of <h3 id="toc_3.1">3.1 Overview</h3>
+        if (manual_list) {
+            // exclude list values in replacement if they were manually input
+            replacement = replacement + "<h" + curr_level + ' id="' + curr_link + '">' + curr_content + "</h" + curr_level + ">";
+        }
+        else {
+            replacement = replacement + "<h" + curr_level + ' id="' + curr_link + '">' + curr_numbering + ' ' + curr_content + "</h" + curr_level + ">";
+        }
         html_arr = replace_arr(html_arr, header_regex, replacement);
     }
     // add placeholder tags back in
@@ -240,7 +287,7 @@ function format_toc_arr(html_str, input_start_line, input_end_line, use_list_ind
     */
     // generate html for formatted table
     let new_table_lines = ['<div class="span-6 module-table-contents">', "<h2>Table of Contents</h2>"];
-    let entry_lines = create_toc_table(wet_table_info);
+    let entry_lines = create_toc_table(wet_table_info, manual_list, list_type);
     new_table_lines = new_table_lines.concat(entry_lines);
     new_table_lines.push("</div>");
     // add formatted table into document
