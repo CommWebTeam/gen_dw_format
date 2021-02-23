@@ -196,4 +196,4 @@ If the option to remove manual list numbering is checked, then list numberings w
 
 Note that the list numberings will still be included as optional parts of the tag/line search regex used in step 2. 
 
-This option is ignored if the option to check list numberings isn't also selected.
+This option is ignored if the option to use list numberings isn't also selected.
