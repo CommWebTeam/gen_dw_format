@@ -6,7 +6,7 @@
 </head>
 
 <body>
-<!-- Not comprehensive. -->
+<!-- Not comprehensive - currently does not have cases for fix_footnotes, translate_to_fr, or fix_fake_math. -->
 <p>Strange    spacing</p>
 <p>Extra   spacing</p>
 <p>Blank tags: <b></b><i> </i><a> &nbsp; </a></p>
@@ -39,8 +39,23 @@
 <p><a name="lt_1ne1928w12u">Logiterm 1</a> <a name="lt_12">Logiterm 2</a></p>
 <p><a href="osfi-bsif.gc.ca/Eng/test">internal link 1</a><a href="www.osfi-bsif.gc.ca/eng/test">internal link 2</a><a href="https://www.osfi-bsif.gc.ca/Fra/test">internal link 3</a><a href="http://www.osfi-bsif.gc.ca">internal link 4</a></p>
 <p><a href="x">external link</a><a href="_ftn">not external link</a></p>
-<p align="center">center align</p>
-<p align="right">right align</p>
+<ol>
+  <li align="center">center align</p>
+  <li align="right">right align</p>
+</ol>
+<p align="center">p attribute</p>
+<table border="1">
+  <tr test="test">
+    <td width="97">table 1,1</td>
+    <td width="97" rowspan="1" colspan = "1">table 1,2</td>
+    <td>table 1,3</td>
+  </tr>
+  <tr>
+    <td colspan = "1" width="97" rowspan="1">table 2,1</td>
+    <td rowspan="1">table 2,2</td>
+    <td colspan="1">table 2,3</td>
+  </tr>
+</table>
 <p>Regular&lt;sub&gt;s&lt;/sub&gt;&lt;sub&gt;u&lt;/sub&gt;&lt;sub&gt;p&lt;/sub&gt;&lt;sub&gt;e&lt;/sub&gt;&lt;sub&gt;r&lt;/sub&gt;&lt;sub&gt;s&lt;/sub&gt;&lt;sub&gt;c&lt;/sub&gt;&lt;sub&gt;r&lt;/sub&gt;&lt;sub&gt;i&lt;/sub&gt;&lt;sub&gt;p&lt;/sub&gt;&lt;sub&gt;t&lt;/sub&gt;  Regular&lt;sub&gt;s&lt;/sub&gt;&lt;sub&gt;u&lt;/sub&gt;&lt;sub&gt;b&lt;/sub&gt;&lt;sub&gt;s&lt;/sub&gt;&lt;sub&gt;c&lt;/sub&gt;&lt;sub&gt;r&lt;/sub&gt;&lt;sub&gt;i&lt;/sub&gt;&lt;sub&gt;p&lt;/sub&gt;&lt;sub&gt;t&lt;/sub&gt;&lt;sub&gt;<br>
   &lt;/sub&gt;</p>
 </body>

@@ -72,9 +72,17 @@ function format_file() {
 		if (document.getElementById("align").checked) {
 			html_doc_str = fix_align(html_doc_str);
 		}
+		// remove attributes from paragraph tags
+		if (document.getElementById("p_tag").checked) {
+			html_doc_str = rm_p_attributes(html_doc_str, "p");
+		}
 		// fix footnotes
 		if (document.getElementById("footnotes").checked) {
 			html_doc_str = fix_footnotes(html_doc_str);
+		}
+		// remove attributes from table tags
+		if (document.getElementById("table_tag").checked) {
+			html_doc_str = rm_table_attributes(html_doc_str, "table");
 		}
 		// translate links and footnotes to French
 		if (document.getElementById("translate").checked) {
@@ -223,8 +231,14 @@ function fix_align(html_str) {
 	return edited_html_str;
 }
 
+// remove attributes from paragraph tags
+function rm_p_attributes(html_str) {
+	return html_str.replaceAll(/<p [^>]*>/g,  "<p>");
+}
+
 // fix footnotes using functions from footnote_helpers.js
 function fix_footnotes(html_str) {
+	// set regex statements that find footnotes using Dreamweaver's formatting
 	const footnote_top_regex = '<a href="#_ftn[0-9]+" name="_ftnref[0-9]+" title="">(.*?)</a>';
 	const footnote_bot_regex = `<div id="ftn[0-9]+">(<br>)* *
 * *(
@@ -233,9 +247,26 @@ function fix_footnotes(html_str) {
 )* *(</li> *
  *</ul> *
  *)* *</div>`;
+	// use wet footnote formatting functions
 	let edited_html_str = replace_footnote_str(html_str, footnote_top_regex, footnote_bot_regex, 4, "");
 	edited_html_str = add_footnote_div(edited_html_str);
 	edited_html_str = add_consecutive_commas(edited_html_str);
+	return edited_html_str;
+}
+
+// remove attributes from table tags
+function rm_table_attributes(html_str) {
+	// remove attributes from table, th, and tr tags 
+	let edited_html_str = html_str.replaceAll(/<table [^>]*>/g,  "<table>");
+	edited_html_str = edited_html_str.replaceAll(/<th [^>]*>/g,  "<th>");
+	edited_html_str = edited_html_str.replaceAll(/<tr [^>]*>/g,  "<tr>");
+	// for td tags, keep span attributes - temporarily move them out of the tag
+	edited_html_str = edited_html_str.replaceAll(/<td( [^>]*)colspan *= *["']([ 0-9]+)["']/g, "COLSPAN$2<td$1");
+	edited_html_str = edited_html_str.replaceAll(/<td( [^>]*)rowspan *= *["']([ 0-9]+)["']/g, "ROWSPAN$2<td$1");
+	// remove other attributes from td tags, then move span attributes back in
+	edited_html_str = edited_html_str.replaceAll(/<td [^>]*>/g,  "<td>");
+	edited_html_str = edited_html_str.replaceAll(/ROWSPAN([ 0-9]+)<td/g,  '<td rowspan="$1"');
+	edited_html_str = edited_html_str.replaceAll(/COLSPAN([ 0-9]+)<td/g,  '<td colspan="$1"');
 	return edited_html_str;
 }
 
