@@ -272,11 +272,11 @@ function rm_table_attributes(html_str) {
 
 // translate internal links and footnotes to French
 function translate_to_fr(html_str) {
+	// replace internal links
 	let edited_html_str = html_str.replaceAll("/eng/", "/fra/");
 	edited_html_str = edited_html_str.replaceAll("/Eng/", "/Fra/");
-	edited_html_str = edited_html_str.replaceAll("Return to footnote", "Retour à la référence de la note de bas de page");
-	edited_html_str = edited_html_str.replaceAll("Footnotes", "Notes de bas de page");
-	edited_html_str = edited_html_str.replaceAll("Footnote", "Note de bas de page");
+	// translate footnotes using helper from footnote_helpers.js
+	edited_html_str = translate_footnotes(edited_html_str);
 	return edited_html_str;
 }
 
