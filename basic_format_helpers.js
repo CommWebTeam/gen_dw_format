@@ -44,6 +44,14 @@ function format_file() {
 		if (document.getElementById("emdash").checked) {
 			html_doc_str = replace_dashes(html_doc_str);
 		}
+		// join consecutive em/strong
+		if (document.getElementById("consecutive_em").checked) {
+			html_doc_str = join_em_strong(html_doc_str);
+		}
+		// join consecutive lists
+		if (document.getElementById("consecutive_lists").checked) {
+			html_doc_str = join_lists(html_doc_str);
+		}
 		// change italics to cite if the line has a link
 		if (document.getElementById("cite_link").checked) {
 			html_doc_str = change_link_em_to_cite(html_doc_str);
@@ -67,14 +75,6 @@ function format_file() {
 		// change bold to b
 		if (document.getElementById("default_b").checked) {
 			html_doc_str = default_tag(html_doc_str, "strong", "b");
-		}
-		// join consecutive em/strong
-		if (document.getElementById("consecutive_em").checked) {
-			html_doc_str = join_em_strong(html_doc_str);
-		}
-		// join consecutive lists
-		if (document.getElementById("consecutive_lists").checked) {
-			html_doc_str = join_lists(html_doc_str);
 		}
 		// fix referential and external links
 		if (document.getElementById("ref_links").checked) {

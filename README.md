@@ -18,6 +18,9 @@ The current formatting checks are as follows (the user can select which to apply
 - replaces the HTML entities for fancy quotes rsquo, lsquo, rdquo, and ldquo with their actual values.
 - replaces Word's em dashes with regular dashes.
 
+- joins consecutive em and strong tags that are only separated by spaces into a single tag.
+- joins consecutive lists (back-to-back ol tags or back-to-back ul tags) into a single list.
+
 - changes em tags to cite tags on lines that have links. If a line contains the "a" tag, then all em tags on the same line are changed to cite tags.
 - changes all em tags to cite tags.
 - changes all em tags to span class="osfi-txt--italic" tags. (The above two checks take precedence.)
@@ -26,9 +29,6 @@ The current formatting checks are as follows (the user can select which to apply
 - changes all strong tags to b tags. (The above check takes precedence.)
 
 The above six checks take precedence in the given order. For example, if both "change em tags to cite tags on lines that have links" and "change all em tags to i tags" are checked, then the first check will take precedence. So on lines that have links, em tags will be changed to cite tags, and on other lines without links, em tags will be changed to i tags.
-
-- joins consecutive em and strong tags that are only separated by spaces into a single tag.
-- joins consecutive lists (back-to-back ol tags or back-to-back ul tags) into a single list.
 
 - ensures that internal links to the OSFI website are relative by removing the OSFI main page from the URL, and adds rel=external to external links. This ignores links that have keywords indicating footnotes, table of contents, already existing internal links, or email addresses.
 - replaces Dreamweaver-generated center and right alignment (looks like align="center" or align="right") with their respective WET classes.
