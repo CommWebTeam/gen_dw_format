@@ -13,8 +13,9 @@ The current formatting checks are as follows (the user can select which to apply
 - replaces all multispaces with single spaces. You should apply source formatting in Dreamweaver to fix indentation if you include this check.
 - removes empty attribute-less tags, and replaces all attribute-less tags that consist solely of spaces or nbsp; with a single regular space.
 
-- replaces Word's fancy quotes with regular quotes.
+- replaces fancy quotes with regular quotes.
 - replaces the HTML entities for fancy quotes rsquo, lsquo, rdquo, and ldquo with regular quotes.
+- replaces the HTML entities for fancy quotes rsquo, lsquo, rdquo, and ldquo with their actual values.
 - replaces Word's em dashes with regular dashes.
 
 - changes em tags to cite tags on lines that have links. If a line contains the "a" tag, then all em tags on the same line are changed to cite tags.

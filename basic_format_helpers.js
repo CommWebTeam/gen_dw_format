@@ -36,6 +36,10 @@ function format_file() {
 		if (document.getElementById("quote_entities").checked) {
 			html_doc_str = replace_fancy_quote_entities(html_doc_str);
 		}
+		// set fancy quote values
+		if (document.getElementById("quote_values").checked) {
+			html_doc_str = set_fancy_quotes(html_doc_str);
+		}
 		// replace emdashes
 		if (document.getElementById("emdash").checked) {
 			html_doc_str = replace_dashes(html_doc_str);
@@ -139,6 +143,15 @@ function replace_fancy_quote_entities(html_str) {
 	edited_html_str = edited_html_str.replaceAll("&lsquo;", "'");
 	edited_html_str = edited_html_str.replaceAll("&rdquo;", '"');
 	edited_html_str = edited_html_str.replaceAll("&ldquo;", '"');
+	return edited_html_str;
+}
+
+// replace fancy quote html entities with actual fancy quotes
+function set_fancy_quotes(html_str) {
+	let edited_html_str = html_str.replaceAll("&rsquo;", "’");
+	edited_html_str = edited_html_str.replaceAll("&lsquo;", "‘");
+	edited_html_str = edited_html_str.replaceAll("&rdquo;", '”');
+	edited_html_str = edited_html_str.replaceAll("&ldquo;", '“');
 	return edited_html_str;
 }
 
