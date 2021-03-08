@@ -4,6 +4,18 @@ function format_file() {
 	let content_str = document.getElementById("html_file").files[0];
 	file_reader_content.onload = function(event) {
 		let html_doc_str = event.target.result.replaceAll("\r\n", "\n");
+		// remove _Ref links
+		if (document.getElementById("dw_ref").checked) {
+			html_doc_str = remove_ref_links(html_doc_str);
+		}
+		// remove _Toc links
+		if (document.getElementById("dw_toc").checked) {
+			html_doc_str = remove_toc_links(html_doc_str);
+		}
+		// remove logiterms
+		if (document.getElementById("logiterms").checked) {
+			html_doc_str = remove_logiterms(html_doc_str);
+		}
 		// make space hexcode consistent
 		if (document.getElementById("space_format").checked) {
 			html_doc_str = replace_invisible_nbsp(html_doc_str);
@@ -36,9 +48,17 @@ function format_file() {
 		if (document.getElementById("default_cite").checked) {
 			html_doc_str = default_tag(html_doc_str, "em", "cite");
 		}
+		// change italics to oti
+		if (document.getElementById("default_oti").checked) {
+			html_doc_str = default_tag(html_doc_str, "em", 'span class="osfi-txt--italic"');
+		}
 		// change italics to i
 		if (document.getElementById("default_i").checked) {
 			html_doc_str = default_tag(html_doc_str, "em", "i");
+		}
+		// change bold to otb
+		if (document.getElementById("default_otb").checked) {
+			html_doc_str = default_tag(html_doc_str, "strong", 'span class="osfi-txt--bold"');
 		}
 		// change bold to b
 		if (document.getElementById("default_b").checked) {
@@ -51,18 +71,6 @@ function format_file() {
 		// join consecutive lists
 		if (document.getElementById("consecutive_lists").checked) {
 			html_doc_str = join_lists(html_doc_str);
-		}
-		// remove _Ref links
-		if (document.getElementById("dw_ref").checked) {
-			html_doc_str = remove_ref_links(html_doc_str);
-		}
-		// remove _Toc links
-		if (document.getElementById("dw_toc").checked) {
-			html_doc_str = remove_toc_links(html_doc_str);
-		}
-		// remove logiterms
-		if (document.getElementById("logiterms").checked) {
-			html_doc_str = remove_logiterms(html_doc_str);
 		}
 		// fix referential and external links
 		if (document.getElementById("ref_links").checked) {
@@ -141,12 +149,12 @@ function replace_dashes(html_str) {
 
 // change italics to citations if there is a link on the line
 function change_link_em_to_cite_helper(html_line) {
-	let edited_html_line = html_line.split("\n");
+	let edited_html_line = html_line;
 	if (edited_html_line.includes("<a ") || edited_html_line.includes("<a>")) {
         edited_html_line = edited_html_line.replaceAll("<em>", "<cite>");
         edited_html_line = edited_html_line.replaceAll("</em>", "</cite>");
     }
-	return edited_html_line.join("\n");
+	return edited_html_line;
 }
 
 // change italics to citations if there is a link in the html
@@ -158,8 +166,12 @@ function change_link_em_to_cite(html_str) {
 
 // change instances of one tag to another
 function default_tag(html_str, old_tag, new_tag) {
+	// remove attributes from old and new tags for closing tag
+	let old_tag_close = old_tag.trim().replace(/^(.*?) .*/g, "$1");
+	let new_tag_close = new_tag.trim().replace(/^(.*?) .*/g, "$1");
+	// replace tags
 	let edited_html_str = html_str.replaceAll("<" + old_tag + ">", "<" + new_tag + ">");
-	edited_html_str = edited_html_str.replaceAll("</" + old_tag + ">", "</" + new_tag + ">");
+	edited_html_str = edited_html_str.replaceAll("</" + old_tag_close + ">", "</" + new_tag_close + ">");
 	return edited_html_str;
 }
 
