@@ -37,7 +37,7 @@ The current formatting checks are as follows (the user can select which to apply
 The above six checks take precedence in the given order. For example, if both "change em tags to cite tags on lines that have links" and "change all em tags to i tags" are checked, then the first check will take precedence. So on lines that have links, em tags will be changed to cite tags, and on other lines without links, em tags will be changed to i tags.
 
 
-- removes br tags within p, li, td, and th tags if the rest of the tag on the same line is empty, e.g. if a line consists solely of &lt;p> &lt;br>.
+- removes br tags at the start or end of p, li, td, and th tags, e.g. if a line consists of &lt;p> &lt;br>x &lt;/p>, the  &lt;br> is removed.
 - changes all &lt;br> to &lt;br/>.
 
 

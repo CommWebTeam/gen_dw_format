@@ -80,7 +80,7 @@ function format_file() {
 		if (document.getElementById("default_b").checked) {
 			html_doc_str = default_tag(html_doc_str, "strong", "b");
 		}
-		// remove br for empty tag on line
+		// remove start or end br for p, li, th, td
 		if (document.getElementById("rm_empty_br").checked) {
 			html_doc_str = rm_empty_br(html_doc_str);
 		}
@@ -251,7 +251,7 @@ function default_tag(html_str, old_tag, new_tag) {
 	return edited_html_str;
 }
 
-// removes br if the rest of the tag is empty on the same line
+// removes br at the start or end of p, li, th, or td tags
 function rm_empty_br(html_str) {
 	// remove br next to opening tags
 	let edited_html_str = html_str.replaceAll(/(<p( [^>]*)*>) *<br>( |\n)*/g, "$1");
