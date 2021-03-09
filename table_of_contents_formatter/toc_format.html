@@ -9,26 +9,26 @@
 <form>
   HTML file:
   <input id="html_file" type="file" />
-  <br>
-  <br>
+  <br/>
+  <br/>
   (Optional) Enter which line the table of contents starts on in the HTML file:
   <input id="toc_start" type="number" value=""/>
-  <br>
-  <br>
+  <br/>
+  <br/>
   (Optional) Enter which line the table of contents ends on in the HTML file:&nbsp;
   <input id="toc_end" type="number" value=""/>
-  <br>
-  <br>
+  <br/>
+  <br/>
   Include any lines that should be part of the formatted table of contents, e.g. the header that states "Table of Contents". If the above values aren't filled in, the tool will search for the first two lines between &lt;br clear="all"> in the document that also contain &lt;br> (this seems to be how Dreamweaver table of contents are formatted from what I've seen).
-  <br>
-  <br>
+  <br/>
+  <br/>
   <input type="checkbox" id="list_indent" name="list_indent" checked>
   <label for="list_indent">Look for list numberings in table of contents entries to generate links and indent the table with (details below)</label>
-  <br>
+  <br/>
   <input type="checkbox" id="manual_list" name="manual_list">
   <label for="manual_list">Are list numberings are manually edited into the Dreamweaver file? (The tool will remove them from the output if so.)</label>
-  <br>
-  <br>
+  <br/>
+  <br/>
   <label for="list_type">List type for table of contents structure:</label>
   <select name="list_type" id="list_type">
     <option value="ul">&lt;ul></option>
@@ -39,12 +39,12 @@
     <option value="ol_lower_roman">&lt;ol list-lower-roman></option>
     <option value="ol_upper_roman">&lt;ol list-upper-roman></option>
   </select>
-  <br>
-  <br>
+  <br/>
+  <br/>
 </form>
 <button type="button" onclick="format_toc()">Download with WET table of contents</button>
-<br>
-<br>
+<br/>
+<br/>
 <p>---</p>
 <p>This application takes in an HTML file with default Dreamweaver table of contents formatting and reformats the table of contents to follow WET guidelines. It also generates clearer links for the table of contents, and replaces the old links in the main document with these new links.</p>
 <p>Note that since this code adds/removes tags while making specific assumptions about formatting / tags used, <strong>the immediate output WILL contain formatting errors</strong> if the original Dreamweaver paste is malformed enough. Be sure to go through the document and manually fix any resulting errors - Dreamweaver is helpful for this.</p>
