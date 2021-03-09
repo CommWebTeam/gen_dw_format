@@ -22,13 +22,16 @@
   <br>
   <br>
   <input type="checkbox" id="space_format" name="space_format" checked>
-  <label for="space_format">Make space formatting consistent</label>
+  <label for="space_format">Make spacing formatting consistent</label>
   <br>
   <input type="checkbox" id="multispace" name="multispace" checked>
-  <label for="multispace">Get rid of multiple consecutive spaces (other than indents)</label>
+  <label for="multispace">Get rid of multiple consecutive spaces</label>
   <br>
   <input type="checkbox" id="empty_line" name="empty_line" checked>
-  <label for="empty_line">Remove attribute-less empty tags/tags that only have spaces and nbsp;</label>
+  <label for="empty_line">Remove attribute-less empty or spacing/nbsp-only tags</label>
+  <br>
+  <input type="checkbox" id="space_before_close" name="space_before_close" checked>
+  <label for="space_before_close">Remove spaces before closing p, li, th, and td tags</label>
   <br>
   <br>
   <input type="checkbox" id="quotes" name="quotes">
@@ -79,6 +82,9 @@
   <input type="checkbox" id="p_tag" name="p_tag" checked>
   <label for="p_tag">Remove attributes from p tags</label>
   <br>
+  <input type="checkbox" id="ol_ul_tag" name="ol_ul_tag" checked>
+  <label for="ol_ul_tag">Remove attributes from ol and ul tags</label>
+  <br>
   <input type="checkbox" id="footnotes" name="footnotes">
   <label for="footnotes">Format (English) footnotes</label>
   <br>
@@ -89,6 +95,9 @@
   <br>
   <input type="checkbox" id="translate" name="translate">
   <label for="translate">Translate internal links and footnote structure to French</label>
+  <br>
+  <input type="checkbox" id="translate_script" name="translate_script">
+  <label for="translate_script">Add superscripts for 1er and #e (French numbering)</label>
   <br>
   <br>
   <input type="checkbox" id="fake_script_tag" name="fake_script_tag" checked>

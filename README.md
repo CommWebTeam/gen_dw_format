@@ -10,8 +10,9 @@ The current formatting checks are as follows (the user can select which to apply
 - removes the French logiterms that Dreamweaver generates (which don't properly function).
 
 - makes all space hexcodes consistent by converting invisible non-breaking spaces (where it just looks like a regular space in the editor) into regular spaces.
-- replaces all multispaces with single spaces. You should apply source formatting in Dreamweaver to fix indentation if you include this check.
+- replaces all multispaces with single spaces for neatness. You should apply source formatting in Dreamweaver to fix indentation if you include this check.
 - removes empty attribute-less tags, and replaces all attribute-less tags that consist solely of spaces or nbsp; with a single regular space.
+- removes extra spaces before closing p, li, th, and td tags for neatness.
 
 - replaces fancy quotes with regular quotes.
 - replaces the HTML entities for fancy quotes rsquo, lsquo, rdquo, and ldquo with regular quotes.
@@ -33,11 +34,13 @@ The above six checks take precedence in the given order. For example, if both "c
 - ensures that internal links to the OSFI website are relative by removing the OSFI main page from the URL, and adds rel=external to external links. This ignores links that have keywords indicating footnotes, table of contents, already existing internal links, or email addresses.
 - replaces Dreamweaver-generated center and right alignment (looks like align="center" or align="right") with their respective WET classes.
 - removes attributes from p (paragraph) tags.
+- removes attributes from ol and ul tags.
 - replaces the formatting for Dreamweaver-generated footnotes with WET footnotes. This uses helper functions from the footnote_formatter tool.
 
 - removes attributes from table, th, and tr tags, and removes attributes from td tags except for colspan and rowspan.
 
 - translates internal links to French by searching for /Eng/ and replacing with /Fra/, and translates the WET footnote structure created by the WET footnote formatting check directly above to French.
+- replaces 1er with 1&lt;sup>er&lt;/sup>, and other French list numberings formatted as #e with #&lt;sup>e&lt;/sup>.
 
 - changes strings indicating superscript and subscript tags in the original Word document to be actual tags, and joins these tags together.
 - changes strings indicating math tags in the original Word document to be actual tags.

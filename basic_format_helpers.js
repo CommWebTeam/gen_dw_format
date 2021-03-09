@@ -28,6 +28,10 @@ function format_file() {
 		if (document.getElementById("empty_line").checked) {
 			html_doc_str = rm_empty_tags(html_doc_str);
 		}
+		// remove multispaces
+		if (document.getElementById("space_before_close").checked) {
+			html_doc_str = rm_space_before_close(html_doc_str);
+		}
 		// replace fancy quotes
 		if (document.getElementById("quotes").checked) {
 			html_doc_str = replace_fancy_quotes(html_doc_str);
@@ -88,6 +92,10 @@ function format_file() {
 		if (document.getElementById("p_tag").checked) {
 			html_doc_str = rm_p_attributes(html_doc_str, "p");
 		}
+		// remove attributes from paragraph tags
+		if (document.getElementById("ol_ul_tag").checked) {
+			html_doc_str = rm_ol_ul_attributes(html_doc_str, "p");
+		}
 		// fix footnotes
 		if (document.getElementById("footnotes").checked) {
 			html_doc_str = fix_footnotes(html_doc_str);
@@ -99,6 +107,10 @@ function format_file() {
 		// translate links and footnotes to French
 		if (document.getElementById("translate").checked) {
 			html_doc_str = translate_to_fr(html_doc_str);
+		}
+		// add superscripts around 1er and #e
+		if (document.getElementById("translate_script").checked) {
+			html_doc_str = add_fr_num_superscript(html_doc_str);
 		}
 		// fix script tags
 		if (document.getElementById("fake_script_tag").checked) {
@@ -125,6 +137,15 @@ function rm_empty_tags(html_str) {
 		edited_html_str = edited_html_str.replaceAll(empty_tag_regex, "");
 		edited_html_str = edited_html_str.replaceAll(space_tag_regex, " ");
 	}
+	return edited_html_str;
+}
+
+// remove spaces before closing p, li, th, td tags
+function rm_space_before_close(html_str) {
+	let edited_html_str = html_str.replaceAll(/ *<\/p>/g, "</p>");
+	edited_html_str = edited_html_str.replaceAll(/ *<\/li>/g, "</li>");
+	edited_html_str = edited_html_str.replaceAll(/ *<\/th>/g, "</th>");
+	edited_html_str = edited_html_str.replaceAll(/ *<\/td>/g, "</td>");
 	return edited_html_str;
 }
 
@@ -261,6 +282,11 @@ function rm_p_attributes(html_str) {
 	return html_str.replaceAll(/<p [^>]*>/g,  "<p>");
 }
 
+// remove attributes from ol and ul tags
+function rm_ol_ul_attributes(html_str) {
+	return html_str.replaceAll(/<ol [^>]*>/g,  "<ol>").replaceAll(/<ul [^>]*>/g,  "<ul>");
+}
+
 // fix footnotes using functions from footnote_helpers.js
 function fix_footnotes(html_str) {
 	// set regex statements that find footnotes using Dreamweaver's formatting
@@ -302,6 +328,13 @@ function translate_to_fr(html_str) {
 	edited_html_str = edited_html_str.replaceAll("/Eng/", "/Fra/");
 	// translate footnotes using helper from footnote_helpers.js
 	edited_html_str = translate_footnotes(edited_html_str);
+	return edited_html_str;
+}
+
+// add superscripts to 1er and #e
+function add_fr_num_superscript(html_str) {
+	let edited_html_str = html_str.replaceAll(/\b1er\b/g, "1<sup>er</sup>");
+	edited_html_str = edited_html_str.replaceAll(/\b([0-9]+)e\b/g, "$1<sup>e</sup>");
 	return edited_html_str;
 }
 
