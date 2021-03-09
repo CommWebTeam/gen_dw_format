@@ -28,7 +28,7 @@ function format_file() {
 		if (document.getElementById("empty_line").checked) {
 			html_doc_str = rm_empty_tags(html_doc_str);
 		}
-		// remove multispaces
+		// remove spaces before closing p, li, th, td tags
 		if (document.getElementById("space_before_close").checked) {
 			html_doc_str = rm_space_before_close(html_doc_str);
 		}
@@ -80,6 +80,14 @@ function format_file() {
 		if (document.getElementById("default_b").checked) {
 			html_doc_str = default_tag(html_doc_str, "strong", "b");
 		}
+		// remove br for empty tag on line
+		if (document.getElementById("rm_empty_br").checked) {
+			html_doc_str = rm_empty_br(html_doc_str);
+		}
+		// change <br> to <br/>
+		if (document.getElementById("fix_br").checked) {
+			html_doc_str = fix_br(html_doc_str);
+		}
 		// fix referential and external links
 		if (document.getElementById("ref_links").checked) {
 			html_doc_str = fix_ref_links(html_doc_str);
@@ -92,7 +100,7 @@ function format_file() {
 		if (document.getElementById("p_tag").checked) {
 			html_doc_str = rm_p_attributes(html_doc_str, "p");
 		}
-		// remove attributes from paragraph tags
+		// remove attributes from ol and ul tags
 		if (document.getElementById("ol_ul_tag").checked) {
 			html_doc_str = rm_ol_ul_attributes(html_doc_str, "p");
 		}
@@ -127,17 +135,33 @@ function format_file() {
 
 /* helpers */
 
+// remove reference links
+function remove_ref_links(html_str) {
+	return html_str.replaceAll(/<a name="_Ref[a-zA-z0-9]+">(.*?)<\/a>/g, "$1");
+}
+
+// remove toc links
+function remove_toc_links(html_str) {
+	return html_str.replaceAll(/<a name="_Toc[a-zA-z0-9]+">(.*?)<\/a>/g, "$1");
+}
+
+// remove logiterms
+function remove_logiterms(html_str) {
+	return html_str.replaceAll(/<a name="lt_[a-zA-z0-9]+">(.*?)<\/a>/g, "$1");
+}
+
 // remove empty tags
 function rm_empty_tags(html_str) {
-	let edited_html_str = html_str;
 	const empty_tag_regex = /<[a-zA-Z0-9]*><\/[a-zA-Z0-9]*>/g;
 	const space_tag_regex = /<[a-zA-Z0-9]*> *(&nbsp;)* *<\/[a-zA-Z0-9]*>/g;
+	// temporarily exclude br tags
+	let edited_html_str = html_str.replaceAll("<br>", "<br///>");
 	// replace empty tags until there are none left
 	while (empty_tag_regex.test(edited_html_str) || space_tag_regex.test(edited_html_str)) {
 		edited_html_str = edited_html_str.replaceAll(empty_tag_regex, "");
 		edited_html_str = edited_html_str.replaceAll(space_tag_regex, " ");
 	}
-	return edited_html_str;
+	return edited_html_str.replaceAll("<br///>", "<br>");
 }
 
 // remove spaces before closing p, li, th, td tags
@@ -181,6 +205,24 @@ function replace_dashes(html_str) {
 	return html_str.replaceAll("–", "-");
 }
 
+// join consecutive fonts
+function join_em_strong(html_str) {
+	let edited_html_str = html_str.replaceAll(/<\/em>( *)<em>/g, "$1");
+	edited_html_str = edited_html_str.replaceAll(/<\/strong>( *)<strong>/g, "$1");
+	return edited_html_str;
+}
+
+// join consecutive lists
+function join_lists(html_str) {
+	const ol_str = `</ol>
+*<ol>`;
+		 const ul_str = `</ul>
+*<ul>`;
+	const ol_regex = new RegExp(ol_str, "g");
+	const ul_regex = new RegExp(ul_str, "g");
+	return html_str.replaceAll(ol_regex, "").replaceAll(ul_regex, "");
+}
+
 // change italics to citations if there is a link on the line
 function change_link_em_to_cite_helper(html_line) {
 	let edited_html_line = html_line;
@@ -209,37 +251,24 @@ function default_tag(html_str, old_tag, new_tag) {
 	return edited_html_str;
 }
 
-// join consecutive fonts
-function join_em_strong(html_str) {
-	let edited_html_str = html_str.replaceAll(/<\/em>( *)<em>/g, "$1");
-	edited_html_str = edited_html_str.replaceAll(/<\/strong>( *)<strong>/g, "$1");
+// removes br if the rest of the tag is empty on the same line
+function rm_empty_br(html_str) {
+	// remove br next to opening tags
+	let edited_html_str = html_str.replaceAll(/(<p( [^>]*)*>) *<br>( |\n)*/g, "$1");
+	edited_html_str = edited_html_str.replaceAll(/(<li( [^>]*)*>) *<br>( |\n)*/g, "$1");
+	edited_html_str = edited_html_str.replaceAll(/(<th( [^>]*)*>) *<br>( |\n)*/g, "$1");
+	edited_html_str = edited_html_str.replaceAll(/(<td( [^>]*)*>) *<br>( |\n)*/g, "$1");
+	// remove br next to closing tags
+	edited_html_str = edited_html_str.replaceAll(/( |\n)*<br> *<\/p>/g, "</p>");
+	edited_html_str = edited_html_str.replaceAll(/( |\n)*<br> *<\/li>/g, "</li>");
+	edited_html_str = edited_html_str.replaceAll(/( |\n)*<br> *<\/th>/g, "</th>");
+	edited_html_str = edited_html_str.replaceAll(/( |\n)*<br> *<\/td>/g, "</td>");
 	return edited_html_str;
 }
 
-// join consecutive lists
-function join_lists(html_str) {
-	const ol_str = `</ol>
-*<ol>`;
-		 const ul_str = `</ul>
-*<ul>`;
-	const ol_regex = new RegExp(ol_str, "g");
-	const ul_regex = new RegExp(ul_str, "g");
-	return html_str.replaceAll(ol_regex, "").replaceAll(ul_regex, "");
-}
-
-// remove reference links
-function remove_ref_links(html_str) {
-	return html_str.replaceAll(/<a name="_Ref[a-zA-z0-9]+">(.*?)<\/a>/g, "$1");
-}
-
-// remove toc links
-function remove_toc_links(html_str) {
-	return html_str.replaceAll(/<a name="_Toc[a-zA-z0-9]+">(.*?)<\/a>/g, "$1");
-}
-
-// remove logiterms
-function remove_logiterms(html_str) {
-	return html_str.replaceAll(/<a name="lt_[a-zA-z0-9]+">(.*?)<\/a>/g, "$1");
+// replace <br> with <br/>
+function fix_br(html_str) {
+	return html_str.replaceAll("<br>", "<br/>");
 }
 
 // fix referential and internal links in line

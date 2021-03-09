@@ -9,107 +9,114 @@
 <form>
   File to format:
   <input id="html_file" type="file">
-  <br>
-  <br>
+  <br/>
+  <br/>
   <input type="checkbox" id="dw_ref" name="dw_ref" checked>
   <label for="dw_ref">Remove Dreamweaver-generated _Ref links</label>
-  <br>
+  <br/>
   <input type="checkbox" id="dw_toc" name="dw_toc" checked>
   <label for="dw_toc">Remove Dreamweaver-generated _Toc links</label>
-  <br>
+  <br/>
   <input type="checkbox" id="logiterms" name="logiterms" checked>
   <label for="logiterms">Remove French logiterms</label>
-  <br>
-  <br>
+  <br/>
+  <br/>
   <input type="checkbox" id="space_format" name="space_format" checked>
   <label for="space_format">Make spacing formatting consistent</label>
-  <br>
+  <br/>
   <input type="checkbox" id="multispace" name="multispace" checked>
   <label for="multispace">Get rid of multiple consecutive spaces</label>
-  <br>
+  <br/>
   <input type="checkbox" id="empty_line" name="empty_line" checked>
   <label for="empty_line">Remove attribute-less empty or spacing/nbsp-only tags</label>
-  <br>
+  <br/>
   <input type="checkbox" id="space_before_close" name="space_before_close" checked>
   <label for="space_before_close">Remove spaces before closing p, li, th, and td tags</label>
-  <br>
-  <br>
+  <br/>
+  <br/>
   <input type="checkbox" id="quotes" name="quotes">
   <label for="quotes">Replace fancy quotes with straight quotes</label>
-  <br>
+  <br/>
   <input type="checkbox" id="quote_entities" name="quote_entities">
   <label for="quote_entities">Replace fancy quote HTML entities with straight quotes</label>
-  <br>
+  <br/>
   <input type="checkbox" id="quote_values" name="quote_values">
   <label for="quote_values">Replace fancy quote HTML entities with their values</label>
-  <br>
+  <br/>
   <input type="checkbox" id="emdash" name="emdash" checked>
   <label for="emdash">Replace em dashes with regular dashes</label>
-  <br>
-  <br>
+  <br/>
+  <br/>
   <input type="checkbox" id="consecutive_em" name="consecutive_em" checked>
   <label for="consecutive_em">Join em and strong that are only separated by spaces</label>
-  <br>
+  <br/>
   <input type="checkbox" id="consecutive_lists" name="consecutive_lists" checked>
   <label for="consecutive_lists">Join consecutive ol/ul tags</label>
-  <br>
-  <br>
+  <br/>
+  <br/>
   <input type="checkbox" id="cite_link" name="cite_link" checked>
   <label for="cite_link">Change em to cite on lines that have links</label>
-  <br>
+  <br/>
   <input type="checkbox" id="default_cite" name="default_cite">
   <label for="default_cite">Change all em to cite by default</label>
-  <br>
+  <br/>
   <input type="checkbox" id="default_oti" name="default_oti">
   <label for="default_oti">Change all em to span class="osfi-txt--italic" by default</label>
-  <br>
+  <br/>
   <input type="checkbox" id="default_i" name="default_i">
   <label for="default_i">Change all em to i by default</label>
-  <br>
+  <br/>
   <input type="checkbox" id="default_otb" name="default_otb">
   <label for="default_otb">Change all strong to span class="osfi-txt--bold" by default</label>
-  <br>
+  <br/>
   <input type="checkbox" id="default_b" name="default_b">
   <label for="default_b">Change all strong to b by default</label>
-  <br>
-  <br>
+  <br/>
+  <br/>
+  <input type="checkbox" id="rm_empty_br" name="rm_empty_br" checked>
+  <label for="rm_empty_br">Remove br in p, li, th, and td tags if the rest of the tag on the same line is empty</label>
+  <br/>
+  <input type="checkbox" id="fix_br" name="fix_br" checked>
+  <label for="fix_br">Change all &lt;br> to &lt;br/></label>
+  <br/>
+  <br/>
   <input type="checkbox" id="ref_links" name="ref_links" checked>
   <label for="ref_links">Make OSFI links referential and other links external</label>
-  <br>
+  <br/>
   <input type="checkbox" id="align" name="align" checked>
   <label for="align">Change center and right alignment to WET class</label>
-  <br>
+  <br/>
   <input type="checkbox" id="p_tag" name="p_tag" checked>
   <label for="p_tag">Remove attributes from p tags</label>
-  <br>
+  <br/>
   <input type="checkbox" id="ol_ul_tag" name="ol_ul_tag" checked>
   <label for="ol_ul_tag">Remove attributes from ol and ul tags</label>
-  <br>
+  <br/>
   <input type="checkbox" id="footnotes" name="footnotes">
   <label for="footnotes">Format (English) footnotes</label>
-  <br>
-  <br>
+  <br/>
+  <br/>
   <input type="checkbox" id="table_tag" name="table_tag" checked>
   <label for="table_tag">Remove attributes from table tags (table, th, tr, td) - excludes colspan/rowspan for td</label>
-  <br>
-  <br>
+  <br/>
+  <br/>
   <input type="checkbox" id="translate" name="translate">
   <label for="translate">Translate internal links and footnote structure to French</label>
-  <br>
+  <br/>
   <input type="checkbox" id="translate_script" name="translate_script">
   <label for="translate_script">Add superscripts for 1er and #e (French numbering)</label>
-  <br>
-  <br>
+  <br/>
+  <br/>
   <input type="checkbox" id="fake_script_tag" name="fake_script_tag" checked>
   <label for="fake_script_tag">Convert visual superscript/subscript tags (with &amp;lt; and so on) to actual tags</label>
-  <br>
+  <br/>
   <input type="checkbox" id="fake_math_tag" name="fake_math_tag" checked>
   <label for="fake_math_tag">Convert visual math tags (with &amp;lt; and so on) to actual tags - to be used alongside the macro</label>
-  <br>
+  <br/>
 </form>
 <button onclick="format_file()">Download formatted file</button>
-<br>
-<br>
+<br/>
+<br/>
 <p>This tool performs some quick formatting on Dreamweaver documents pasted from word. It is NOT for general use since it takes shortcuts assuming Dreamweaver formatting. It also assumes proper indentation (in Dreamweaver, Edit -> Code -> Apply Source Formatting).</p>
 <p>Be sure to apply source formatting with Dreamweaver afterwards to fix the indentation and so on.</p>
 <p>Check the console (ctrl+shift+i) for any errors if nothing is loading.</p>
