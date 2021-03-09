@@ -80,6 +80,14 @@ function format_file() {
 		if (document.getElementById("default_b").checked) {
 			html_doc_str = default_tag(html_doc_str, "strong", "b");
 		}
+		// split single p separated by br into multiple p
+		if (document.getElementById("split_p_br").checked) {
+			html_doc_str = split_p_by_br(html_doc_str);
+		}
+		// split single p separated by br into multiple p, if character before br is punctuation
+		if (document.getElementById("split_p_br_punct").checked) {
+			html_doc_str = split_p_by_punct_br(html_doc_str);
+		}
 		// remove start or end br for p, li, th, td
 		if (document.getElementById("rm_empty_br").checked) {
 			html_doc_str = rm_empty_br(html_doc_str);
@@ -223,7 +231,7 @@ function join_lists(html_str) {
 	return html_str.replaceAll(ol_regex, "").replaceAll(ul_regex, "");
 }
 
-// change italics to citations if there is a link on the line
+// helper: change italics to citations if there is a link on the line
 function change_link_em_to_cite_helper(html_line) {
 	let edited_html_line = html_line;
 	if (edited_html_line.includes("<a ") || edited_html_line.includes("<a>")) {
@@ -233,7 +241,7 @@ function change_link_em_to_cite_helper(html_line) {
 	return edited_html_line;
 }
 
-// change italics to citations if there is a link in the html
+// change italics to citations on each line if there is a link on that line
 function change_link_em_to_cite(html_str) {
 	let html_arr = html_str.split("\n");
 	html_arr = html_arr.map(change_link_em_to_cite_helper);
@@ -248,6 +256,36 @@ function default_tag(html_str, old_tag, new_tag) {
 	// replace tags
 	let edited_html_str = html_str.replaceAll("<" + old_tag + ">", "<" + new_tag + ">");
 	edited_html_str = edited_html_str.replaceAll("</" + old_tag_close + ">", "</" + new_tag_close + ">");
+	return edited_html_str;
+}
+
+// splits a p tag divided by br into individual p tags
+function split_p_by_br(html_str) {
+	let edited_html_str = html_str;
+	// replace p into br until there are none left
+	const p_br_regex = /(<p( [^>]*)*>.*?) *<br>( |\n)*/g;
+	while (p_br_regex.test(edited_html_str)) {
+		// note the following:
+		// 1) /.*?/ and / */ don't match newlines
+		// 2) Dreamweaver formatting places any <br> following </p> on its own line, meaning </p><br> should not occur
+		// so this regex should not capture any </p> in the .*?, and will only match an unclosed <p> into <br>
+		edited_html_str = edited_html_str.replaceAll(p_br_regex, "$1</p>\n<p>");
+	}
+	return edited_html_str;
+}
+
+// splits a p tag divided by br into individual p tags, if the br is before punctuation
+function split_p_by_punct_br(html_str) {
+	let edited_html_str = html_str;
+	// replace p into punctuation + br until there are none left
+	const p_punct_br_regex = /(<p( [^>]*)*>.*?[\.,;:!?\)"’”]) *<br>( |\n)*/g;
+	while (p_punct_br_regex.test(edited_html_str)) {
+		// note the following:
+		// 1) /.*?/ and / */ don't match newlines
+		// 2) Dreamweaver formatting places any <br> following </p> on its own line, meaning </p><br> should not occur
+		// so this regex should not capture any </p> in the .*?, and will only match an unclosed <p> into <br>
+		edited_html_str = edited_html_str.replaceAll(p_punct_br_regex, "$1</p>\n<p>");
+	}
 	return edited_html_str;
 }
 
