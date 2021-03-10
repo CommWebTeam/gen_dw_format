@@ -1,0 +1,15 @@
+Default Dreamweaver-generated formatting:
+
+<a href="#_ftn[0-9]+" name="_ftnref[0-9]+" title="">(.*?)</a>
+
+
+
+English WET footnote formatting:
+
+<sup id="fnb[0-9]+-ref"> *<a class="footnote-link" href="#fnb[0-9]+"> *<span class="wb-invisible">Footnote </span>[0-9]+</a>,*</sup>
+
+
+
+French WET fotnote formatting:
+
+<sup id="fnb[0-9]+-ref"> *<a class="footnote-link" href="#fnb[0-9]+"> *<span class="wb-invisible">Note de bas de page </span>[0-9]+</a>,*</sup>
