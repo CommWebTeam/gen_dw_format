@@ -12,4 +12,6 @@ This repository contains several tools for formatting Dreamweaver documents that
 
 [Readme here](https://commwebteam.github.io/gen_dw_format/table_of_contents_formatter/).
 
-[Table formatter](): WIP
+[Table formatter](table_formatter/table_formatter.html): WIP
+
+[Readme here](https://commwebteam.github.io/gen_dw_format/table_formatter/).
