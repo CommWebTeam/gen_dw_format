@@ -22,6 +22,8 @@ Here are some regex statements for [top footnote formats](top_footnote_formats.t
 
 The "group containing content" input for the bottom footnote regex is to indicate which group - subexpression in () - contains the footnote text; the tool will access this with $ to create the bottom module. All formats in the link above use group 1 (meaning the footnote text is accessed with $1).
 
+You can view the number of top and bottom footnotes found by the regex statements in the console (ctrl+shift+i). These should be the same unless you have duplicate top footnotes (see below). If the number of top and bottom footnotes don't match up with duplicates in mind, then you should fix the regex statements to catch all the required markers/footnote text.
+
 ## Duplicate top footnotes
 
 You can include which top footnote markers should be duplicated - that is, when multiple top footnote markers point to the same bottom footnote text. The internal counter will skip these footnote markers.
