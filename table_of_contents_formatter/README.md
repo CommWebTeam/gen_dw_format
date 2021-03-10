@@ -4,7 +4,7 @@ Formats Dreamweaver table of contents tables and adds their links to the main bo
 
 I'm considering integrating this with the Dreamweaver paste formatting tool, but I haven't yet because unlike the currently pretty safe checks in that tool, this tool is likely to introduce HTML structural errors. Also, the code itself is a lot more involved than other checks.
 
-[HTML document here.](table_of_contents_formatter/toc_format.html)
+[HTML document here.](toc_format.html)
 
 Different Word documents produce very different content structures when pasted into Dreamweaver; I've tried to go through a few different cases and work out some patterns, but the inconsistency here means that this tool may not be generally reliable - be sure to double check the output and click through the table of contents links to check that they work.
 
