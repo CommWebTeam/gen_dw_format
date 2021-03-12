@@ -1,4 +1,5 @@
-const extra_colspan_cell = "<td><colspan placeholder/></td>"
+const extra_span_cell = "<td><span placeholder/></td>";
+const table_placeholder = "<TABLEPLACEHOLDER/>";
 
 // perform general formatting for user-selected options
 function format_table() {
@@ -6,17 +7,19 @@ function format_table() {
 	let content_str = document.getElementById("html_file").files[0];
 	file_reader_content.onload = function(event) {
 		let html_doc_str = event.target.result.replaceAll("\r\n", "\n");
-		let html_table_matr = html_tables_to_matrix(html_doc_str);
+		let html_table_arr = html_tables_to_arr(html_doc_str);
 		let header_rows = int_csv_to_arr(document.getElementById("row_header").value);
 		let header_cols = int_csv_to_arr(document.getElementById("col_header").value);
-		// download(html_doc_str, "formatted.html", "text/html");
+
+		let edited_html_doc_str = table_arr_to_doc(html_doc_str, html_table_arr);
+		download(edited_html_doc_str, "formatted.html", "text/html");
 	}
 	file_reader_content.readAsText(content_str);
 }
 
 /* helpers */
 
-// the match function, but returns an empty array if no match instead of null
+// the match function, but returns an empty array instead of null if no match
 function match_with_empty(str_to_match, regex_exp) {
 	let match_arr = str_to_match.match(regex_exp);
 	if (match_arr === null) {
@@ -26,64 +29,104 @@ function match_with_empty(str_to_match, regex_exp) {
 }
 
 // get array of cells, in array of rows, in array of tables
-function html_tables_to_matrix(html_str) {
+function html_tables_to_arr(html_str) {
 	// get array of tables
 	let table_arr = match_with_empty(html_str, /<table( [^>]*)*>(.|\n)*?<\/table>/g);
 	console.log("Tables found: " + table_arr.length);
-	// loop through each table and replace with array of rows
+	// loop through each table and get array of rows
 	for (let i = 0; i < table_arr.length; i++) {
+		// get table attributes
+		let table_attr = table_arr[i].replaceAll(/(<table[^>]*>)(.|\n)*/g, "$1");
 		/*
 		=================================
-		Create initial 2d array of rows -> cells without factoring in rowspan
+		Create initial 2d array of rows -> cells, factoring in colspan but not rowspan
 		=================================
 		*/
-		let init_row_arr = match_with_empty(table_arr[i], /<tr( [^>]*)*>(.|\n)*?<\/tr>/g);
-		// record maximum number of cols in the table
-		let max_cols = 0;
-		// loop through each row and replace with array of cells
-		for (let j = 0; j < init_row_arr.length; j++) {
-			let curr_row = init_row_arr[j];
+		let row_arr = match_with_empty(table_arr[i], /<tr( [^>]*)*>(.|\n)*?<\/tr>/g);
+		// loop through each row and get array of cells
+		for (let j = 0; j < row_arr.length; j++) {
+			let curr_row = row_arr[j];
+			// get row attributes
+			let row_attr = curr_row.replace(/(<tr[^>]*>)(.|\n)*/g, "$1");
 			// - add extra cells for colspan first:
 			// 1. add markers for colspan and rowspan values after cells
 			// (note that the marker is followed by an extra space to prevent confusion with spans of more than 1 digit)
 			curr_row = curr_row.replaceAll(/(<t[hd]( [^>]*)*colspan *= *['"]([0-9]+)['"]( [^>]*)*>(.|\n)*?<\/t[hd]>)/g, "$1COLSPAN$3 ");
 			curr_row = curr_row.replaceAll(/(<t[hd]( [^>]*)*rowspan *= *['"]([0-9]+)['"]( [^>]*)*>(.|\n)*?<\/t[hd]>)/g, "$1ROWSPAN$3 ");
 			// 2. get array of markers for colspans
-			const span_marker = />(ROWSPAN[0-9]+ )*COLSPAN([0-9]+) /g
+			const span_marker = />(ROWSPAN[0-9]+ )*COLSPAN([0-9]+) /g;
 			let colspan_marker_arr = match_with_empty(curr_row, span_marker);
 			// 3. loop through each marker and replace it with appropriate number of extra cells
 			for (let k = 0; k < colspan_marker_arr.length; k++) {
 				let curr_marker = colspan_marker_arr[k];
 				let row_span_val = curr_marker.replace(span_marker, "$1");
-				let extra_cell = extra_colspan_cell + row_span_val;
+				let extra_cell = extra_span_cell + row_span_val;
 				let colspan_num = parseInt(curr_marker.replace(span_marker, "$2"));
 				curr_row = curr_row.replaceAll(curr_marker, ">" + extra_cell.repeat(colspan_num - 1));
 			}
-			// get array of cells and set the row array to it
-			let cell_arr = match_with_empty(curr_row, /<t[hd]( [^>]*)*>(.|\n)*?<\/t[hd]>/g);
-			init_row_arr[j] = cell_arr;
-			// update max_col if need be
-			if (cell_arr.length > max_cols) {
-				max_cols = cell_arr.length;
-			}
+			// set row array value to object with attribute and row cells
+			let cell_arr = match_with_empty(curr_row, /<t[hd]( [^>]*)*>(.|\n)*?<\/t[hd]>(ROWSPAN[0-9]+ )*/g);
+			row_arr[j] = {attr: row_attr, cells: cell_arr};
 		}
 		/*
 		=================================
-		Create 2d matrix of rows -> cells with rowspan
+		Add rowspan into array 
 		=================================
 		*/
-		// initialize matrix with blank values, of same row # as init_row_arr and col # of max_cols
-		let row_arr = [];
-		for (let j = 0; j < init_row_arr.length; j++) {
-			let col_arr = [];
-			for (let j = 0; j < max_cols; j++) {
-				col_arr.push("");
+		// loop backward through rows (so that earlier rowspans set their placeholders after factoring in later rowspan placeholders)
+		for (let j = (row_arr.length - 2); j >= 0; j--) {
+			let curr_row_cells = row_arr[j].cells;
+			// loop through each cell in the row and check if it has rowspan
+			for (let k = 0; k < curr_row_cells.length; k++) {
+				let curr_cell = curr_row_cells[k];
+				if (curr_cell.includes(">ROWSPAN")) {
+					// extract rowspan number
+					let rowspan_num = parseInt(curr_cell.replace(/(.|\n)*>ROWSPAN([0-9]+).*/g, "$1"));
+					// loop through [rowspan #] following rows or until end of table is reached, and add rowspan placeholder at current col index
+					let rows_to_loop = Math.min(rowspan_num, row_arr.length - j);
+					for (let m = 1; m < rows_to_loop; m++) {
+						let span_row_cells = row_arr[j + m].cells;
+						row_arr[j + m].cells = span_row_cells.slice(0, k).concat([extra_span_cell]).concat(span_row_cells.slice(k));
+					}
+					// remove rowspan placeholder
+					curr_row_cells[k] = curr_cell.replaceAll(/>ROWSPAN[0-9]+ /g, ">");
+				}
 			}
-			row_arr.push(col_arr);
 		}
-		console.log(row_arr);
+		// set table array value to object with attribute and table rows
+		table_arr[i] = {attr: table_attr, rows: row_arr};
 	}
 	return table_arr;
+}
+
+// add array of tables -> rows -> cells back into html document
+function table_arr_to_doc(html_str, html_table_arr) {
+	// replace table tags in the html document with placeholders for now
+	edited_html_str = html_str.replaceAll(/<table( [^>]*)*>(.|\n)*?<\/table>/g, table_placeholder);
+	// loop through tables in order
+	for (let i = 0; i < html_table_arr.length; i++) {
+		let curr_table = html_table_arr[i];
+		// create string of edited table
+		let table_str = curr_table.attr;
+		// loop through and append rows
+		for (let j = 0; j < curr_table.rows.length; j++) {
+			let curr_row = curr_table.rows[j];
+			table_str = table_str + "\n" + curr_row.attr;
+			// loop through and append cells that aren't span placeholders
+			for (let k = 0; k < curr_row.cells.length; k++) {
+				let curr_cell = curr_row.cells[k].trim();
+				curr_cell = curr_cell.replaceAll(/>ROWSPAN([0-9]+)/g, ">");
+				if (curr_cell !== extra_span_cell) {
+					table_str = table_str + "\n" + curr_cell;
+				}
+			}
+			table_str = table_str + "\n</tr>";
+		}
+		table_str = table_str + "\n</table>";
+		// replace first instance of table placeholder in html document with string of edited table
+		edited_html_str = edited_html_str.replace(table_placeholder, table_str);
+	}
+	return edited_html_str;
 }
 
 // convert comma-separated string of integers to array of indices
