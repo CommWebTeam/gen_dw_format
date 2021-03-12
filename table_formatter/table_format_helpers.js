@@ -1,18 +1,28 @@
 const extra_span_cell = "<td><span placeholder/></td>";
 const table_placeholder = "<TABLEPLACEHOLDER/>";
 
-// perform general formatting for user-selected options
+// edit html tables
 function format_table() {
 	let file_reader_content = new FileReader();
 	let content_str = document.getElementById("html_file").files[0];
 	file_reader_content.onload = function(event) {
 		let html_doc_str = event.target.result.replaceAll("\r\n", "\n");
 		let html_table_arr = html_tables_to_arr(html_doc_str);
-		let header_rows = int_csv_to_arr(document.getElementById("row_header").value);
-		let header_cols = int_csv_to_arr(document.getElementById("col_header").value);
+		let header_rows = int_csv_to_arr(document.getElementById("edit_list").value);
 
 		let edited_html_doc_str = table_arr_to_doc(html_doc_str, html_table_arr);
-		download(edited_html_doc_str, "formatted.html", "text/html");
+		// this tool may need to be run multiple times, so append version number to name
+		let input_file_path = document.getElementById("html_file").value;
+		let input_file_name = input_file_path.split('\\').pop().split('/').pop();
+		let output_file_name = "formatted_tables.html";
+		if (input_file_name === "formatted_tables.html") {
+			output_file_name = "formatted_tables_0.html";
+		}
+		if (/formatted_tables_[0-9]+/g.test(input_file_name)) {
+			let old_vers = input_file_name.replace(/formatted_tables_([0-9]+)/g, "$1");
+			output_file_name = "formatted_tables_" + (parseInt(old_vers) + 1) + ".html";
+		}
+		download(edited_html_doc_str, output_file_name, "text/html");
 	}
 	file_reader_content.readAsText(content_str);
 }
