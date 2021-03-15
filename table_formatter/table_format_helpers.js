@@ -6,12 +6,23 @@ function format_table() {
 	let file_reader_content = new FileReader();
 	let content_str = document.getElementById("html_file").files[0];
 	file_reader_content.onload = function(event) {
+		// read in inputs
 		let html_doc_str = event.target.result.replaceAll("\r\n", "\n");
 		let html_table_arr = html_tables_to_arr(html_doc_str);
-		let header_rows = int_csv_to_arr(document.getElementById("edit_list").value);
-
+		let table_list_type = document.getElementById("table_list_type").value;
+		let table_list = int_csv_to_arr(document.getElementById("table_list").value);
+		let edit_type = document.getElementById("edit").value;
+		let edit_list = int_csv_to_arr(document.getElementById("edit_list").value);
+		// apply inputs
+		if (edit_type === "rows_to_headers") {
+			html_table_arr = row_apply(html_table_arr, table_list_type, table_list, edit_list, to_header);
+		}
+		if (edit_type === "cols_to_headers") {
+			html_table_arr = col_apply(html_table_arr, table_list_type, table_list, edit_list, to_header);
+		}
+		// convert to output
 		let edited_html_doc_str = table_arr_to_doc(html_doc_str, html_table_arr);
-		// this tool may need to be run multiple times, so append version number to name
+		// decide output file name - this tool may need to be run multiple times, so append version number to name
 		let input_file_path = document.getElementById("html_file").value;
 		let input_file_name = input_file_path.split('\\').pop().split('/').pop();
 		let output_file_name = "formatted_tables.html";
@@ -28,6 +39,12 @@ function format_table() {
 }
 
 /* helpers */
+
+/*
+=================================
+Convert html tables to / from arrays
+=================================
+*/
 
 // the match function, but returns an empty array instead of null if no match
 function match_with_empty(str_to_match, regex_exp) {
@@ -139,6 +156,12 @@ function table_arr_to_doc(html_str, html_table_arr) {
 	return edited_html_str;
 }
 
+/*
+=================================
+Convert string of csv indices to array
+=================================
+*/
+
 // convert comma-separated string of integers to array of indices
 function int_csv_to_arr(csv_str) {
 	// return empty array for empty inputs or misformatted strings
@@ -153,6 +176,83 @@ function int_csv_to_arr(csv_str) {
 	let int_arr = csv_str.split(",");
 	int_arr = trim_arr(int_arr);
 	int_arr = rm_empty_lines(int_arr);
+	// convert values to int
+	for (let i = 0; i < int_arr.length; i++) {
+		int_arr[i] = parseInt(int_arr[i]);
+	}
 	return int_arr;
 }
 
+/*
+=================================
+Function applier along row / column of table array 
+=================================
+*/
+
+// apply a function to all cells in a row for table array
+function row_apply(table_arr, table_list_type, table_list, edit_list, apply_func) {
+	let edited_table_arr = table_arr;
+	// loop over tables to apply function to
+	for (let i = 0; i < edited_table_arr.length; i++) {
+		if ((table_list_type === "all_tables") ||
+		  (table_list_type === "exclude_tables" && !table_list.includes(i)) ||
+		  (table_list_type === "include_tables" && table_list.includes(i))) {
+		    let curr_table_rows = edited_table_arr[i].rows;
+		    // loop over rows to apply function to
+			for (let j = 0; j < curr_table_rows.length; j++) {
+				if (edit_list.includes(j)) {
+					// loop over cells and apply function
+					let curr_row_cells = curr_table_rows[j].cells;
+					for (let k = 0; k < curr_row_cells.length; k++) {
+						curr_row_cells[k] = apply_func(curr_row_cells[k]);
+				    }
+				    curr_table_rows[j].cells = curr_row_cells;
+				}
+			}
+			edited_table_arr[i].rows = curr_table_rows;
+		}
+	}
+	return edited_table_arr;
+}
+
+// apply a function to all cells in a column for table array
+function col_apply(table_arr, table_list_type, table_list, edit_list, apply_func) {
+	let edited_table_arr = table_arr;
+	// loop over tables to apply function to
+	for (let i = 0; i < edited_table_arr.length; i++) {
+		if ((table_list_type === "all_tables") ||
+		  (table_list_type === "exclude_tables" && !table_list.includes(i)) ||
+		  (table_list_type === "include_tables" && table_list.includes(i))) {
+			let curr_table_rows = edited_table_arr[i].rows;
+			// loop over rows
+			for (let j = 0; j < curr_table_rows.length; j++) {
+				let curr_row_cells = curr_table_rows[j].cells;
+				// loop over cells to apply function to, and apply function
+				for (let k = 0; k < curr_row_cells.length; k++) {
+					if (edit_list.includes(k)) {
+						curr_row_cells[k] = apply_func(curr_row_cells[k]);
+					}
+				}
+				curr_table_rows[j].cells = curr_row_cells;
+			}
+			edited_table_arr[i].rows = curr_table_rows;
+		}
+	}
+	return edited_table_arr;
+}
+
+/*
+=================================
+Functions to be applied along row / column of table array 
+=================================
+*/
+
+// converts td to th
+function to_header(html_str) {
+	// replace td with th
+	let edited_html_str = html_str.replaceAll("<td", "<th").replaceAll("</td", "</th");
+	// convert span placeholders back
+	const converted_placeholder = extra_span_cell.replaceAll("<td", "<th").replaceAll("</td", "</th");
+	edited_html_str = edited_html_str.replaceAll(converted_placeholder, extra_span_cell);
+	return edited_html_str;
+}

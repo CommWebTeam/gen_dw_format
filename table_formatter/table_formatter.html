@@ -12,8 +12,8 @@
   <br/>
   <br/>
   <br/>
-  <label for="table">Tables to edit:</label>
-  <select name="table" id="table">
+  <label for="table_list_type">Tables to edit:</label>
+  <select name="table_list_type" id="table_list_type">
     <option value="all_tables">All tables</option>
     <option value="exclude_tables">All tables excluding the following:</option>
     <option value="include_tables">Only the following tables:</option>
@@ -21,8 +21,8 @@
   <br/>
   <br/>
   If "All tables excluding the following" or "Only the following tables" was selected: <br/>
-  Comma-separated indices for tables, e.g. 1,2,5<br/>
-  <input id="row_header" type="text" value="1" />
+  Comma-separated indices for tables, e.g. 0,2,5<br/>
+  <input id="table_list" type="text" value="0" />
   <br/>
   <br/>
   <br/>
@@ -33,15 +33,15 @@
   </select>
   <br/>
   <br/>
-  Comma-separated indices for rows/columns to edit, e.g. 1,2,5<br/>
-  <input id="edit_list" type="text" value="1" />
+  Comma-separated indices for rows/columns to edit, e.g. 0,2,5<br/>
+  <input id="edit_list" type="text" value="0" />
   <br/>
   <br/>
 </form>
 <button type="button" onclick="format_table()">Format table</button>
 <br/>
 <br/>
-<p>This tool helps to format HTML tables according to WET standards.</strong></p>
+<p>This tool helps to format HTML tables according to WET standards.</p>
 <script src="https://commwebteam.github.io/util/download.js"></script> 
 <script src="https://commwebteam.github.io/util/format_helpers.js"></script> 
 <script src="table_format_helpers.js"></script> 
