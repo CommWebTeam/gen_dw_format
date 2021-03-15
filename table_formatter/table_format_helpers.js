@@ -20,6 +20,12 @@ function format_table() {
 		if (edit_type === "cols_to_headers") {
 			html_table_arr = col_apply(html_table_arr, table_list_type, table_list, edit_list, to_header);
 		}
+		if (edit_type === "rows_to_bold") {
+			html_table_arr = row_apply(html_table_arr, table_list_type, table_list, edit_list, to_otb);
+		}
+		if (edit_type === "cols_to_bold") {
+			html_table_arr = col_apply(html_table_arr, table_list_type, table_list, edit_list, to_otb);
+		}
 		// convert to output
 		let edited_html_doc_str = table_arr_to_doc(html_doc_str, html_table_arr);
 		// decide output file name - this tool may need to be run multiple times, so append version number to name
@@ -254,5 +260,19 @@ function to_header(html_str) {
 	// convert span placeholders back
 	const converted_placeholder = extra_span_cell.replaceAll("<td", "<th").replaceAll("</td", "</th");
 	edited_html_str = edited_html_str.replaceAll(converted_placeholder, extra_span_cell);
+	return edited_html_str;
+}
+
+// adds class for otb
+function to_otb(html_str) {
+	let edited_html_str = html_str;
+	// append otb if cell already has a class
+	const existing_class = /(<t[dh] [^>]*class *= *['"].*?)(['"])/g;
+	if (existing_class.test(html_str)) {
+		edited_html_str = html_str.replace(existing_class, "$1 osfi-txt--bold$2");
+	} else {
+		// otherwise, add class attribute with otb
+		edited_html_str = html_str.replace(/(<t[dh])/g, '$1 class="osfi-txt--bold"');
+	}
 	return edited_html_str;
 }
