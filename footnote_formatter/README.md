@@ -6,7 +6,7 @@ WET footnote formatting requires two things:
 
 This tool aims to use the input regex statements to find footnotes in the document and format them to WET standards. It numbers the footnotes using an internal counter.
 
-[HTML document here.](footnote_gen.html)
+[HTML page of tool here.](footnote_gen.html)
 
 # Inputs
 
