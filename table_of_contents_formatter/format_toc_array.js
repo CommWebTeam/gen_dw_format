@@ -17,7 +17,7 @@ function format_toc() {
 /* helpers */
 
 /* get toc table values while checking for list numberings
-returns an array of objects with four values for each table of contents entry:
+the toc table values consist of an array of objects with four values for each table of contents entry:
 - list numbering extracted from the start of the entry's content
 - link id to be used in the main body that includes list numbering
 - indentation level, based on list numbering
@@ -74,7 +74,7 @@ function get_toc_table_nonum(toc_arr) {
     return toc_values;
 }
 
-// generates html lines for table of contents table with indentation
+// using toc table values, generates html lines for table of contents table with indentation
 function create_toc_table(toc_values, manual_list, list_type) {
     // edge case - return empty array if input is empty
     if (toc_values.length === 0) {

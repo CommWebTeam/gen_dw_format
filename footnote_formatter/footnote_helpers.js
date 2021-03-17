@@ -24,7 +24,13 @@ function add_footnotes() {
 
 /* helper functions */
 
-// returns indices and values of duplicate footnotes
+/*
+=================================
+deal with duplicate top footnotes
+=================================
+*/
+
+// returns two arrays for indices and values of duplicate footnotes
 function get_dup_array(duplicate_footnotes) {
   // record indices and values of duplicate footnotes
   let dup_footnote_inds = [];
@@ -84,6 +90,12 @@ function get_footnote_nums(num_footnotes, duplicate_footnotes) {
   footnote_nums = footnote_nums.concat(arr_range(curr_footnote_num, curr_footnote_num + dup_to_end));
   return footnote_nums;
 }
+
+/*
+=================================
+Generate and format WET footnotes
+=================================
+*/
 
 // searches html for footnote regex statements and replaces them
 function replace_footnote_str(html_str, top_regex_str, bot_regex_str, bot_regex_sub,
@@ -156,6 +168,12 @@ function add_consecutive_commas(html_str) {
   'Footnote </span>$1</a>,</sup><sup id="fnb$2-ref"><a class="footnote-link"')
   return output_str;
 }
+
+/*
+=================================
+Optional  - translate French footnotes
+=================================
+*/
 
 // changes specific footnote strings to french
 function translate_footnotes(html_str) {

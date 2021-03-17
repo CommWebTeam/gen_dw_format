@@ -116,6 +116,10 @@ function format_file() {
 		if (document.getElementById("footnotes").checked) {
 			html_doc_str = fix_footnotes(html_doc_str);
 		}
+		// fix punctuation
+		if (document.getElementById("fix_punct").checked) {
+			html_doc_str = fix_punctuation(html_doc_str);
+		}
 		// remove attributes from table tags
 		if (document.getElementById("table_tag").checked) {
 			html_doc_str = rm_table_attributes(html_doc_str, "table");
@@ -127,6 +131,10 @@ function format_file() {
 		// add superscripts around 1er and #e
 		if (document.getElementById("translate_script").checked) {
 			html_doc_str = add_fr_num_superscript(html_doc_str);
+		}
+		// add nbsp in front of % and $
+		if (document.getElementById("nbsp_pct").checked) {
+			html_doc_str = format_fr_space(html_doc_str);
 		}
 		// fix script tags
 		if (document.getElementById("fake_script_tag").checked) {
@@ -372,6 +380,19 @@ function fix_footnotes(html_str) {
 	return edited_html_str;
 }
 
+// fix common punctuation/spacing mistakes
+function fix_punctuation(html_str) {
+	let edited_html_str = html_str.replaceAll(/ +\./g, ".");
+	edited_html_str = edited_html_str.replaceAll(/ +,/g, ",");
+	edited_html_str = edited_html_str.replaceAll(/ +;/g, ";");
+	edited_html_str = edited_html_str.replaceAll(/\.\.+/g, ".");
+	edited_html_str = edited_html_str.replaceAll(/,,+/g, ",");
+	edited_html_str = edited_html_str.replaceAll(/;;+/g, ";");
+	edited_html_str = edited_html_str.replaceAll(/: *:/g, ":");
+	edited_html_str = edited_html_str.replaceAll(/::+/g, ":");
+	return edited_html_str;
+}
+
 // remove attributes from table tags
 function rm_table_attributes(html_str) {
 	// remove attributes from table, th, and tr tags 
@@ -402,6 +423,13 @@ function translate_to_fr(html_str) {
 function add_fr_num_superscript(html_str) {
 	let edited_html_str = html_str.replaceAll(/\b1er\b/g, "1<sup>er</sup>");
 	edited_html_str = edited_html_str.replaceAll(/\b([0-9]+)e\b/g, "$1<sup>e</sup>");
+	return edited_html_str;
+}
+
+// format french % and $ with nbsp
+function format_fr_space(html_str) {
+	let edited_html_str = html_str.replaceAll(/([a-zA-Z0-9]) *%/g, "$1&nbsp;%");
+	edited_html_str = edited_html_str.replaceAll(/([a-zA-Z0-9]) *\$/g, "$1&nbsp;$$");
 	return edited_html_str;
 }
 

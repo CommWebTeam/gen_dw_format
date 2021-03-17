@@ -18,7 +18,7 @@ If you would like to perform multiple types of edits on a single document, you c
 
 ## Implementation details
 
-The tables in the HTML document are stored in an array. Each table in this array of tables contains an array of its rows; and each row in this array of rows contains an array of its cells, making the overall array a triple nested array:
+The tables in the HTML document are stored in an array. Each table in this array of tables contains an array of its rows. Each row in this array of rows contains an array of its cells, making the overall array a triple nested array:
 - [Table One: [Row 1: [Cell 1a, Cell 2a], Row 2: [Cell 2a, Cell 2b]], Table Two: ...]
 
 This array accounts for rowspan and colspan. For example, suppose that in the 2nd row, the 1st cell spans three columns, so [2, 1] contains a value, but [2, 2] and [2, 3] are just spans of [2, 1]. Then, if you apply a function on the 3rd column, [x, 3], the function will see that the 3rd column in the 2nd row [2, 3] is just a placeholder, so it will NOT edit any cells in the 2nd row.
