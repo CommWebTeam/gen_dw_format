@@ -33,8 +33,7 @@ The current formatting checks are as follows (the user can select which to apply
 - changes all em tags to i tags. (The above three checks take precedence.)
 - changes all strong tags to span class="osfi-txt--bold" tags.
 - changes all strong tags to b tags. (The above check takes precedence.)
-
-The above six checks take precedence in the given order. For example, if both "change em tags to cite tags on lines that have links" and "change all em tags to i tags" are checked, then the first check will take precedence. So on lines that have links, em tags will be changed to cite tags, and on other lines without links, em tags will be changed to i tags.
+    - The above six checks take precedence in the given order. For example, if both "change em tags to cite tags on lines that have links" and "change all em tags to i tags" are checked, then the first check will take precedence. So on lines that have links, em tags will be changed to cite tags, and on other lines without links, em tags will be changed to i tags.
 
 
 - splits up blocks of text that are separated from each other by br within a single &lt;p> tag, by moving each block into its own &lt;p> tag.
@@ -50,11 +49,19 @@ The above six checks take precedence in the given order. For example, if both "c
 - replaces the formatting for Dreamweaver-generated footnotes with WET footnotes. This uses helper functions from the footnote_formatter tool.
 
 
+- replaces common punctuation/spacing misformattings:
+    - " ." and ".." with "."
+    - " ," and ",," with ","
+    - " ;" and ";;" with ";"
+    - ": :" and "::" with ":"
+
+
 - removes attributes from table, th, and tr tags, and removes attributes from td tags except for colspan and rowspan.
 
 
 - translates internal links to French by searching for /Eng/ and replacing with /Fra/, and translates the WET footnote structure created by the WET footnote formatting check directly above to French.
 - replaces 1er with 1&lt;sup>er&lt;/sup>, and other French list numberings formatted as #e with #&lt;sup>e&lt;/sup>.
+- ensures that "%" and "$" symbols have an &amp;nbsp; in front of them (for French spacing around those punctuation symbols).
 
 
 - changes strings indicating superscript and subscript tags in the original Word document to be actual tags, and joins these tags together.
