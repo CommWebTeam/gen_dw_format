@@ -116,3 +116,14 @@ For the last check, the tool looks for the following strings:
 and replaces them with actual tags.
 
 Similarly to superscripts/subscripts, you can't copy a Word document with equations into Dreamweaver and have the equations formatted properly (assuming you want them formatted as mathml). Since you need to actually copy the equations one-by-one to have them written out as mathml instead of the default linear format, this is best done with a macro, which can be found [here](https://github.com/CommWebTeam/vba/blob/main/ReplaceMathML.vb). The linked macro replaces equations with their mathml code, which this tool then fixes the tags of once the Word document is pasted into Dreamweaver.
+
+# Adding checks
+
+The steps to add a check that follows the tool's current formatting/organization are as follows:
+
+1. In dw_paste_format.html: Add the new check into the form where the other checks are located. Different groups of checks are separated by two &lt;br/> instead of one; put the check in whichever group you think makes the most sense.
+2. In dw_paste_format_helpers.js:
+    - In format_file(), create an if statement for the new check, positioned at the same place as where you put it in the HTML document. For the sake of consistency, put the logic for the check in a helper function even if it's only one line.
+    - Create the helper function below format_file(), positioned at the same place as where you put it in the HTML document.
+3. In README.md (this file): Add a description of the new check in the first section, positioned at the same place as where you put it in the HTML document. (The blank lines between groups of checks are for clarity in the editor and won't affect the actual document's appearance).
+4. In sample_page.html: Add some text that tests the new check.

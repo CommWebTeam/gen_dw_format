@@ -12,6 +12,10 @@ function format_file() {
 		if (document.getElementById("dw_toc").checked) {
 			html_doc_str = remove_toc_links(html_doc_str);
 		}
+		// remove _bookmark links
+		if (document.getElementById("dw_bookmark").checked) {
+			html_doc_str = remove_bookmark_links(html_doc_str);
+		}
 		// remove logiterms
 		if (document.getElementById("logiterms").checked) {
 			html_doc_str = remove_logiterms(html_doc_str);
@@ -159,6 +163,11 @@ function remove_ref_links(html_str) {
 // remove toc links
 function remove_toc_links(html_str) {
 	return html_str.replaceAll(/<a name="_Toc[a-zA-z0-9]+">(.*?)<\/a>/g, "$1");
+}
+
+// remove bookmark links
+function remove_bookmark_links(html_str) {
+	return html_str.replaceAll(/<a href="#_bookmark[a-zA-z0-9]+">(.*?)<\/a>/g, "$1");
 }
 
 // remove logiterms
