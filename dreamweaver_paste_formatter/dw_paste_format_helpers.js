@@ -195,6 +195,7 @@ function rm_space_before_close(html_str) {
 	edited_html_str = edited_html_str.replaceAll(/ *<\/li>/g, "</li>");
 	edited_html_str = edited_html_str.replaceAll(/ *<\/th>/g, "</th>");
 	edited_html_str = edited_html_str.replaceAll(/ *<\/td>/g, "</td>");
+	edited_html_str = edited_html_str.replaceAll(/ *<\/h([0-9]+)>/g, "</h$1>");
 	return edited_html_str;
 }
 
@@ -313,11 +314,13 @@ function rm_empty_br(html_str) {
 	edited_html_str = edited_html_str.replaceAll(/(<li( [^>]*)*>) *<br>( |\n)*/g, "$1");
 	edited_html_str = edited_html_str.replaceAll(/(<th( [^>]*)*>) *<br>( |\n)*/g, "$1");
 	edited_html_str = edited_html_str.replaceAll(/(<td( [^>]*)*>) *<br>( |\n)*/g, "$1");
+	edited_html_str = edited_html_str.replaceAll(/(<h[0-9]+( [^>]*)*>) *<br>( |\n)*/g, "$1");
 	// remove br next to closing tags
 	edited_html_str = edited_html_str.replaceAll(/( |\n)*<br> *<\/p>/g, "</p>");
 	edited_html_str = edited_html_str.replaceAll(/( |\n)*<br> *<\/li>/g, "</li>");
 	edited_html_str = edited_html_str.replaceAll(/( |\n)*<br> *<\/th>/g, "</th>");
 	edited_html_str = edited_html_str.replaceAll(/( |\n)*<br> *<\/td>/g, "</td>");
+	edited_html_str = edited_html_str.replaceAll(/( |\n)*<br> *<\/h([0-9]+)>/g, "</h$2>");
 	return edited_html_str;
 }
 

@@ -14,7 +14,7 @@ The current formatting checks are as follows (the user can select which to apply
 - makes all space hexcodes consistent by converting invisible non-breaking spaces (where it just looks like a regular space in the editor) into regular spaces.
 - replaces all multispaces with single spaces for neatness. You should apply source formatting in Dreamweaver to fix indentation if you include this check.
 - removes empty attribute-less tags, and replaces all attribute-less tags that consist solely of spaces or nbsp; with a single regular space.
-- removes extra spaces before closing p, li, th, and td tags for neatness.
+- removes extra spaces before closing p, li, th, td, and header (h1, h2 etc.) tags for neatness.
 
 
 - replaces fancy quotes with regular quotes.
@@ -38,7 +38,7 @@ The current formatting checks are as follows (the user can select which to apply
 
 - splits up blocks of text that are separated from each other by br within a single &lt;p> tag, by moving each block into its own &lt;p> tag.
 - splits up blocks of text that are separated from each other by br within a single &lt;p> tag, by moving each block into its own &lt;p> tag, if the chunk before the br ends in one of the following punctuation symbols: . , ; : ! ? ) " ’ ”
-- removes br tags at the start or end of p, li, td, and th tags e.g. if a line consists of &lt;p> &lt;br>x &lt;/p>, the  &lt;br> is removed.
+- removes br tags at the start or end of p, li, td, th, and header (h1, h2 etc.) tags e.g. if a line consists of &lt;p> &lt;br>x &lt;/p>, the  &lt;br> is removed.
 - changes all &lt;br> to &lt;br/>.
 
 
