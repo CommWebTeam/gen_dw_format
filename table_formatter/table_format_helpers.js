@@ -11,21 +11,23 @@ function format_table() {
 		let html_table_arr = html_tables_to_arr(html_doc_str);
 		let table_list_type = document.getElementById("table_list_type").value;
 		let table_list = int_csv_to_arr(document.getElementById("table_list").value);
-		let edit_type = document.getElementById("edit").value;
-		let edit_list = int_csv_to_arr(document.getElementById("edit_list").value);
+		let action = document.getElementById("action").value;
+		let action_dim = document.getElementById("action_dim").value;
+		let forward_dir = document.getElementById("action_list_dir").value === "forward";
+		let action_list = int_csv_to_arr(document.getElementById("action_list").value);
 		// apply inputs
-		if (edit_type === "rows_to_headers") {
-			html_table_arr = row_apply(html_table_arr, table_list_type, table_list, edit_list, to_header);
+		let dim_func = row_apply;
+		if (action_dim === "cols") {
+			dim_func = col_apply;
 		}
-		if (edit_type === "cols_to_headers") {
-			html_table_arr = col_apply(html_table_arr, table_list_type, table_list, edit_list, to_header);
+		let action_func = function(x) {x}; // placeholder function that returns input
+		if (action === "to_header") {
+			action_func = to_header;
 		}
-		if (edit_type === "rows_to_bold") {
-			html_table_arr = row_apply(html_table_arr, table_list_type, table_list, edit_list, to_otb);
+		if (action === "to_bold") {
+			action_func = to_otb;
 		}
-		if (edit_type === "cols_to_bold") {
-			html_table_arr = col_apply(html_table_arr, table_list_type, table_list, edit_list, to_otb);
-		}
+		html_table_arr = dim_func(html_table_arr, table_list_type, table_list, action_list, forward_dir, action_func);
 		// convert to output
 		let edited_html_doc_str = table_arr_to_doc(html_doc_str, html_table_arr);
 		// decide output file name - this tool may need to be run multiple times, so append version number to name
@@ -121,8 +123,6 @@ function html_tables_to_arr(html_str) {
 						let span_row_cells = row_arr[j + m].cells;
 						row_arr[j + m].cells = span_row_cells.slice(0, k).concat([extra_span_cell]).concat(span_row_cells.slice(k));
 					}
-					// remove rowspan placeholder
-					curr_row_cells[k] = curr_cell.replaceAll(/>ROWSPAN[0-9]+ /g, ">");
 				}
 			}
 		}
@@ -196,7 +196,7 @@ Function applier along row / column of table array
 */
 
 // apply a function to all cells in a row for table array
-function row_apply(table_arr, table_list_type, table_list, edit_list, apply_func) {
+function row_apply(table_arr, table_list_type, table_list, action_list, forward_dir, apply_func) {
 	let edited_table_arr = table_arr;
 	// loop over tables to apply function to
 	for (let i = 0; i < edited_table_arr.length; i++) {
@@ -206,11 +206,17 @@ function row_apply(table_arr, table_list_type, table_list, edit_list, apply_func
 		    let curr_table_rows = edited_table_arr[i].rows;
 		    // loop over rows to apply function to
 			for (let j = 0; j < curr_table_rows.length; j++) {
-				if (edit_list.includes(j)) {
-					// loop over cells and apply function
+				let check_action_list = j;
+				if (!forward_dir) {
+					check_action_list = curr_table_rows.length - 1 - j;
+				}
+				if (action_list.includes(check_action_list)) {
+					// loop over cells and apply function if it isn't a placeholder
 					let curr_row_cells = curr_table_rows[j].cells;
 					for (let k = 0; k < curr_row_cells.length; k++) {
-						curr_row_cells[k] = apply_func(curr_row_cells[k]);
+						if (!curr_row_cells[k].includes(extra_span_cell)) {
+							curr_row_cells[k] = apply_func(curr_row_cells[k]);
+						}
 				    }
 				    curr_table_rows[j].cells = curr_row_cells;
 				}
@@ -222,7 +228,7 @@ function row_apply(table_arr, table_list_type, table_list, edit_list, apply_func
 }
 
 // apply a function to all cells in a column for table array
-function col_apply(table_arr, table_list_type, table_list, edit_list, apply_func) {
+function col_apply(table_arr, table_list_type, table_list, action_list, forward_dir, apply_func) {
 	let edited_table_arr = table_arr;
 	// loop over tables to apply function to
 	for (let i = 0; i < edited_table_arr.length; i++) {
@@ -233,9 +239,13 @@ function col_apply(table_arr, table_list_type, table_list, edit_list, apply_func
 			// loop over rows
 			for (let j = 0; j < curr_table_rows.length; j++) {
 				let curr_row_cells = curr_table_rows[j].cells;
-				// loop over cells to apply function to, and apply function
+				// loop over cells to apply function to, and apply function if it isn't a placeholder
 				for (let k = 0; k < curr_row_cells.length; k++) {
-					if (edit_list.includes(k)) {
+					let check_action_list = k;
+					if (!forward_dir) {
+						check_action_list = curr_row_cells.length - 1 - k;
+					}
+					if (action_list.includes(check_action_list) && !curr_row_cells[k].includes(extra_span_cell)) {
 						curr_row_cells[k] = apply_func(curr_row_cells[k]);
 					}
 				}
@@ -257,9 +267,6 @@ Functions to be applied along row / column of table array
 function to_header(html_str) {
 	// replace td with th
 	let edited_html_str = html_str.replaceAll("<td", "<th").replaceAll("</td", "</th");
-	// convert span placeholders back
-	const converted_placeholder = extra_span_cell.replaceAll("<td", "<th").replaceAll("</td", "</th");
-	edited_html_str = edited_html_str.replaceAll(converted_placeholder, extra_span_cell);
 	return edited_html_str;
 }
 

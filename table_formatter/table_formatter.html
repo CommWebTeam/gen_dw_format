@@ -15,35 +15,52 @@
   <label for="table_list_type">Tables to edit:</label>
   <select name="table_list_type" id="table_list_type">
     <option value="all_tables">All tables</option>
-    <option value="exclude_tables">All tables excluding the following:</option>
-    <option value="include_tables">Only the following tables:</option>
+    <option value="exclude_tables">All tables excluding those listed below</option>
+    <option value="include_tables">Only the tables listed below</option>
   </select>
   <br/>
   <br/>
-  If "All tables excluding the following" or "Only the following tables" was selected: <br/>
-  Comma-separated indices for tables, e.g. 0,2,5<br/>
+  If "All tables excluding those listed below" or "Only the tables listed below" was selected - <br/>
+  Comma-separated indices for tables: <br/>
+  e.g. 0,2,5 <br/>
   <input id="table_list" type="text" value="0" />
   <br/>
   <br/>
+  <p>----------</p>
   <br/>
-  <label for="edit">Edit to perform:</label>
-  <select name="edit" id="edit">
-    <option value="rows_to_headers">Convert rows to headers</option>
-    <option value="cols_to_headers">Convert columns to headers</option>
-    <option value="rows_to_bold">Convert rows to osfi-txt--bold</option>
-    <option value="cols_to_bold">Convert columns to osfi-txt--bold</option>
+  <label for="action">Action to perform:</label>
+  <select name="action" id="action">
+    <option value="to_header">Convert to headers</option>
+    <option value="to_bold">Convert to osfi-txt--bold</option>
   </select>
   <br/>
   <br/>
-  Comma-separated indices for rows/columns to edit, e.g. 0,2,5<br/>
-  <input id="edit_list" type="text" value="0" />
+  <label for="action_dim">Dimension to perform action on:</label>
+  <select name="action_dim" id="action_dim">
+    <option value="rows">Rows</option>
+    <option value="cols">Columns</option>
+  </select>
+  <br/>
+  <br/>
+  <label for="action_list_dir">Direction to read indices in:</label>
+  <select name="action_list_dir" id="action_list_dir">
+    <option value="forward">Top to bottom - first row/column is at index 0</option>
+    <option value="backward">Bottom to top - last row/column is at index 0</option>
+  </select>
+  <br/>
+  <br/>
+  Comma-separated indices for rows/columns to perform action on: <br/>
+  e.g. 0,2,5 <br/>
+  <input id="action_list" type="text" value="0" />
+  <br/>
   <br/>
   <br/>
 </form>
 <button type="button" onclick="format_table()">Format table</button>
 <br/>
 <br/>
-<p>This tool helps to format HTML tables according to WET standards.</p>
+<p>This tool helps to apply WET formatting on HTML tables across rows or columns.</p>
+<p>More in-depth information can be found in the <a rel="external" href="https://commwebteam.github.io/gen_dw_format/table_formatter/">readme</a>.</p>
 <script src="https://commwebteam.github.io/util/download.js"></script> 
 <script src="https://commwebteam.github.io/util/format_helpers.js"></script> 
 <script src="table_format_helpers.js"></script> 
