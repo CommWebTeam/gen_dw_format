@@ -157,17 +157,17 @@ function format_file() {
 
 // remove reference links
 function remove_ref_links(html_str) {
-	return html_str.replaceAll(/<a name="_Ref[a-zA-z0-9]+">(.*?)<\/a>/g, "$1");
+	return html_str.replaceAll(/<a name="_Ref[a-zA-z0-9]+">(.*?)<\/a>/g, "$1").replaceAll(/<a href="#_Ref[a-zA-z0-9]+">(.*?)<\/a>/g, "$1");
 }
 
 // remove toc links
 function remove_toc_links(html_str) {
-	return html_str.replaceAll(/<a name="_Toc[a-zA-z0-9]+">(.*?)<\/a>/g, "$1");
+	return html_str.replaceAll(/<a name="_Toc[a-zA-z0-9]+">(.*?)<\/a>/g, "$1").replaceAll(/<a href="#_Toc[a-zA-z0-9]+">(.*?)<\/a>/g, "$1");
 }
 
 // remove bookmark links
 function remove_bookmark_links(html_str) {
-	return html_str.replaceAll(/<a href="#_bookmark[a-zA-z0-9]+">(.*?)<\/a>/g, "$1");
+	return html_str.replaceAll(/<a name="_bookmark[a-zA-z0-9]+">(.*?)<\/a>/g, "$1").replaceAll(/<a href="#_bookmark[a-zA-z0-9]+">(.*?)<\/a>/g, "$1");
 }
 
 // remove logiterms
