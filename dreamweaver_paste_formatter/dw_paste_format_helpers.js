@@ -343,7 +343,7 @@ function fix_ref_links(html_str) {
 		let new_link = curr_link;
 		// make internal links relative
 		if (curr_link.includes("osfi-bsif.gc.ca")) {
-			new_link = curr_link.replaceAll(/(https*:\/\/)*(www.)*osfi-bsif.gc.ca/g, "");
+			new_link = curr_link.replaceAll(/(https*:\/\/)*(www.)*osfi-bsif.gc.ca(\/)*/g, "/");
 		}
 		else {
 			// add rel to external links, excluding footnotes, toc, internal links, and emails
