@@ -26,9 +26,33 @@ If you would like to perform multiple actions on a single document, you can chai
 
 ## Implementation details
 
-The tables in the HTML document are stored in an array. Each table in this array of tables contains an array of its rows. Each row in this array of rows contains an array of its cells, making the overall array a triple nested array:
-- [Table One: [Row 1: [Cell 1a, Cell 2a], Row 2: [Cell 2a, Cell 2b]], Table Two: ...]
+The tables in the HTML document are stored in an array. Each table is an object containing the following properties:
+- attr: the table tag itself, including its attributes.
+- caption: the caption tag for the table, an empty string if there is no caption.
+- rows: an array of the table's rows.
 
-This array accounts for rowspan and colspan. For example, suppose that in the 2nd row, the 1st cell spans three columns, so [2, 1] contains a value, but [2, 2] and [2, 3] are just spans of [2, 1]. Then, if you apply a function on the 3rd column, [x, 3], the function will see that the 3rd column in the 2nd row [2, 3] is just a placeholder, so it will NOT edit any cells in the 2nd row.
+Each row in the array of rows contains the following properties:
+- attr: the tr tag itself, including its attributes.
+- cells: an array of the row's cells.
 
-This tool makes some assumptions about the HTML document's formatting when reading the tables into an array. Currently, it does not account for nested tables.
+This makes the overall array a triple nested array, e.g.
+- [Table One: Caption, [Row 1: [Cell 1a, Cell 2a], Row 2: [Cell 2a, Cell 2b]], 
+- Table Two: Caption, [Row 1: [Cell 1a]],
+- Table Three: ...]
+
+Each table array accounts for rowspan and colspan. For example, suppose that in the 2nd row, (2, y), the 1st cell spans three columns, so (2, 1) contains a value, but (2, 2) and (2, 3) are just spans of (2, 1). Then, if you apply a function on the 3rd column, (x, 3), the function will see that the 3rd column in the 2nd row (2, 3) is just a placeholder, so it will NOT edit any cells in the 2nd row.
+
+### Assumptions
+
+This tool makes some assumptions about the HTML document's formatting when reading the tables into an array. Some major assumptions are as follows:
+- there are no nested tables.
+- there is only a single caption, located right before the opening &lt;table> tag.
+
+## Adding actions
+
+Functions for actions are at the bottom of table_format_helpers.js. Each function should take in the following as input:
+- a single table array representing the current table (i.e. one index in the overall array of tables)
+- the current row of the cell to work with
+- the current column of the cell to work with
+
+The function should return the array of tables.
