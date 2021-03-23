@@ -206,22 +206,20 @@ function row_apply(table_arr, table_list_type, table_list, action_list, forward_
 		    let curr_table_rows = edited_table_arr[i].rows;
 		    // loop over rows to apply function to
 			for (let j = 0; j < curr_table_rows.length; j++) {
-				let check_action_list = j;
+				let action_list_check = j;
 				if (!forward_dir) {
-					check_action_list = curr_table_rows.length - 1 - j;
+					action_list_check = curr_table_rows.length - 1 - j;
 				}
-				if (action_list.includes(check_action_list)) {
+				if (action_list.includes(action_list_check)) {
 					// loop over cells and apply function if it isn't a placeholder
 					let curr_row_cells = curr_table_rows[j].cells;
 					for (let k = 0; k < curr_row_cells.length; k++) {
 						if (!curr_row_cells[k].includes(extra_span_cell)) {
-							curr_row_cells[k] = apply_func(curr_row_cells[k]);
+							edited_table_arr[i] = apply_func(edited_table_arr[i], j, k);
 						}
 				    }
-				    curr_table_rows[j].cells = curr_row_cells;
 				}
 			}
-			edited_table_arr[i].rows = curr_table_rows;
 		}
 	}
 	return edited_table_arr;
@@ -241,17 +239,15 @@ function col_apply(table_arr, table_list_type, table_list, action_list, forward_
 				let curr_row_cells = curr_table_rows[j].cells;
 				// loop over cells to apply function to, and apply function if it isn't a placeholder
 				for (let k = 0; k < curr_row_cells.length; k++) {
-					let check_action_list = k;
+					let action_list_check = k;
 					if (!forward_dir) {
-						check_action_list = curr_row_cells.length - 1 - k;
+						action_list_check = curr_row_cells.length - 1 - k;
 					}
-					if (action_list.includes(check_action_list) && !curr_row_cells[k].includes(extra_span_cell)) {
-						curr_row_cells[k] = apply_func(curr_row_cells[k]);
+					if (action_list.includes(action_list_check) && !curr_row_cells[k].includes(extra_span_cell)) {
+						edited_table_arr[i] = apply_func(edited_table_arr[i], j, k);
 					}
 				}
-				curr_table_rows[j].cells = curr_row_cells;
 			}
-			edited_table_arr[i].rows = curr_table_rows;
 		}
 	}
 	return edited_table_arr;
@@ -259,27 +255,29 @@ function col_apply(table_arr, table_list_type, table_list, action_list, forward_
 
 /*
 =================================
-Functions to be applied along row / column of table array 
+Functions to be applied on the cell of a table in table array 
 =================================
 */
 
 // converts td to th
-function to_header(html_str) {
+function to_header(table_arr, row, col) {
+	let curr_cell = table_arr.rows[row].cells[col];
 	// replace td with th
-	let edited_html_str = html_str.replaceAll("<td", "<th").replaceAll("</td", "</th");
-	return edited_html_str;
+	table_arr.rows[row].cells[col] = curr_cell.replaceAll("<td", "<th").replaceAll("</td", "</th");
+	return table_arr;
 }
 
 // adds class for otb
-function to_otb(html_str) {
-	let edited_html_str = html_str;
+function to_otb(table_arr, row, col) {
+	let curr_cell = table_arr.rows[row].cells[col];
 	// append otb if cell already has a class
 	const existing_class = /(<t[dh] [^>]*class *= *['"].*?)(['"])/g;
-	if (existing_class.test(html_str)) {
-		edited_html_str = html_str.replace(existing_class, "$1 osfi-txt--bold$2");
+	if (existing_class.test(curr_cell)) {
+		curr_cell = curr_cell.replace(existing_class, "$1 osfi-txt--bold$2");
 	} else {
 		// otherwise, add class attribute with otb
-		edited_html_str = html_str.replace(/(<t[dh])/g, '$1 class="osfi-txt--bold"');
+		curr_cell = curr_cell.replace(/(<t[dh])/g, '$1 class="osfi-txt--bold"');
 	}
-	return edited_html_str;
+	table_arr.rows[row].cells[col] = curr_cell;
+	return table_arr;
 }
