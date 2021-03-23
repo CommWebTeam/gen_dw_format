@@ -31,7 +31,7 @@
   <label for="action">Action to perform:</label>
   <select name="action" id="action">
     <option value="to_header">Convert to headers</option>
-    <option value="set_caption">Move to caption</option>
+    <option value="set_caption">Move text to caption</option>
     <option value="to_bold">Add osfi-txt--bold class</option>
     <option value="to_align_left">Add align-left class</option>
     <option value="to_align_right">Add align-right class</option>
@@ -42,6 +42,7 @@
     <option value="to_indent_small">Add indent-small class</option>
     <option value="to_indent_medium">Add indent-medium class</option>
     <option value="to_indent_large">Add indent-large class</option>
+    <option value="set_caption_para">Move the paragraph preceding a table to its caption (ignore the next few inputs if selected)</option>
   </select>
   <br/>
   <br/>
@@ -52,16 +53,16 @@
   </select>
   <br/>
   <br/>
+  Comma-separated indices for rows/columns to perform action on: <br/>
+  e.g. 0,2,5 <br/>
+  <input id="action_list" type="text" value="0" />
+  <br/>
+  <br/>
   <label for="action_list_dir">Direction to read indices in:</label>
   <select name="action_list_dir" id="action_list_dir">
     <option value="forward">Top to bottom - first row/column is at index 0</option>
     <option value="backward">Bottom to top - last row/column is at index 0</option>
   </select>
-  <br/>
-  <br/>
-  Comma-separated indices for rows/columns to perform action on: <br/>
-  e.g. 0,2,5 <br/>
-  <input id="action_list" type="text" value="0" />
   <br/>
   <br/>
   <br/>

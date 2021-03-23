@@ -15,12 +15,13 @@ The inputs are as follows:
     - If option 1 or 2 is selected above, you will have to fill in the textbox with the comma-separated values of the indices for the tables to include / exclude. These are the positions the tables appear in from the start of the document, beginning at 0. For example, if you want to exclude the first 2 tables, then you would select "all tables excluding the following", and enter "0,1" into the textbox.
 - the action to perform on a cell:
     - the type of action. So far, the following actions have been implemented:
-        1. convert the cell to a header (td to th)
-        2. convert the cell to bold (add the class "osfi-txt--bold").
-        2. add the cell contents to the caption, then remove the cell.
+        - convert the cell to a header (td to th).
+        - append the cell contents to the caption, then remove the cell.
+        - convert the cell to a specific class (e.g. "osfi-txt--bold" or "align-left").
+        - append the preceding paragraph above a table to its caption. This action ignores cells completely and only uses the table inputs above, as it is only applied once per table, so the next three inputs are ignored.
     - the table dimension to perform the action on, which can be rows or columns.
+    - a textbox filled in with the comma-separated values of the indices for which rows or columns to apply the action on. As with the earlier textbox, this is the position the row or column appears in from the start or end of the table, depending on the direction selected below, beginning at 0.
     - the direction to read the table in. If "top to bottom" is selected, then the rows or columns are read in their regular order; the first row/column is at index 0, the second row/column is at index 1, and so on. If "bottom to top" is selected, then they are read in reverse order instead; the last row/column is at index 0, the second last row/column is at index 1, and so on.
-    - a textbox filled in with the comma-separated values of the indices for which rows or columns to apply the action on. As with the earlier textbox, this is the position the row or column appears in from the start or end of the table, depending on the direction selected above, beginning at 0.
 
 If you would like to perform multiple actions on a single document, you can chain the actions together by using the output from one run of the tool as the input for another. The tool increments the name of the output file from "formatted_tables" to "formatted_tables_0" to "formatted_tables_1" and so on in case it needs to be run multiple times.
 
@@ -58,3 +59,5 @@ Each action function should take in the following as input:
 - the current column of the cell to work with
 
 The function should return the array of the table.
+
+The action for **appending the preceding paragraph above a table to its caption** is implemented differently from the other actions because it uses code from outside of the tables.
