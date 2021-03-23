@@ -50,9 +50,11 @@ This tool makes some assumptions about the HTML document's formatting when readi
 
 ## Adding actions
 
-Functions for actions are at the bottom of table_format_helpers.js. Each function should take in the following as input:
+Helper functions for actions are placed at the bottom of table_format_helpers.js. They are referred to in the top level function, format_table().
+
+Each action function should take in the following as input:
 - a single table array representing the current table (i.e. one index in the overall array of tables)
 - the current row of the cell to work with
 - the current column of the cell to work with
 
-The function should return the array of tables.
+The function should return the array of the table.

@@ -24,11 +24,38 @@ function format_table() {
 		if (action === "to_header") {
 			action_func = to_header;
 		}
+		if (action === "set_caption") {
+			action_func = set_caption;
+		}
 		if (action === "to_bold") {
 			action_func = to_otb;
 		}
-		if (action === "set_caption") {
-			action_func = set_caption;
+		if (action === "to_align_left") {
+			action_func = to_align_left;
+		}
+		if (action === "to_align_right") {
+			action_func = to_align_right;
+		}
+		if (action === "to_align_bottom") {
+			action_func = to_align_bottom;
+		}
+		if (action === "to_align_center") {
+			action_func = to_align_center;
+		}
+		if (action === "to_bg_white") {
+			action_func = to_bg_white;
+		}
+		if (action === "to_bg_light") {
+			action_func = to_bg_light;
+		}
+		if (action === "to_indent_small") {
+			action_func = to_indent_small;
+		}
+		if (action === "to_indent_medium") {
+			action_func = to_indent_medium;
+		}
+		if (action === "to_indent_large") {
+			action_func = to_indent_large;
 		}
 		html_table_arr = dim_func(html_table_arr, table_list_type, table_list, action_list, forward_dir, action_func);
 		// convert to output
@@ -80,6 +107,9 @@ function html_tables_to_arr(html_str) {
 		let caption = "";
 		if (caption_arr.length > 0) {
 			caption = caption_arr[0];
+			if (caption_arr.length > 1) {
+				console.log("Captions after the first in table " + i + " have been ignored.")
+			}
 		}
 		/*
 		=================================
@@ -276,19 +306,60 @@ function to_header(table_arr, row, col) {
 	return table_arr;
 }
 
-// adds class for otb
-function to_otb(table_arr, row, col) {
+// helper function - adds class to cell
+function add_class(table_arr, row, col, class_str) {
 	let curr_cell = table_arr.rows[row].cells[col];
-	// append otb if cell already has a class
+	// append class if cell already has a class attribute
 	const existing_class = /(<t[dh] [^>]*class *= *['"].*?)(['"])/g;
 	if (existing_class.test(curr_cell)) {
-		curr_cell = curr_cell.replace(existing_class, "$1 osfi-txt--bold$2");
+		curr_cell = curr_cell.replace(existing_class, "$1 " + class_str + "$2");
 	} else {
 		// otherwise, add class attribute with otb
-		curr_cell = curr_cell.replace(/(<t[dh])/g, '$1 class="osfi-txt--bold"');
+		curr_cell = curr_cell.replace(/(<t[dh])/g, '$1 class="' + class_str + '"');
 	}
 	table_arr.rows[row].cells[col] = curr_cell;
 	return table_arr;
+}
+
+// adds corresponding class
+function to_otb(table_arr, row, col) {
+	return add_class(table_arr, row, col, "osfi-txt--bold");
+}
+
+function to_align_left(table_arr, row, col) {
+	return add_class(table_arr, row, col, "align-left");
+}
+
+function to_align_right(table_arr, row, col) {
+	return add_class(table_arr, row, col, "align-right");
+}
+
+function to_align_bottom(table_arr, row, col) {
+	return add_class(table_arr, row, col, "align-bottom");
+}
+
+function to_align_center(table_arr, row, col) {
+	return add_class(table_arr, row, col, "align-center");
+}
+
+function to_bg_white(table_arr, row, col) {
+	return add_class(table_arr, row, col, "background-white");
+}
+
+function to_bg_light(table_arr, row, col) {
+	return add_class(table_arr, row, col, "background-light");
+}
+
+function to_indent_small(table_arr, row, col) {
+	return add_class(table_arr, row, col, "indent-small");
+}
+
+function to_indent_medium(table_arr, row, col) {
+	return add_class(table_arr, row, col, "indent-medium");
+}
+
+function to_indent_large(table_arr, row, col) {
+	return add_class(table_arr, row, col, "indent-large");
 }
 
 // sets cell value as caption
