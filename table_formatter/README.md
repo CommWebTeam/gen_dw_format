@@ -9,14 +9,15 @@ The inputs are as follows:
 - the file for an HTML document with tables.
 - the tables to edit:
     - a selection for which tables to edit, which can be one of the following:
-        1. "all tables excluding those listed below"
-        2. "only the tables listed below".
+        1. "only the tables listed below".
+        2. "all tables excluding those listed below"
         3. "all tables"
     - If option 1 or 2 is selected above, you will have to fill in the textbox with the comma-separated values of the indices for the tables to include / exclude. These are the positions the tables appear in from the start of the document, beginning at 0. For example, if you want to exclude the first 2 tables, then you would select "all tables excluding the following", and enter "0,1" into the textbox.
-- the action to perform:
-    - the type of action. Currently, the following two actions have been implemented:
-        1. converting to headers (td to th)
-        2. converting to bold (adding the class "osfi-txt--bold").
+- the action to perform on a cell:
+    - the type of action. So far, the following actions have been implemented:
+        1. convert the cell to a header (td to th)
+        2. convert the cell to bold (add the class "osfi-txt--bold").
+        2. add the cell contents to the caption, then remove the cell.
     - the table dimension to perform the action on, which can be rows or columns.
     - the direction to read the table in. If "top to bottom" is selected, then the rows or columns are read in their regular order; the first row/column is at index 0, the second row/column is at index 1, and so on. If "bottom to top" is selected, then they are read in reverse order instead; the last row/column is at index 0, the second last row/column is at index 1, and so on.
     - a textbox filled in with the comma-separated values of the indices for which rows or columns to apply the action on. As with the earlier textbox, this is the position the row or column appears in from the start or end of the table, depending on the direction selected above, beginning at 0.

@@ -27,6 +27,9 @@ function format_table() {
 		if (action === "to_bold") {
 			action_func = to_otb;
 		}
+		if (action === "set_caption") {
+			action_func = set_caption;
+		}
 		html_table_arr = dim_func(html_table_arr, table_list_type, table_list, action_list, forward_dir, action_func);
 		// convert to output
 		let edited_html_doc_str = table_arr_to_doc(html_doc_str, html_table_arr);
@@ -72,6 +75,12 @@ function html_tables_to_arr(html_str) {
 	for (let i = 0; i < table_arr.length; i++) {
 		// get table attributes
 		let table_attr = table_arr[i].replaceAll(/(<table[^>]*>)(.|\n)*/g, "$1");
+		// get caption
+		let caption_arr = match_with_empty(table_arr[i], /<caption(.|\n)*?<\/caption>/g);
+		let caption = "";
+		if (caption_arr.length > 0) {
+			caption = caption_arr[0];
+		}
 		/*
 		=================================
 		Create initial 2d array of rows -> cells, factoring in colspan but not rowspan
@@ -127,7 +136,7 @@ function html_tables_to_arr(html_str) {
 			}
 		}
 		// set table array value to object with attribute and table rows
-		table_arr[i] = {attr: table_attr, rows: row_arr};
+		table_arr[i] = {attr: table_attr, caption: caption, rows: row_arr};
 	}
 	return table_arr;
 }
@@ -139,8 +148,8 @@ function table_arr_to_doc(html_str, html_table_arr) {
 	// loop through tables in order
 	for (let i = 0; i < html_table_arr.length; i++) {
 		let curr_table = html_table_arr[i];
-		// create string of edited table
-		let table_str = curr_table.attr;
+		// create string of edited table with caption
+		let table_str = curr_table.attr+ "\n" + curr_table.caption;
 		// loop through and append rows
 		for (let j = 0; j < curr_table.rows.length; j++) {
 			let curr_row = curr_table.rows[j];
@@ -279,5 +288,22 @@ function to_otb(table_arr, row, col) {
 		curr_cell = curr_cell.replace(/(<t[dh])/g, '$1 class="osfi-txt--bold"');
 	}
 	table_arr.rows[row].cells[col] = curr_cell;
+	return table_arr;
+}
+
+// sets cell value as caption
+function set_caption(table_arr, row, col) {
+	let curr_caption = table_arr.caption;
+	// append caption if none exists
+	if (curr_caption === "") {
+		curr_caption = "<caption></caption>";
+	}
+	// append cell to caption
+	let curr_cell = table_arr.rows[row].cells[col];
+	let curr_cell_contents = curr_cell.replace(/<t[hd][^>]*>(.*?)<\/t[hd]>/g, "$1")
+	curr_caption = curr_caption.replace(/<caption>((.|\n)*?)<\/caption>/g, "<caption>$1" + curr_cell_contents + "</caption>");
+	table_arr.caption = curr_caption;
+	// remove cell contents
+	table_arr.rows[row].cells[col] = "";
 	return table_arr;
 }
