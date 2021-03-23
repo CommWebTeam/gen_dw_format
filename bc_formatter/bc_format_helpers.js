@@ -27,7 +27,22 @@ function format_file() {
 
 /* helpers */
 
-// remove reference links
-function remove_ref_links(html_str) {
-	return html_str.replaceAll(/<a name="_Ref[a-zA-z0-9]+">(.*?)<\/a>/g, "$1").replaceAll(/<a href="#_Ref[a-zA-z0-9]+">(.*?)<\/a>/g, "$1");
+// remove text for top footnotes
+function rm_footnote_text(html_str) {
+	return html_str.replaceAll(/Footnote <\/span>[0-9]+/g, "</span>").replaceAll(/Note de bas de page <\/span>[0-9]+/g, "</span>");
+}
+
+// replace br with newlines
+function replace_br_p(html_str) {
+	return html_str.replaceAll("<br/>", "<p></p>");
+}
+
+// remove math
+function rm_math_placeholder(html_str) {
+	return html_str.replaceAll(/<math(.|\n)*?<\/math>/g, "MATHPLACEHOLDER");
+}
+
+// remove [BCBS] and [CBCB] citations
+function rm_basel_cite(html_str) {
+	return html_str.replaceAll(/\[BCBS(.*?)\]/g, "").replaceAll(/\[CBCB.*?\]/g, "");
 }
