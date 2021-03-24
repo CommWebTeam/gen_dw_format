@@ -18,6 +18,7 @@ The inputs are as follows:
         - convert the cell to a header (td to th).
         - append the cell contents to the caption, then remove the cell.
         - convert the cell to a specific class (e.g. "osfi-txt--bold" or "align-left").
+        - remove &lt;p> tag from the cell.
         - append the preceding paragraph, either immediately above a table or separated by &lt;br>, to its caption. This action ignores cells completely and only uses the table inputs above, as it is only applied once per table, so the next three inputs are ignored.
     - the table dimension to perform the action on, which can be rows or columns.
     - a textbox filled in with the comma-separated values of the indices for which rows or columns to apply the action on. As with the earlier textbox, this is the position the row or column appears in from the start or end of the table, depending on the direction selected below, beginning at 0.
