@@ -121,6 +121,8 @@ function html_tables_to_arr(html_str) {
 				console.log("Captions after the first in table " + i + " have been ignored.")
 			}
 		}
+		// get position of thead, tbody, tfooter
+		
 		/*
 		=================================
 		Create initial 2d array of rows -> cells, factoring in colspan but not rowspan
