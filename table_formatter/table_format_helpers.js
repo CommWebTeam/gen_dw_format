@@ -1,65 +1,72 @@
 const extra_span_cell = "<td><span placeholder/></td>";
 const table_placeholder = "<TABLEPLACEHOLDER/>";
+const close_caption_placeholder = "<CLOSECAPTIONPLACEHOLDER>";
 
 // edit html tables
 function format_table() {
 	let file_reader_content = new FileReader();
 	let content_str = document.getElementById("html_file").files[0];
 	file_reader_content.onload = function(event) {
-		// read in inputs
+		// read in and apply inputs
 		let html_doc_str = event.target.result.replaceAll("\r\n", "\n");
-		let html_table_arr = html_tables_to_arr(html_doc_str);
 		let table_list_type = document.getElementById("table_list_type").value;
 		let table_list = int_csv_to_arr(document.getElementById("table_list").value);
 		let action = document.getElementById("action").value;
 		let action_dim = document.getElementById("action_dim").value;
 		let forward_dir = document.getElementById("action_list_dir").value === "forward";
 		let action_list = int_csv_to_arr(document.getElementById("action_list").value);
-		// apply inputs
-		let dim_func = row_apply;
-		if (action_dim === "cols") {
-			dim_func = col_apply;
+		if (action === "set_caption_para") {
+			// add paragraphs to caption
+			html_doc_str = set_prev_para_caption(html_doc_str, table_list_type, table_list);
+		} else {
+			// convert tables to array
+			let html_table_arr = html_tables_to_arr(html_doc_str);
+			// apply input action across input dimension on input tables
+			let action_func = function(x) {x}; // placeholder function that returns input
+			if (action === "to_header") {
+				action_func = to_header;
+			}
+			else if (action === "set_caption") {
+				action_func = set_caption;
+			}
+			else if (action === "to_bold") {
+				action_func = to_otb;
+			}
+			else if (action === "to_align_left") {
+				action_func = to_align_left;
+			}
+			else if (action === "to_align_right") {
+				action_func = to_align_right;
+			}
+			else if (action === "to_align_bottom") {
+				action_func = to_align_bottom;
+			}
+			else if (action === "to_align_center") {
+				action_func = to_align_center;
+			}
+			else if (action === "to_bg_white") {
+				action_func = to_bg_white;
+			}
+			else if (action === "to_bg_light") {
+				action_func = to_bg_light;
+			}
+			else if (action === "to_indent_small") {
+				action_func = to_indent_small;
+			}
+			else if (action === "to_indent_medium") {
+				action_func = to_indent_medium;
+			}
+			else if (action === "to_indent_large") {
+				action_func = to_indent_large;
+			}
+			let dim_func = row_apply;
+			if (action_dim === "cols") {
+				dim_func = col_apply;
+			}
+			html_table_arr = dim_func(html_table_arr, table_list_type, table_list, action_list, forward_dir, action_func);
+			// convert table array to output
+			html_doc_str = table_arr_to_doc(html_doc_str, html_table_arr);
 		}
-		let action_func = function(x) {x}; // placeholder function that returns input
-		if (action === "to_header") {
-			action_func = to_header;
-		}
-		if (action === "set_caption") {
-			action_func = set_caption;
-		}
-		if (action === "to_bold") {
-			action_func = to_otb;
-		}
-		if (action === "to_align_left") {
-			action_func = to_align_left;
-		}
-		if (action === "to_align_right") {
-			action_func = to_align_right;
-		}
-		if (action === "to_align_bottom") {
-			action_func = to_align_bottom;
-		}
-		if (action === "to_align_center") {
-			action_func = to_align_center;
-		}
-		if (action === "to_bg_white") {
-			action_func = to_bg_white;
-		}
-		if (action === "to_bg_light") {
-			action_func = to_bg_light;
-		}
-		if (action === "to_indent_small") {
-			action_func = to_indent_small;
-		}
-		if (action === "to_indent_medium") {
-			action_func = to_indent_medium;
-		}
-		if (action === "to_indent_large") {
-			action_func = to_indent_large;
-		}
-		html_table_arr = dim_func(html_table_arr, table_list_type, table_list, action_list, forward_dir, action_func);
-		// convert to output
-		let edited_html_doc_str = table_arr_to_doc(html_doc_str, html_table_arr);
 		// decide output file name - this tool may need to be run multiple times, so append version number to name
 		let input_file_path = document.getElementById("html_file").value;
 		let input_file_name = input_file_path.split('\\').pop().split('/').pop();
@@ -71,7 +78,7 @@ function format_table() {
 			let old_vers = input_file_name.replace(/formatted_tables_([0-9]+)/g, "$1");
 			output_file_name = "formatted_tables_" + (parseInt(old_vers) + 1) + ".html";
 		}
-		download(edited_html_doc_str, output_file_name, "text/html");
+		download(html_doc_str, output_file_name, "text/html");
 	}
 	file_reader_content.readAsText(content_str);
 }
@@ -230,6 +237,57 @@ function int_csv_to_arr(csv_str) {
 
 /*
 =================================
+Function to specifically handle the action of setting preceding paragraph before table as caption
+=================================
+*/
+
+// sets paragraph preceding table as caption if it is only separated by a br
+function set_prev_para_caption(html_doc_str, table_list_type, table_list) {
+	// temporarily replace table tags with placeholders to mark whether table has been visited yet
+	let edited_html_doc_str = html_doc_str.replaceAll("<table", table_placeholder);
+	// regex to get full document up to the </table that closes the current table
+	const close_curr_table = new RegExp("^(.|\n)*?" + table_placeholder + "(.|\n)*?</table>", "g");
+	// regex to find paragraph before a table placeholder
+	const prev_para = new RegExp("<p>(.*?)</p>" + "( |\n|(<br[^>]*>))*" + table_placeholder, "g");
+	// regex to find the full tag of the current table
+	const table_tag = new RegExp("(" + table_placeholder + "[^>]*>)", "g");
+	// loop through tables to apply function to
+	let i = 0;
+	while (edited_html_doc_str.includes(table_placeholder)) {
+		if ((table_list_type === "all_tables") ||
+		(table_list_type === "exclude_tables" && !table_list.includes(i)) ||
+		(table_list_type === "include_tables" && table_list.includes(i))) {
+			// get document up to </table> that closes current table
+			let orig_doc_part = match_with_empty(edited_html_doc_str, close_curr_table)[0];
+			let curr_doc_part = orig_doc_part;
+			// check to see if there is a previous paragraph in current table
+			let prev_para_match = match_with_empty(curr_doc_part, prev_para);
+			if (prev_para_match.length > 0) {
+				// if there is, append it to caption, and set caption to placeholder to avoid matching later
+				let prev_para_contents = prev_para_match[0].replace(prev_para, "$1");
+				if (!curr_doc_part.includes("</caption>")) {
+					// create empty caption if no caption exists yet
+					curr_doc_part = curr_doc_part.replace(table_tag, "$1\n<caption></caption>");
+				}
+				curr_doc_part = curr_doc_part.replace("</caption>", prev_para_contents + close_caption_placeholder);
+				// remove previous paragraph
+				curr_doc_part = curr_doc_part.replace(prev_para, table_placeholder);
+				edited_html_doc_str = edited_html_doc_str.replace(orig_doc_part, curr_doc_part);
+			}
+		}
+		// move to next table by removing placeholder
+		edited_html_doc_str = edited_html_doc_str.replace(table_placeholder, "<table");
+		i++;
+	}
+	// revert caption placeholders
+	edited_html_doc_str = edited_html_doc_str.replaceAll(close_caption_placeholder, "</caption>");
+	console.log("Tables found: " + i);
+	return edited_html_doc_str;
+}
+
+
+/*
+=================================
 Function applier along row / column of table array 
 =================================
 */
@@ -306,6 +364,24 @@ function to_header(table_arr, row, col) {
 	return table_arr;
 }
 
+// sets cell value as caption
+function set_caption(table_arr, row, col) {
+	let curr_caption = table_arr.caption;
+	// append caption if none exists
+	if (curr_caption === "") {
+		curr_caption = "<caption></caption>";
+	}
+	// append cell to caption
+	let curr_cell = table_arr.rows[row].cells[col];
+	let curr_cell_contents = curr_cell.replace(/<t[hd][^>]*>(.*?)<\/t[hd]>/g, "$1")
+	curr_caption = curr_caption.replace("</caption>", curr_cell_contents + "</caption>");
+	table_arr.caption = curr_caption;
+	// remove cell contents
+	table_arr.rows[row].cells[col] = "<td></td>";
+	return table_arr;
+}
+
+
 // helper function - adds class to cell
 function add_class(table_arr, row, col, class_str) {
 	let curr_cell = table_arr.rows[row].cells[col];
@@ -362,19 +438,3 @@ function to_indent_large(table_arr, row, col) {
 	return add_class(table_arr, row, col, "indent-large");
 }
 
-// sets cell value as caption
-function set_caption(table_arr, row, col) {
-	let curr_caption = table_arr.caption;
-	// append caption if none exists
-	if (curr_caption === "") {
-		curr_caption = "<caption></caption>";
-	}
-	// append cell to caption
-	let curr_cell = table_arr.rows[row].cells[col];
-	let curr_cell_contents = curr_cell.replace(/<t[hd][^>]*>(.*?)<\/t[hd]>/g, "$1")
-	curr_caption = curr_caption.replace(/<caption>((.|\n)*?)<\/caption>/g, "<caption>$1" + curr_cell_contents + "</caption>");
-	table_arr.caption = curr_caption;
-	// remove cell contents
-	table_arr.rows[row].cells[col] = "";
-	return table_arr;
-}

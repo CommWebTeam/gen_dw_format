@@ -18,7 +18,7 @@ The inputs are as follows:
         - convert the cell to a header (td to th).
         - append the cell contents to the caption, then remove the cell.
         - convert the cell to a specific class (e.g. "osfi-txt--bold" or "align-left").
-        - append the preceding paragraph above a table to its caption. This action ignores cells completely and only uses the table inputs above, as it is only applied once per table, so the next three inputs are ignored.
+        - append the preceding paragraph, either immediately above a table or separated by &lt;br>, to its caption. This action ignores cells completely and only uses the table inputs above, as it is only applied once per table, so the next three inputs are ignored.
     - the table dimension to perform the action on, which can be rows or columns.
     - a textbox filled in with the comma-separated values of the indices for which rows or columns to apply the action on. As with the earlier textbox, this is the position the row or column appears in from the start or end of the table, depending on the direction selected below, beginning at 0.
     - the direction to read the table in. If "top to bottom" is selected, then the rows or columns are read in their regular order; the first row/column is at index 0, the second row/column is at index 1, and so on. If "bottom to top" is selected, then they are read in reverse order instead; the last row/column is at index 0, the second last row/column is at index 1, and so on.
@@ -43,11 +43,14 @@ This makes the overall array a triple nested array, e.g.
 
 Each table array accounts for rowspan and colspan. For example, suppose that in the 2nd row, (2, y), the 1st cell spans three columns, so (2, 1) contains a value, but (2, 2) and (2, 3) are just spans of (2, 1). Then, if you apply a function on the 3rd column, (x, 3), the function will see that the 3rd column in the 2nd row (2, 3) is just a placeholder, so it will NOT edit any cells in the 2nd row.
 
+New captions are inserted immediately after the opening &lt;table> tag where applicable.
+
 ### Assumptions
 
 This tool makes some assumptions about the HTML document's formatting when reading the tables into an array. Some major assumptions are as follows:
+- the document structure is valid HTML and XML.
 - there are no nested tables.
-- there is only a single caption, located right before the opening &lt;table> tag.
+- each table has at most one caption.
 
 ## Adding actions
 
@@ -60,4 +63,4 @@ Each action function should take in the following as input:
 
 The function should return the array of the table.
 
-The action for **appending the preceding paragraph above a table to its caption** is implemented differently from the other actions because it uses code from outside of the tables.
+The action for **appending the preceding paragraph above a table to its caption** is implemented differently from the other actions because it uses code from outside of the tables. It does not use the table array used for other actions.
