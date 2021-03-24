@@ -18,7 +18,7 @@ The inputs are as follows:
         - convert the cell to a header (td to th).
         - append the cell contents to the caption, then remove the cell.
         - convert the cell to a specific class (e.g. "osfi-txt--bold" or "align-left").
-        - remove &lt;p> tag from the cell.
+        - remove p tags from the cell.
         - append the preceding paragraph, either immediately above a table or separated by &lt;br>, to its caption. This action ignores cells completely and only uses the table inputs above, as it is only applied once per table, so the next three inputs are ignored.
     - the table dimension to perform the action on, which can be rows or columns.
     - a textbox filled in with the comma-separated values of the indices for which rows or columns to apply the action on. As with the earlier textbox, this is the position the row or column appears in from the start or end of the table, depending on the direction selected below, beginning at 0.
@@ -29,15 +29,19 @@ If you would like to perform multiple actions on a single document, you can chai
 ## Implementation details
 
 The tables in the HTML document are stored in an array. Each table is an object containing the following properties:
-- attr: the table tag itself, including its attributes.
-- caption: the caption tag for the table, an empty string if there is no caption.
+- attr: a string for the table tag itself, including its attributes.
+    - example: '&lt;table style="width:400px">'
+- caption: a string for the caption tag for the table, an empty string if there is no caption.
+    - example: '&lt;caption>Caption text here.&lt;/caption>'
 - rows: an array of the table's rows.
 
-Each row in the array of rows contains the following properties:
-- attr: the tr tag itself, including its attributes.
+Each row in the array of rows is an object containing the following properties:
+- attr: a string for the tr tag itself, including its attributes.
+    - example: '&lt;tr style="width:400px">'
 - cells: an array of the row's cells.
+    - example: ['&lt;th>Header cell&lt;/th>', '&lt;td>Content cell 1&lt;/td>', '&lt;td>Content cell 2&lt;/td>']
 
-This makes the overall array a triple nested array, e.g.
+This makes the overall array a triple nested array, e.g. a single array might be represented as so:
 - [Table One: Caption, [Row 1: [Cell 1a, Cell 2a], Row 2: [Cell 2a, Cell 2b]], 
 - Table Two: Caption, [Row 1: [Cell 1a]],
 - Table Three: ...]
@@ -55,6 +59,15 @@ This tool makes some assumptions about the HTML document's formatting when readi
 - the only tags in a table that aren't contained within cells (td or th tags) are tr, caption, thead, tbody, and tfooter tags.
 
 ## Adding actions
+
+The process to add an action is as follows:
+1. In table_formatter.html: Add the action as an option for "Action to perform".
+2. In table_format_helpers.js:
+    - Create a helper function for the action at the bottom of the script.
+    - Refer to the new helper function when the action is selected in format_table().
+3. In README.md (this file): If necessary, add a mention of the action in the Inputs section.
+
+### Helper functions
 
 Helper functions for actions are placed at the bottom of table_format_helpers.js. They are referred to in the top level function, format_table().
 
