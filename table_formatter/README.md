@@ -51,6 +51,7 @@ This tool makes some assumptions about the HTML document's formatting when readi
 - the document structure is valid HTML and XML.
 - there are no nested tables.
 - each table has at most one caption.
+- the only tags in a table that aren't contained within cells (td or th tags) are tr, caption, thead, tbody, and tfooter tags.
 
 ## Adding actions
 
