@@ -59,6 +59,9 @@ function format_table() {
 			else if (action === "to_indent_large") {
 				action_func = to_indent_large;
 			}
+			else if (action === "remove_p_tags") {
+				action_func = remove_p_tags;
+			}
 			let dim_func = row_apply;
 			if (action_dim === "cols") {
 				dim_func = col_apply;
@@ -381,6 +384,12 @@ function set_caption(table_arr, row, col) {
 	return table_arr;
 }
 
+function remove_p_tags(table_arr, row, col) {
+	let curr_cell = table_arr.rows[row].cells[col];
+	curr_cell = curr_cell.replaceAll("<p>", "").replaceAll("</p>", "");
+	table_arr.rows[row].cells[col] = curr_cell;
+	return table_arr;
+}
 
 // helper function - adds class to cell
 function add_class(table_arr, row, col, class_str) {
