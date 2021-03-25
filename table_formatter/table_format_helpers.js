@@ -12,8 +12,9 @@ function format_table() {
 		let table_list_type = document.getElementById("table_list_type").value;
 		let table_list = int_csv_to_arr(document.getElementById("table_list").value);
 		let action_dim = document.getElementById("action_dim").value;
-		let forward_dir = document.getElementById("action_list_dir").value === "forward";
+		let action_list_type = document.getElementById("action_list_type").value;
 		let action_list = int_csv_to_arr(document.getElementById("action_list").value);
+		let forward_dir = document.getElementById("action_list_dir").value === "forward";
 		// convert tables to triple nested table array
 		let html_table_arr = html_tables_to_arr(html_doc_str);
 		// get input dimension for actions
@@ -23,43 +24,43 @@ function format_table() {
 		}
 		// apply actions across input dimension on table array
 		if (document.getElementById("to_header").checked) {
-			html_table_arr = dim_func(html_table_arr, table_list_type, table_list, action_list, forward_dir, to_header);
+			html_table_arr = dim_func(html_table_arr, table_list_type, table_list, action_list_type, action_list, forward_dir, to_header);
 		}
 		if (document.getElementById("set_caption").checked) {
-			html_table_arr = dim_func(html_table_arr, table_list_type, table_list, action_list, forward_dir, set_caption);
+			html_table_arr = dim_func(html_table_arr, table_list_type, table_list, action_list_type, action_list, forward_dir, set_caption);
 		}
 		if (document.getElementById("remove_p_tags").checked) {
-			html_table_arr = dim_func(html_table_arr, table_list_type, table_list, action_list, forward_dir, remove_p_tags);
+			html_table_arr = dim_func(html_table_arr, table_list_type, table_list, action_list_type, action_list, forward_dir, remove_p_tags);
 		}
 		if (document.getElementById("to_bold").checked) {
-			html_table_arr = dim_func(html_table_arr, table_list_type, table_list, action_list, forward_dir, to_otb);
+			html_table_arr = dim_func(html_table_arr, table_list_type, table_list, action_list_type, action_list, forward_dir, to_otb);
 		}
 		if (document.getElementById("to_align_left").checked) {
-			html_table_arr = dim_func(html_table_arr, table_list_type, table_list, action_list, forward_dir, to_align_left);
+			html_table_arr = dim_func(html_table_arr, table_list_type, table_list, action_list_type, action_list, forward_dir, to_align_left);
 		}
 		if (document.getElementById("to_align_right").checked) {
-			html_table_arr = dim_func(html_table_arr, table_list_type, table_list, action_list, forward_dir, to_align_right);
+			html_table_arr = dim_func(html_table_arr, table_list_type, table_list, action_list_type, action_list, forward_dir, to_align_right);
 		}
 		if (document.getElementById("to_align_bottom").checked) {
-			html_table_arr = dim_func(html_table_arr, table_list_type, table_list, action_list, forward_dir, to_align_bottom);
+			html_table_arr = dim_func(html_table_arr, table_list_type, table_list, action_list_type, action_list, forward_dir, to_align_bottom);
 		}
 		if (document.getElementById("to_align_center").checked) {
-			html_table_arr = dim_func(html_table_arr, table_list_type, table_list, action_list, forward_dir, to_align_center);
+			html_table_arr = dim_func(html_table_arr, table_list_type, table_list, action_list_type, action_list, forward_dir, to_align_center);
 		}
 		if (document.getElementById("to_bg_white").checked) {
-			html_table_arr = dim_func(html_table_arr, table_list_type, table_list, action_list, forward_dir, to_bg_white);
+			html_table_arr = dim_func(html_table_arr, table_list_type, table_list, action_list_type, action_list, forward_dir, to_bg_white);
 		}
 		if (document.getElementById("to_bg_light").checked) {
-			html_table_arr = dim_func(html_table_arr, table_list_type, table_list, action_list, forward_dir, to_bg_light);
+			html_table_arr = dim_func(html_table_arr, table_list_type, table_list, action_list_type, action_list, forward_dir, to_bg_light);
 		}
 		if (document.getElementById("to_indent_small").checked) {
-			html_table_arr = dim_func(html_table_arr, table_list_type, table_list, action_list, forward_dir, to_indent_small);
+			html_table_arr = dim_func(html_table_arr, table_list_type, table_list, action_list_type, action_list, forward_dir, to_indent_small);
 		}
 		if (document.getElementById("to_indent_medium").checked) {
-			html_table_arr = dim_func(html_table_arr, table_list_type, table_list, action_list, forward_dir, to_indent_medium);
+			html_table_arr = dim_func(html_table_arr, table_list_type, table_list, action_list_type, action_list, forward_dir, to_indent_medium);
 		}
 		if (document.getElementById("to_indent_large").checked) {
-			html_table_arr = dim_func(html_table_arr, table_list_type, table_list, action_list, forward_dir, to_indent_large);
+			html_table_arr = dim_func(html_table_arr, table_list_type, table_list, action_list_type, action_list, forward_dir, to_indent_large);
 		}
 		// for actions on setting thead/tbody/tfoot index, these only use rows and the first two row indices
 		if (document.getElementById("insert_thead").checked) {
@@ -315,7 +316,7 @@ Function applier along row / column of table array
 */
 
 // apply a function to all cells in a row for table array
-function row_apply(table_arr, table_list_type, table_list, action_list, forward_dir, apply_func) {
+function row_apply(table_arr, table_list_type, table_list, action_list_type, action_list, forward_dir, apply_func) {
 	let edited_table_arr = table_arr;
 	// loop over tables to apply function to
 	for (let i = 0; i < edited_table_arr.length; i++) {
@@ -329,7 +330,9 @@ function row_apply(table_arr, table_list_type, table_list, action_list, forward_
 				if (!forward_dir) {
 					action_list_check = curr_table_rows.length - 1 - j;
 				}
-				if (action_list.includes(action_list_check)) {
+				if ((action_list_type === "all_rowcol") ||
+				  (action_list_type === "exclude_rowcol" && !action_list.includes(action_list_check)) ||
+				  (action_list_type === "include_rowcol" && action_list.includes(action_list_check))) {
 					// loop over cells and apply function if it isn't a placeholder
 					let curr_row_cells = curr_table_rows[j].cells;
 					for (let k = 0; k < curr_row_cells.length; k++) {
@@ -345,7 +348,7 @@ function row_apply(table_arr, table_list_type, table_list, action_list, forward_
 }
 
 // apply a function to all cells in a column for table array
-function col_apply(table_arr, table_list_type, table_list, action_list, forward_dir, apply_func) {
+function col_apply(table_arr, table_list_type, table_list, action_list_type, action_list, forward_dir, apply_func) {
 	let edited_table_arr = table_arr;
 	// loop over tables to apply function to
 	for (let i = 0; i < edited_table_arr.length; i++) {
@@ -362,8 +365,12 @@ function col_apply(table_arr, table_list_type, table_list, action_list, forward_
 					if (!forward_dir) {
 						action_list_check = curr_row_cells.length - 1 - k;
 					}
-					if (action_list.includes(action_list_check) && !curr_row_cells[k].includes(extra_span_cell)) {
-						edited_table_arr[i] = apply_func(edited_table_arr[i], j, k);
+					if ((action_list_type === "all_rowcol") ||
+					  (action_list_type === "exclude_rowcol" && !action_list.includes(action_list_check)) ||
+					  (action_list_type === "include_rowcol" && action_list.includes(action_list_check))) {
+						if (!curr_row_cells[k].includes(extra_span_cell)) {
+							edited_table_arr[i] = apply_func(edited_table_arr[i], j, k);
+						}
 					}
 				}
 			}
