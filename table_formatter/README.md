@@ -9,9 +9,9 @@ The inputs are as follows:
 - the file for an HTML document with tables.
 - the tables to edit:
     - a selection for which tables to edit, which can be one of the following:
-        1. "only the tables listed below".
-        2. "all tables excluding those listed below"
-        3. "all tables"
+        1. "Only the listed tables"
+        2. "All tables except those listed"
+        3. "All tables"
     - If option 1 or 2 is selected above, you will have to fill in the textbox with the comma-separated values of the indices for the tables to include / exclude. These are the positions the tables appear in from the start of the document, beginning at 0. For example, if you want to exclude the first 2 tables, then you would select "all tables excluding the following", and enter "0,1" into the textbox.
 - the actions to apply and how to apply them:
     - actions to apply on a cell. So far, the following actions have been implemented:
@@ -23,8 +23,12 @@ The inputs are as follows:
         - insert an opening thead, tbody, or tfoot tag at the first row index provided below, and the corresponding closing tag at the second row index provided below. For example, inserting the opening thead at row index 0 means placing it before all tr tags (rows). Since thead/tbody/tfoot are only used to group rows, the dimension provided below is ignored. Only the first two indices provided below are used for these actions.
         - append the paragraph preceding a table, either immediately above a table or separated by &lt;br>, to the table's caption. This action ignores cells completely and only uses the table inputs above, as it is only applied once per table, so the following inputs are ignored.
     - the table dimension to perform the actions on, which can be rows or columns.
-    - a textbox filled in with the comma-separated values of the indices for which rows or columns to apply the actions on. As with the earlier textbox, this is the position the row or column appears in from the start or end of the table, depending on the direction selected below, beginning at 0.
-    - the direction to read the table in for the row/column indices provided above. If "top to bottom" is selected, then the rows or columns are read in their regular order; the first row/column is at index 0, the second row/column is at index 1, and so on. If "bottom to top" is selected, then they are read in reverse order instead; the last row/column is at index 0, the second last row/column is at index 1, and so on.
+    - a selection for which rows/columns to perform the actions on, which can be one of the following:
+        1. "Only the listed rows/columns"
+        2. "All rows/columns except those listed"
+        3. "All rows/columns"
+    - If option 1 or 2 is selected above, you will have to fill in the textbox with the comma-separated values of the indices for which rows/columns to include / exclude. These are the positions the rows/columns appear in from the start or end of the table, depending on the direction selected below, beginning at 0.
+    - the direction to read the table in for the row/column indices provided above. If "top to bottom" is selected, then the rows/columns are read in their regular order; the first row/column is at index 0, the second row/column is at index 1, and so on. If "bottom to top" is selected, then they are read in reverse order instead; the last row/column is at index 0, the second last row/column is at index 1, and so on.
 
 ### Running the tool multiple times
 

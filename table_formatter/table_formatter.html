@@ -14,14 +14,14 @@
   <br/>
   <label for="table_list_type">Tables to edit:</label>
   <select name="table_list_type" id="table_list_type">
-    <option value="include_tables">Only the tables listed below</option>
-    <option value="exclude_tables">All tables excluding those listed below</option>
+    <option value="include_tables">Only the listed tables</option>
+    <option value="exclude_tables">All tables except those listed</option>
     <option value="all_tables">All tables</option>
   </select>
   <br/>
   <br/>
-  If "All tables excluding those listed below" or "Only the tables listed below" was selected - <br/>
-  Comma-separated indices for tables: <br/>
+  If <i>"Only the listed tables"</i> or <i>"All tables except those listed"</i> was selected - <br/>
+  List of comma-separated indices for tables: <br/>
   e.g. 0,2,5 <br/>
   <input id="table_list" type="text" value="0" />
   <br/>
@@ -88,7 +88,16 @@
   </select>
   <br/>
   <br/>
-  Comma-separated indices for rows/columns to perform actions on: <br/>
+  <label for="table_list_type">Rows/columns to perform actions on:</label>
+  <select name="table_list_type" id="table_list_type">
+    <option value="include_tables">Only the listed rows/columns</option>
+    <option value="exclude_tables">All rows/columns except those listed</option>
+    <option value="all_tables">All rows/columns</option>
+  </select>
+  <br/>
+  <br/>
+  If <i>"Only the listed rows/columns"</i> or <i>"All rows/columns except those listed"</i> was selected - <br/>
+  List of comma-separated indices for rows/columns: <br/>
   e.g. 0,2,5 <br/>
   <input id="action_list" type="text" value="0" />
   <br/>
