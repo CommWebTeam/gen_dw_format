@@ -28,33 +28,58 @@
   <br/>
   <p>----------</p>
   <br/>
-  <label for="action">Action to perform:</label>
-  <select name="action" id="action">
-    <option value="to_header">Convert to headers</option>
-    <option value="set_caption">Move text to caption</option>
-    <option value="to_bold">Add osfi-txt--bold class</option>
-    <option value="to_align_left">Add align-left class</option>
-    <option value="to_align_right">Add align-right class</option>
-    <option value="to_align_bottom">Add align-bottom class</option>
-    <option value="to_align_center">Add align-center class</option>
-    <option value="to_bg_white">Add background-white class</option>
-    <option value="to_bg_light">Add background-light class</option>
-    <option value="to_indent_small">Add indent-small class</option>
-    <option value="to_indent_medium">Add indent-medium class</option>
-    <option value="to_indent_large">Add indent-large class</option>
-    <option value="remove_p_tags">Remove &lt;p&gt; tags inside cells</option>
-    <option value="set_caption_para">Move the paragraph preceding a table to its caption (ignore the next few inputs if selected)</option>
-  </select>
+  Actions to perform: <br/>
+  <input type="checkbox" id="to_header" name="to_header" checked>
+  <label for="to_header">Convert cells to header &lt;th> tag</label>
+  <br/>
+  <input type="checkbox" id="set_caption" name="set_caption">
+  <label for="set_caption">Move cell text to table caption</label>
+  <br/>
+  <input type="checkbox" id="to_bold" name="to_bold">
+  <label for="to_bold">Add <i>osfi-txt--bold</i> class</label>
+  <br/>
+  <input type="checkbox" id="to_align_left" name="to_align_left">
+  <label for="to_align_left">Add <i>align-left</i> class</label>
+  <br/>
+  <input type="checkbox" id="to_align_right" name="to_align_right">
+  <label for="to_align_right">Add <i>align-right</i> class</label>
+  <br/>
+  <input type="checkbox" id="to_align_bottom" name="to_align_bottom">
+  <label for="to_align_bottom">Add <i>align-bottom</i> class</label>
+  <br/>
+  <input type="checkbox" id="to_align_center" name="to_align_center">
+  <label for="to_align_center">Add <i>align-center</i> class</label>
+  <br/>
+  <input type="checkbox" id="to_bg_white" name="to_bg_white">
+  <label for="to_bg_white">Add <i>background-white</i> class</label>
+  <br/>
+  <input type="checkbox" id="to_bg_light" name="to_bg_light">
+  <label for="to_bg_light">Add <i>background-light</i> class</label>
+  <br/>
+  <input type="checkbox" id="to_indent_small" name="to_indent_small">
+  <label for="to_indent_small">Add <i>indent-small</i> class</label>
+  <br/>
+  <input type="checkbox" id="to_indent_medium" name="to_indent_medium">
+  <label for="to_indent_medium">Add <i>indent-medium</i> class</label>
+  <br/>
+  <input type="checkbox" id="to_indent_large" name="to_indent_large">
+  <label for="to_indent_large">Add <i>indent-large</i> class</label>
+  <br/>
+  <input type="checkbox" id="remove_p_tags" name="remove_p_tags">
+  <label for="remove_p_tags">Remove paragraph &lt;p> tags inside cells</label>
+  <br/>
+  <input type="checkbox" id="set_caption_para" name="set_caption_para">
+  <label for="set_caption_para">Move the paragraph preceding a table to the table caption (this action ignores the next few inputs)</label>
   <br/>
   <br/>
-  <label for="action_dim">Dimension to perform action on:</label>
+  <label for="action_dim">Dimension to perform actions on:</label>
   <select name="action_dim" id="action_dim">
     <option value="rows">Rows</option>
     <option value="cols">Columns</option>
   </select>
   <br/>
   <br/>
-  Comma-separated indices for rows/columns to perform action on: <br/>
+  Comma-separated indices for rows/columns to perform actions on: <br/>
   e.g. 0,2,5 <br/>
   <input id="action_list" type="text" value="0" />
   <br/>
@@ -75,6 +100,6 @@
 <p>More in-depth information can be found in the <a rel="external" href="https://commwebteam.github.io/gen_dw_format/table_formatter/">readme</a>.</p>
 <script src="https://commwebteam.github.io/util/download.js"></script> 
 <script src="https://commwebteam.github.io/util/format_helpers.js"></script> 
-<script src="table_format_helpers.js"></script> 
+<script src="table_format_helpers.js"></script>
 </body>
 </html>

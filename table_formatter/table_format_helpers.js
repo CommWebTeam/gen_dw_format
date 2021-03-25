@@ -7,68 +7,65 @@ function format_table() {
 	let file_reader_content = new FileReader();
 	let content_str = document.getElementById("html_file").files[0];
 	file_reader_content.onload = function(event) {
-		// read in and apply inputs
+		// read in inputs
 		let html_doc_str = event.target.result.replaceAll("\r\n", "\n");
 		let table_list_type = document.getElementById("table_list_type").value;
 		let table_list = int_csv_to_arr(document.getElementById("table_list").value);
-		let action = document.getElementById("action").value;
 		let action_dim = document.getElementById("action_dim").value;
 		let forward_dir = document.getElementById("action_list_dir").value === "forward";
 		let action_list = int_csv_to_arr(document.getElementById("action_list").value);
-		if (action === "set_caption_para") {
-			// add paragraphs to caption
+		// convert tables to triple nested table array
+		let html_table_arr = html_tables_to_arr(html_doc_str);
+		// get input dimension for actions
+		let dim_func = row_apply;
+		if (action_dim === "cols") {
+			dim_func = col_apply;
+		}
+		// apply actions across input dimension on table array
+		if (document.getElementById("to_header").checked) {
+			html_table_arr = dim_func(html_table_arr, table_list_type, table_list, action_list, forward_dir, to_header);
+		}
+		if (document.getElementById("set_caption").checked) {
+			html_table_arr = dim_func(html_table_arr, table_list_type, table_list, action_list, forward_dir, set_caption);
+		}
+		if (document.getElementById("to_bold").checked) {
+			html_table_arr = dim_func(html_table_arr, table_list_type, table_list, action_list, forward_dir, to_otb);
+		}
+		if (document.getElementById("to_align_left").checked) {
+			html_table_arr = dim_func(html_table_arr, table_list_type, table_list, action_list, forward_dir, to_align_left);
+		}
+		if (document.getElementById("to_align_right").checked) {
+			html_table_arr = dim_func(html_table_arr, table_list_type, table_list, action_list, forward_dir, to_align_right);
+		}
+		if (document.getElementById("to_align_bottom").checked) {
+			html_table_arr = dim_func(html_table_arr, table_list_type, table_list, action_list, forward_dir, to_align_bottom);
+		}
+		if (document.getElementById("to_align_center").checked) {
+			html_table_arr = dim_func(html_table_arr, table_list_type, table_list, action_list, forward_dir, to_align_center);
+		}
+		if (document.getElementById("to_bg_white").checked) {
+			html_table_arr = dim_func(html_table_arr, table_list_type, table_list, action_list, forward_dir, to_bg_white);
+		}
+		if (document.getElementById("to_bg_light").checked) {
+			html_table_arr = dim_func(html_table_arr, table_list_type, table_list, action_list, forward_dir, to_bg_light);
+		}
+		if (document.getElementById("to_indent_small").checked) {
+			html_table_arr = dim_func(html_table_arr, table_list_type, table_list, action_list, forward_dir, to_indent_small);
+		}
+		if (document.getElementById("to_indent_medium").checked) {
+			html_table_arr = dim_func(html_table_arr, table_list_type, table_list, action_list, forward_dir, to_indent_medium);
+		}
+		if (document.getElementById("to_indent_large").checked) {
+			html_table_arr = dim_func(html_table_arr, table_list_type, table_list, action_list, forward_dir, to_indent_large);
+		}
+		if (document.getElementById("remove_p_tags").checked) {
+			html_table_arr = dim_func(html_table_arr, table_list_type, table_list, action_list, forward_dir, remove_p_tags);
+		}
+		// convert table array to output
+		html_doc_str = table_arr_to_doc(html_doc_str, html_table_arr);
+		// do action for adding paragraphs to caption separately
+		if (document.getElementById("set_caption_para").checked) {
 			html_doc_str = set_prev_para_caption(html_doc_str, table_list_type, table_list);
-		} else {
-			// convert tables to array
-			let html_table_arr = html_tables_to_arr(html_doc_str);
-			// apply input action across input dimension on input tables
-			let action_func = function(x) {x}; // placeholder function that returns input
-			if (action === "to_header") {
-				action_func = to_header;
-			}
-			else if (action === "set_caption") {
-				action_func = set_caption;
-			}
-			else if (action === "to_bold") {
-				action_func = to_otb;
-			}
-			else if (action === "to_align_left") {
-				action_func = to_align_left;
-			}
-			else if (action === "to_align_right") {
-				action_func = to_align_right;
-			}
-			else if (action === "to_align_bottom") {
-				action_func = to_align_bottom;
-			}
-			else if (action === "to_align_center") {
-				action_func = to_align_center;
-			}
-			else if (action === "to_bg_white") {
-				action_func = to_bg_white;
-			}
-			else if (action === "to_bg_light") {
-				action_func = to_bg_light;
-			}
-			else if (action === "to_indent_small") {
-				action_func = to_indent_small;
-			}
-			else if (action === "to_indent_medium") {
-				action_func = to_indent_medium;
-			}
-			else if (action === "to_indent_large") {
-				action_func = to_indent_large;
-			}
-			else if (action === "remove_p_tags") {
-				action_func = remove_p_tags;
-			}
-			let dim_func = row_apply;
-			if (action_dim === "cols") {
-				dim_func = col_apply;
-			}
-			html_table_arr = dim_func(html_table_arr, table_list_type, table_list, action_list, forward_dir, action_func);
-			// convert table array to output
-			html_doc_str = table_arr_to_doc(html_doc_str, html_table_arr);
 		}
 		// decide output file name - this tool may need to be run multiple times, so append version number to name
 		let input_file_path = document.getElementById("html_file").value;
