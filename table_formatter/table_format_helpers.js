@@ -88,12 +88,6 @@ function format_table() {
 
 /* helpers */
 
-/*
-=================================
-Convert html tables to / from arrays
-=================================
-*/
-
 // the match function, but returns an empty array instead of null if no match
 function match_with_empty(str_to_match, regex_exp) {
 	let match_arr = str_to_match.match(regex_exp);
@@ -103,6 +97,35 @@ function match_with_empty(str_to_match, regex_exp) {
 	return match_arr;
 }
 
+/*
+=================================
+Convert html tables to arrays
+=================================
+*/
+
+// get number of rows in table up to content group tag
+function nrow_to_t(table_html_str, tag) {
+	const up_to_open_tag = new RegExp("<table(.|\n)*?(<" + tag + "[^>]*>)", "g");
+	const up_to_close_tag = new RegExp("<table(.|\n)*?(</" + tag + "[^>]*>)", "g");
+	// get tag contents
+	let open_tag_match = match_with_empty(table_html_str, up_to_open_tag);
+	if (open_tag_match.length === 0) {
+		// return object with empty values if tag doesn't exist
+		return {attr: "", open_tag_ind: -1, close_tag_ind: -1};
+	}
+	let tag_contents = open_tag_match[0].replace(up_to_open_tag, "$2");
+	// get number of rows before opening tag
+	let open_tag_row = match_with_empty(open_tag_match[0], /<tr/g).length;
+	// check whether closing tag exists
+	let close_tag_match = match_with_empty(table_html_str, up_to_close_tag);
+	if (close_tag_match.length === 0) {
+		return {attr: tag_contents, open_tag_ind: open_tag_row, close_tag_ind: -1};
+	}
+	// if so, get number of rows before closing tag
+	let close_tag_row = match_with_empty(close_tag_match[0], /<tr/g).length;
+	return {attr: tag_contents, open_tag_ind: open_tag_row, close_tag_ind: close_tag_row};
+}
+
 // get array of cells, in array of rows, in array of tables
 function html_tables_to_arr(html_str) {
 	// get array of tables
@@ -110,10 +133,11 @@ function html_tables_to_arr(html_str) {
 	console.log("Tables found: " + table_arr.length);
 	// loop through each table and get array of rows
 	for (let i = 0; i < table_arr.length; i++) {
+		let table_str = table_arr[i];
 		// get table attributes
-		let table_attr = table_arr[i].replaceAll(/(<table[^>]*>)(.|\n)*/g, "$1");
+		let table_attr = table_str.replaceAll(/(<table[^>]*>)(.|\n)*/g, "$1");
 		// get caption
-		let caption_arr = match_with_empty(table_arr[i], /<caption(.|\n)*?<\/caption>/g);
+		let caption_arr = match_with_empty(table_str, /<caption(.|\n)*?<\/caption>/g);
 		let caption = "";
 		if (caption_arr.length > 0) {
 			caption = caption_arr[0];
@@ -121,14 +145,16 @@ function html_tables_to_arr(html_str) {
 				console.log("Captions after the first in table " + i + " have been ignored.")
 			}
 		}
-		// get position of thead, tbody, tfooter
-		
+		// get position of thead, tbody, tfoot tags relative to rows
+		let thead = nrow_to_t(table_str, "thead");
+		let tbody = nrow_to_t(table_str, "tbody");
+		let tfoot = nrow_to_t(table_str, "tfoot");
 		/*
 		=================================
 		Create initial 2d array of rows -> cells, factoring in colspan but not rowspan
 		=================================
 		*/
-		let row_arr = match_with_empty(table_arr[i], /<tr( [^>]*)*>(.|\n)*?<\/tr>/g);
+		let row_arr = match_with_empty(table_str, /<tr( [^>]*)*>(.|\n)*?<\/tr>/g);
 		// loop through each row and get array of cells
 		for (let j = 0; j < row_arr.length; j++) {
 			let curr_row = row_arr[j];
@@ -150,7 +176,7 @@ function html_tables_to_arr(html_str) {
 				let colspan_num = parseInt(curr_marker.replace(span_marker, "$2"));
 				curr_row = curr_row.replaceAll(curr_marker, ">" + extra_cell.repeat(colspan_num - 1));
 			}
-			// set row array value to object with attribute and row cells
+			// set row array value to object with info on its attribute and row cells
 			let cell_arr = match_with_empty(curr_row, /<t[hd]( [^>]*)*>(.|\n)*?<\/t[hd]>(ROWSPAN[0-9]+ )*/g);
 			row_arr[j] = {attr: row_attr, cells: cell_arr};
 		}
@@ -177,10 +203,40 @@ function html_tables_to_arr(html_str) {
 				}
 			}
 		}
-		// set table array value to object with attribute and table rows
-		table_arr[i] = {attr: table_attr, caption: caption, rows: row_arr};
+		// set table array value to object with info on its values
+		table_arr[i] = {attr: table_attr, caption: caption, thead: thead, tbody: tbody, tfoot: tfoot, rows: row_arr};
 	}
 	return table_arr;
+}
+
+/*
+=================================
+Convert table arrays back to html
+=================================
+*/
+
+// append thead/tbody/tfoot if at correct row
+function append_t(orig_table_str, curr_table, j) {
+	let table_str = orig_table_str;
+	if (curr_table.thead.open_tag_ind === j) {
+		table_str = table_str + "\n" + curr_table.thead.attr;
+	}
+	if (curr_table.thead.close_tag_ind === j) {
+		table_str = table_str + "\n" + "</thead>";
+	}
+	if (curr_table.tbody.open_tag_ind === j) {
+		table_str = table_str + "\n" + curr_table.tbody.attr;
+	}
+	if (curr_table.tbody.close_tag_ind === j) {
+		table_str = table_str + "\n" + "</tbody>";
+	}
+	if (curr_table.tfoot.open_tag_ind === j) {
+		table_str = table_str + "\n" + curr_table.tfoot.attr;
+	}
+	if (curr_table.tfoot.close_tag_ind === j) {
+		table_str = table_str + "\n" + "</tfoot>";
+	}
+	return table_str;
 }
 
 // add array of tables -> rows -> cells back into html document
@@ -191,9 +247,11 @@ function table_arr_to_doc(html_str, html_table_arr) {
 	for (let i = 0; i < html_table_arr.length; i++) {
 		let curr_table = html_table_arr[i];
 		// create string of edited table with caption
-		let table_str = curr_table.attr+ "\n" + curr_table.caption;
+		let table_str = curr_table.attr + "\n" + curr_table.caption;
 		// loop through and append rows
 		for (let j = 0; j < curr_table.rows.length; j++) {
+			// check for thead/tbody/tfoot at current row
+			table_str = append_t(table_str, curr_table, j);
 			let curr_row = curr_table.rows[j];
 			table_str = table_str + "\n" + curr_row.attr;
 			// loop through and append cells that aren't span placeholders
@@ -206,6 +264,8 @@ function table_arr_to_doc(html_str, html_table_arr) {
 			}
 			table_str = table_str + "\n</tr>";
 		}
+		// check for thead/tbody/tfoot at the end of table
+		table_str = append_t(table_str, curr_table, curr_table.rows.length);
 		table_str = table_str + "\n</table>";
 		// replace first instance of table placeholder in html document with string of edited table
 		edited_html_str = edited_html_str.replace(table_placeholder, table_str);

@@ -10,11 +10,14 @@
 <table style="width:400px">
   <caption>Test caption: <br/>
   text</caption>
+  <thead class="x">
   <tr>
     <th>1a</th>
     <td>1b</td>
     <th>1c</th>
   </tr>
+  </thead>
+  <tbody>
   <tr>
     <th>2a</th>
     <td class="osfi-txt--italic" colspan="2" rowspan="2">2b</td>
@@ -28,20 +31,23 @@
     <td>4b</td>
     <td rowspan="3">4c</td>
   </tr>
+  </tbody>
+  <tfoot>
   <tr>
     <td colspan="2">5a</td>
     <td colspan="2">5b</td>
     <td colspan="2" rowspan="3">5c</td>
     <td colspan="1" rowspan="3">5d</td>
   </tr>
+  </tfoot>
 </table>
 <p>Pre-table text table 2</p>
 <br/>
 <table style="width:400px">
   <tr>
     <th>1a t2</th>
-    <td class="osfi-txt--italic">1b t2</th>
-    <td>1c t2</th>
+    <td class="osfi-txt--italic">1b t2</td>
+    <td>1c t2</td>
   </tr>
   <tr>
     <th>2a t2</th>
@@ -49,7 +55,7 @@
   </tr>
   <tr>
     <th>3a t2</th>
-    <td>3c t2</td>
+    <td>3b t2</td>
   </tr>
 </table>
 </body>

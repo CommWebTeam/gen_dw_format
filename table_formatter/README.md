@@ -33,18 +33,25 @@ The tables in the HTML document are stored in an array. Each table is an object 
     - example: '&lt;table style="width:400px">'
 - caption: a string for the caption tag for the table, an empty string if there is no caption.
     - example: '&lt;caption>Caption text here.&lt;/caption>'
-- rows: an array of the table's rows.
+- thead: an object containing the following properties:
+    - attr: a string for the thead tag itself, including its attributes.
+        - example: '&lt;thead>'
+    - open_tag_ind: an integer for the row index that the opening &lt;thead tag appears at (i.e. the number of tr tags before thead); -1 if it doesn't exist.
+        - example: if &lt;thead is before any &lt;tr tags, then the index is 0.
+    - close_tag_ind: an integer for the row index that the closing &lt;/thead tag appears at; -1 if it doesn't exist.
+        - example: if there are 5 &lt;tr rows from &lt;table to &lt;/thead, then the index is 5.
+- tbody: an object with the same properties as thead, but for tbody tags.
+- tfoot: an object with the same properties as thead, but for tfoot tags.
+- rows: an array of the table's rows. Each row in the array of rows is an object containing the following properties:
+    - attr: a string for the tr tag itself, including its attributes.
+        - example: '&lt;tr style="width:400px">'
+    - cells: an array of the row's cells.
+        - example: ['&lt;th>Header cell&lt;/th>', '&lt;td>Content cell 1&lt;/td>', '&lt;td>Content cell 2&lt;/td>']
 
-Each row in the array of rows is an object containing the following properties:
-- attr: a string for the tr tag itself, including its attributes.
-    - example: '&lt;tr style="width:400px">'
-- cells: an array of the row's cells.
-    - example: ['&lt;th>Header cell&lt;/th>', '&lt;td>Content cell 1&lt;/td>', '&lt;td>Content cell 2&lt;/td>']
-
-This makes the overall array a triple nested array, e.g. a single array might be represented as so:
-- [Table One: Caption, [Row 1: [Cell 1a, Cell 2a], Row 2: [Cell 2a, Cell 2b]], 
-- Table Two: Caption, [Row 1: [Cell 1a]],
-- Table Three: ...]
+This makes the overall array of tables -> rows -> cells a triple nested array, e.g. a single array might be represented as so:
+- [Table One: caption / thead / tbody / tfoot, [Row 1: [Cell 1a, Cell 2a], Row 2: [Cell 2a, Cell 2b]], 
+-  Table Two: caption / thead / tbody / tfoot, [Row 1: [Cell 1a]],
+-  Table Three: ...]
 
 Each table array accounts for rowspan and colspan. For example, suppose that in the 2nd row, (2, y), the 1st cell spans three columns, so (2, 1) contains a value, but (2, 2) and (2, 3) are just spans of (2, 1). Then, if you apply a function on the 3rd column, (x, 3), the function will see that the 3rd column in the 2nd row (2, 3) is just a placeholder, so it will NOT edit any cells in the 2nd row.
 
@@ -56,7 +63,8 @@ This tool makes some assumptions about the HTML document's formatting when readi
 - the document structure is valid HTML and XML.
 - there are no nested tables.
 - each table has at most one caption.
-- the only tags in a table that aren't contained within cells (td or th tags) are tr, caption, thead, tbody, and tfooter tags.
+- the only tags in a table that aren't contained within cells (td or th tags) are tr, caption, thead, tbody, and tfoot tags.
+- there are at most one of each of thead, tbody, and tfoot tags per table.
 
 ## Adding actions
 
