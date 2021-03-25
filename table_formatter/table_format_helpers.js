@@ -28,6 +28,9 @@ function format_table() {
 		if (document.getElementById("set_caption").checked) {
 			html_table_arr = dim_func(html_table_arr, table_list_type, table_list, action_list, forward_dir, set_caption);
 		}
+		if (document.getElementById("remove_p_tags").checked) {
+			html_table_arr = dim_func(html_table_arr, table_list_type, table_list, action_list, forward_dir, remove_p_tags);
+		}
 		if (document.getElementById("to_bold").checked) {
 			html_table_arr = dim_func(html_table_arr, table_list_type, table_list, action_list, forward_dir, to_otb);
 		}
@@ -58,8 +61,15 @@ function format_table() {
 		if (document.getElementById("to_indent_large").checked) {
 			html_table_arr = dim_func(html_table_arr, table_list_type, table_list, action_list, forward_dir, to_indent_large);
 		}
-		if (document.getElementById("remove_p_tags").checked) {
-			html_table_arr = dim_func(html_table_arr, table_list_type, table_list, action_list, forward_dir, remove_p_tags);
+		// for actions on setting thead/tbody/tfoot index, these only use rows and the first two row indices
+		if (document.getElementById("insert_thead").checked) {
+			html_table_arr = set_thead_inds(html_table_arr, table_list_type, table_list, action_list, forward_dir);
+		}
+		if (document.getElementById("insert_tbody").checked) {
+			html_table_arr = set_tbody_inds(html_table_arr, table_list_type, table_list, action_list, forward_dir);
+		}
+		if (document.getElementById("insert_tfoot").checked) {
+			html_table_arr = set_tfoot_inds(html_table_arr, table_list_type, table_list, action_list, forward_dir);
 		}
 		// convert table array to output
 		html_doc_str = table_arr_to_doc(html_doc_str, html_table_arr);
@@ -101,6 +111,7 @@ Convert html tables to arrays
 */
 
 // get number of rows in table up to content group tag
+// returns an object with 3 values: attr for the tag itself, open_tag_ind for number of rows before opening tag, and close_tag_ind for number of rows before closing tag
 function nrow_to_t(table_html_str, tag) {
 	const up_to_open_tag = new RegExp("<table(.|\n)*?(<" + tag + "[^>]*>)", "g");
 	const up_to_close_tag = new RegExp("<table(.|\n)*?(</" + tag + "[^>]*>)", "g");
@@ -299,57 +310,6 @@ function int_csv_to_arr(csv_str) {
 
 /*
 =================================
-Function to specifically handle the action of setting preceding paragraph before table as caption
-=================================
-*/
-
-// sets paragraph preceding table as caption if it is only separated by a br
-function set_prev_para_caption(html_doc_str, table_list_type, table_list) {
-	// temporarily replace table tags with placeholders to mark whether table has been visited yet
-	let edited_html_doc_str = html_doc_str.replaceAll("<table", table_placeholder);
-	// regex to get full document up to the </table that closes the current table
-	const close_curr_table = new RegExp("^(.|\n)*?" + table_placeholder + "(.|\n)*?</table>", "g");
-	// regex to find paragraph before a table placeholder
-	const prev_para = new RegExp("<p>(.*?)</p>" + "( |\n|(<br[^>]*>))*" + table_placeholder, "g");
-	// regex to find the full tag of the current table
-	const table_tag = new RegExp("(" + table_placeholder + "[^>]*>)", "g");
-	// loop through tables to apply function to
-	let i = 0;
-	while (edited_html_doc_str.includes(table_placeholder)) {
-		if ((table_list_type === "all_tables") ||
-		(table_list_type === "exclude_tables" && !table_list.includes(i)) ||
-		(table_list_type === "include_tables" && table_list.includes(i))) {
-			// get document up to </table> that closes current table
-			let orig_doc_part = match_with_empty(edited_html_doc_str, close_curr_table)[0];
-			let curr_doc_part = orig_doc_part;
-			// check to see if there is a previous paragraph in current table
-			let prev_para_match = match_with_empty(curr_doc_part, prev_para);
-			if (prev_para_match.length > 0) {
-				// if there is, append it to caption, and set caption to placeholder to avoid matching later
-				let prev_para_contents = prev_para_match[0].replace(prev_para, "$1");
-				if (!curr_doc_part.includes("</caption>")) {
-					// create empty caption if no caption exists yet
-					curr_doc_part = curr_doc_part.replace(table_tag, "$1\n<caption></caption>");
-				}
-				curr_doc_part = curr_doc_part.replace("</caption>", prev_para_contents + close_caption_placeholder);
-				// remove previous paragraph
-				curr_doc_part = curr_doc_part.replace(prev_para, table_placeholder);
-				edited_html_doc_str = edited_html_doc_str.replace(orig_doc_part, curr_doc_part);
-			}
-		}
-		// move to next table by removing placeholder
-		edited_html_doc_str = edited_html_doc_str.replace(table_placeholder, "<table");
-		i++;
-	}
-	// revert caption placeholders
-	edited_html_doc_str = edited_html_doc_str.replaceAll(close_caption_placeholder, "</caption>");
-	console.log("Tables found: " + i);
-	return edited_html_doc_str;
-}
-
-
-/*
-=================================
 Function applier along row / column of table array 
 =================================
 */
@@ -414,7 +374,7 @@ function col_apply(table_arr, table_list_type, table_list, action_list, forward_
 
 /*
 =================================
-Functions to be applied on the cell of a table in table array 
+Functions for actions to be applied on the cell of a table in the table array 
 =================================
 */
 
@@ -506,3 +466,99 @@ function to_indent_large(table_arr, row, col) {
 	return add_class(table_arr, row, col, "indent-large");
 }
 
+/*
+=================================
+Functions for actions to be applied on thead/tbody/tfoot row index for a table in the table array 
+=================================
+*/
+
+// helper function to set group inds for required tables
+function set_t_inds(table_arr, table_list_type, table_list, row_inds, forward_dir, group) {
+	let edited_table_arr = table_arr;
+	// loop over tables to apply function to
+	for (let i = 0; i < edited_table_arr.length; i++) {
+		if ((table_list_type === "all_tables") ||
+		  (table_list_type === "exclude_tables" && !table_list.includes(i)) ||
+		  (table_list_type === "include_tables" && table_list.includes(i))) {
+			// set new opening tag index
+			if (row_inds.length > 0) {
+				let open_ind = row_inds[0];
+				if (!forward_dir) {
+					open_ind = edited_table_arr[i].rows.length - open_ind;
+				}
+				edited_table_arr[i][group].open_tag_ind = open_ind;
+				// set new closing tag index
+				if (row_inds.length > 1) {
+					let close_ind = row_inds[1];
+					if (!forward_dir) {
+						close_ind = edited_table_arr[i].rows.length - close_ind;
+					}
+					edited_table_arr[i][group].close_tag_ind = close_ind;
+				}
+			}
+		}
+	}
+	return edited_table_arr;
+}
+
+function set_thead_inds(table_arr, table_list_type, table_list, row_inds, forward_dir) {
+	return set_t_inds(table_arr, table_list_type, table_list, row_inds, forward_dir, "thead");
+}
+
+function set_tbody_inds(table_arr, table_list_type, table_list, row_inds, forward_dir) {
+	return set_t_inds(table_arr, table_list_type, table_list, row_inds, forward_dir, "tbody");
+}
+
+function set_tfoot_inds(table_arr, table_list_type, table_list, row_inds, forward_dir) {
+	return set_t_inds(table_arr, table_list_type, table_list, row_inds, forward_dir, "tfoot");
+}
+
+/*
+=================================
+Function to handle the action of setting the preceding paragraph before a table as its caption
+=================================
+*/
+
+// sets paragraph preceding table as caption if it is only separated by a br
+function set_prev_para_caption(html_doc_str, table_list_type, table_list) {
+	// temporarily replace table tags with placeholders to mark whether table has been visited yet
+	let edited_html_doc_str = html_doc_str.replaceAll("<table", table_placeholder);
+	// regex to get full document up to the </table that closes the current table
+	const close_curr_table = new RegExp("^(.|\n)*?" + table_placeholder + "(.|\n)*?</table>", "g");
+	// regex to find paragraph before a table placeholder
+	const prev_para = new RegExp("<p>(.*?)</p>" + "( |\n|(<br[^>]*>))*" + table_placeholder, "g");
+	// regex to find the full tag of the current table
+	const table_tag = new RegExp("(" + table_placeholder + "[^>]*>)", "g");
+	// loop through tables to apply function to
+	let i = 0;
+	while (edited_html_doc_str.includes(table_placeholder)) {
+		if ((table_list_type === "all_tables") ||
+		(table_list_type === "exclude_tables" && !table_list.includes(i)) ||
+		(table_list_type === "include_tables" && table_list.includes(i))) {
+			// get document up to </table> that closes current table
+			let orig_doc_part = match_with_empty(edited_html_doc_str, close_curr_table)[0];
+			let curr_doc_part = orig_doc_part;
+			// check to see if there is a previous paragraph in current table
+			let prev_para_match = match_with_empty(curr_doc_part, prev_para);
+			if (prev_para_match.length > 0) {
+				// if there is, append it to caption, and set caption to placeholder to avoid matching later
+				let prev_para_contents = prev_para_match[0].replace(prev_para, "$1");
+				if (!curr_doc_part.includes("</caption>")) {
+					// create empty caption if no caption exists yet
+					curr_doc_part = curr_doc_part.replace(table_tag, "$1\n<caption></caption>");
+				}
+				curr_doc_part = curr_doc_part.replace("</caption>", prev_para_contents + close_caption_placeholder);
+				// remove previous paragraph
+				curr_doc_part = curr_doc_part.replace(prev_para, table_placeholder);
+				edited_html_doc_str = edited_html_doc_str.replace(orig_doc_part, curr_doc_part);
+			}
+		}
+		// move to next table by removing placeholder
+		edited_html_doc_str = edited_html_doc_str.replace(table_placeholder, "<table");
+		i++;
+	}
+	// revert caption placeholders
+	edited_html_doc_str = edited_html_doc_str.replaceAll(close_caption_placeholder, "</caption>");
+	console.log("Tables found: " + i);
+	return edited_html_doc_str;
+}

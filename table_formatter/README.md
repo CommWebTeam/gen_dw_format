@@ -13,13 +13,15 @@ The inputs are as follows:
         2. "all tables excluding those listed below"
         3. "all tables"
     - If option 1 or 2 is selected above, you will have to fill in the textbox with the comma-separated values of the indices for the tables to include / exclude. These are the positions the tables appear in from the start of the document, beginning at 0. For example, if you want to exclude the first 2 tables, then you would select "all tables excluding the following", and enter "0,1" into the textbox.
-- the actions to apply on a cell and how to apply them:
-    - the actions to apply. So far, the following actions have been implemented:
+- the actions to apply and how to apply them:
+    - actions to apply on a cell. So far, the following actions have been implemented:
         - convert the cell to a header (td to th).
         - append the cell contents to the caption, then remove the cell.
-        - convert the cell to a specific class (e.g. "osfi-txt--bold" or "align-left").
         - remove p tags from the cell.
-        - append the preceding paragraph, either immediately above a table or separated by &lt;br>, to its caption. This action ignores cells completely and only uses the table inputs above, as it is only applied once per table, so the next three inputs are ignored.
+        - convert the cell to a specific class (e.g. "osfi-txt--bold" or "align-left").
+    - actions that apply on other parts of the table. So far, the following actions have been implemented:
+        - insert an opening thead, tbody, or tfoot tag at the first row index provided below, and the corresponding closing tag at the second row index provided below. For example, inserting the opening thead at row index 0 means placing it before all tr tags (rows). Since thead/tbody/tfoot are only used to group rows, the dimension provided below is ignored. Only the first two indices provided below are used for these actions.
+        - append the paragraph preceding a table, either immediately above a table or separated by &lt;br>, to the table's caption. This action ignores cells completely and only uses the table inputs above, as it is only applied once per table, so the following inputs are ignored.
     - the table dimension to perform the actions on, which can be rows or columns.
     - a textbox filled in with the comma-separated values of the indices for which rows or columns to apply the actions on. As with the earlier textbox, this is the position the row or column appears in from the start or end of the table, depending on the direction selected below, beginning at 0.
     - the direction to read the table in for the row/column indices provided above. If "top to bottom" is selected, then the rows or columns are read in their regular order; the first row/column is at index 0, the second row/column is at index 1, and so on. If "bottom to top" is selected, then they are read in reverse order instead; the last row/column is at index 0, the second last row/column is at index 1, and so on.
