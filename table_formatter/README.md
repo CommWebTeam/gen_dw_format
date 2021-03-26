@@ -15,7 +15,7 @@ The inputs are as follows:
     - If option 1 or 2 is selected above, you will have to fill in the textbox with the comma-separated values of the indices for the tables to include / exclude. These are the positions the tables appear in from the start of the document, beginning at 0. For example, if you want to exclude the first 2 tables, then you would select "all tables excluding the following", and enter "0,1" into the textbox.
 - the actions to apply and how to apply them:
     - actions to apply on a cell. So far, the following actions have been implemented:
-        - convert the cell to a header (change td to th) with a scope of "col" or "row". If the scope is "col" and the cell also has a colspan of at least 2, then the scope is changed to "colgroup".
+        - convert the cell to a header (change td to th) with a scope of "col" or "row". If the scope is "col" and the cell also has a colspan attribute, then the scope is changed to "colgroup".
         - append the cell contents to the caption, then remove the cell by changing it to &lt;td class="background-light">&lt;/td>.
         - remove p tags from the cell.
         - convert the cell to a specific class (e.g. "osfi-txt--bold" or "align-left").
@@ -74,12 +74,13 @@ New captions are inserted immediately after the opening &lt;table> tag where app
 
 ### Assumptions
 
-This tool makes some assumptions about the HTML document's formatting when reading the tables into an array. Some major assumptions are as follows:
+This tool makes some assumptions about the HTML document's formatting when reading the tables into an array. Some major assumptions are as follows (this is NOT a comprehensive list):
 - the document structure is valid HTML and XML.
 - there are no nested tables.
 - each table has at most one caption.
 - the only tags in a table that aren't contained within cells (td or th tags) are tr, caption, thead, tbody, and tfoot tags.
-- there are at most one of each of thead, tbody, and tfoot tags per table.
+- there are at most one of each of the thead, tbody, and tfoot tags per table.
+- each cell can only have a scope of "col" or "row", not both.
 
 ## Adding actions
 

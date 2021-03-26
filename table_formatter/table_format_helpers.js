@@ -24,10 +24,10 @@ function format_table() {
 		}
 		// apply actions across input dimension on table array
 		if (document.getElementById("to_header_col").checked) {
-			html_table_arr = dim_func(html_table_arr, table_list_type, table_list, action_list_type, action_list, forward_dir, to_header);
+			html_table_arr = dim_func(html_table_arr, table_list_type, table_list, action_list_type, action_list, forward_dir, to_header_col);
 		}
 		if (document.getElementById("to_header_row").checked) {
-			html_table_arr = dim_func(html_table_arr, table_list_type, table_list, action_list_type, action_list, forward_dir, to_header);
+			html_table_arr = dim_func(html_table_arr, table_list_type, table_list, action_list_type, action_list, forward_dir, to_header_row);
 		}
 		if (document.getElementById("set_caption").checked) {
 			html_table_arr = dim_func(html_table_arr, table_list_type, table_list, action_list_type, action_list, forward_dir, set_caption);
@@ -392,7 +392,16 @@ Functions for actions to be applied on the cell of a table in the table array
 function to_header_col(table_arr, row, col) {
 	let curr_cell = table_arr.rows[row].cells[col];
 	// replace td with th
-	table_arr.rows[row].cells[col] = curr_cell.replaceAll("<td", "<th").replaceAll("</td", "</th");
+	curr_cell = curr_cell.replace("<td", "<th").replaceAll("</td", "</th");
+	// remove existing scope
+	curr_cell = curr_cell.replace(/(<th[^>]*)scope *= *['"].*?['"]/g, "$1");
+	// add scope of col or colgroup, depending on whether cell tag has a span
+	if (/(<th[^>]*)colspan *= */.test(curr_cell)) {
+		curr_cell = curr_cell.replace("<th", '<th scope="colgroup"');
+	} else {
+		curr_cell = curr_cell.replace("<th", '<th scope="col"');
+	}
+	table_arr.rows[row].cells[col] = curr_cell;
 	return table_arr;
 }
 
@@ -400,7 +409,12 @@ function to_header_col(table_arr, row, col) {
 function to_header_row(table_arr, row, col) {
 	let curr_cell = table_arr.rows[row].cells[col];
 	// replace td with th
-	table_arr.rows[row].cells[col] = curr_cell.replaceAll("<td", "<th").replaceAll("</td", "</th");
+	curr_cell = curr_cell.replace("<td", "<th").replaceAll("</td", "</th");
+	// remove existing scope
+	curr_cell = curr_cell.replace(/(<th[^>]*)scope *= *['"].*?['"]/g, "$1");
+	// add scope of row
+	curr_cell = curr_cell.replace("<th", '<th scope="row"');
+	table_arr.rows[row].cells[col] = curr_cell;
 	return table_arr;
 }
 
