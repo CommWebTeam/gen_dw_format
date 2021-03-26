@@ -129,4 +129,4 @@ The steps to add a check that follows the tool's current formatting/organization
     - In format_file(), create an if statement for the new check, positioned at the same place as where you put it in the HTML document. For the sake of consistency, put the logic for the check in a helper function even if it's only one line.
     - Create the helper function below format_file(), positioned at the same place as where you put it in the HTML document.
 3. In README.md (this file): Add a description of the new check in the first section, positioned at the same place as where you put it in the HTML document. (The blank lines between groups of checks are for clarity in the editor and won't affect the actual document's appearance).
-4. In sample_page.html: Add some text that tests the new check.
+4. In sample_page.html: Add some text to test the new check with.

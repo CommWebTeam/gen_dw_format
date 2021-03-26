@@ -11,6 +11,7 @@
   <input id="html_file" type="file">
   <br/>
   <br/>
+  <b>Remove Dreamweaver-generated links:</b> <br/>
   <input type="checkbox" id="dw_ref" name="dw_ref" checked>
   <label for="dw_ref">Remove Dreamweaver-generated _Ref links</label>
   <br/>
@@ -24,6 +25,7 @@
   <label for="logiterms">Remove French logiterms</label>
   <br/>
   <br/>
+  <b>Clean up spacing for coding style:</b> <br/>
   <input type="checkbox" id="space_format" name="space_format" checked>
   <label for="space_format">Convert invisible &amp;nbsp; to regular spaces</label>
   <br/>
@@ -40,6 +42,7 @@
   <label for="space_before_close">Remove spaces before closing p, li, th, td, and header tags</label>
   <br/>
   <br/>
+  <b>Replace word-formatted fancy quotes/dashes:</b> <br/>
   <input type="checkbox" id="quotes" name="quotes">
   <label for="quotes">Replace fancy quotes with straight quotes</label>
   <br/>
@@ -53,6 +56,7 @@
   <label for="emdash">Replace em dashes with regular dashes</label>
   <br/>
   <br/>
+  <b>Join consecutive tags of the same type:</b> <br/>
   <input type="checkbox" id="consecutive_em" name="consecutive_em" checked>
   <label for="consecutive_em">Join em and strong that are only separated by spaces</label>
   <br/>
@@ -63,6 +67,7 @@
   <label for="consecutive_ol">Join consecutive ol tags with the same class</label>
   <br/>
   <br/>
+  <b>Replace em/strong with other tags for italics/bold:</b> <br/>
   <input type="checkbox" id="cite_link" name="cite_link" checked>
   <label for="cite_link">Change em to cite on lines that have links</label>
   <br/>
@@ -82,6 +87,7 @@
   <label for="default_b">Change all strong to b by default</label>
   <br/>
   <br/>
+  <b>Replace/remove/format &lt;br> tags:</b> <br/>
   <input type="checkbox" id="split_p_br" name="split_p_br">
   <label for="split_p_br">Split paragraphs separated by br into multiple &lt;p> tags</label>
   <br/>
@@ -95,6 +101,7 @@
   <label for="fix_br">Change all &lt;br> to &lt;br/></label>
   <br/>
   <br/>
+  <b>Add/fix/remove tag attributes:</b> <br/>
   <input type="checkbox" id="ref_links" name="ref_links" checked>
   <label for="ref_links">Make OSFI links referential and other links external</label>
   <br/>
@@ -107,18 +114,21 @@
   <input type="checkbox" id="ol_ul_tag" name="ol_ul_tag" checked>
   <label for="ol_ul_tag">Remove attributes from ol and ul tags</label>
   <br/>
-  <input type="checkbox" id="footnotes" name="footnotes">
-  <label for="footnotes">Format (English) footnotes</label>
-  <br/>
-  <br/>
-  <input type="checkbox" id="fix_punct" name="fix_punct" checked>
-  <label for="fix_punct">Fix spacing/punctuation issues</label>
-  <br/>
-  <br/>
   <input type="checkbox" id="table_tag" name="table_tag" checked>
   <label for="table_tag">Remove attributes from table tags (table, th, tr, td) - excludes colspan/rowspan for td</label>
   <br/>
   <br/>
+  <b>Format Dreamweaver footnotes</b> (use the <a rel="external" href="https://commwebteam.github.io/gen_dw_format/footnote_formatter/"> footnote formatter</a> if the footnotes don't use Dreamweaver's formatting): <br/>
+  <input type="checkbox" id="footnotes" name="footnotes" checked>
+  <label for="footnotes">Format (English) footnotes</label>
+  <br/>
+  <br/>
+  <b>Fix spacing issues surrounding punctuation:</b> <br/>
+  <input type="checkbox" id="fix_punct" name="fix_punct" checked>
+  <label for="fix_punct">Remove incorrect spacing before punctuation/duplicate punctuation for  . , ; :</label>
+  <br/>
+  <br/>
+  <b>Translate structure for French documents:</b> <br/>
   <input type="checkbox" id="translate" name="translate">
   <label for="translate">Translate internal links and footnote structure to French</label>
   <br/>
@@ -129,17 +139,20 @@
   <label for="nbsp_pct">Add &amp;nbsp; in front of % and $</label>
   <br/>
   <br/>
+  <b>Convert manually inserted fake tags to actual tags</b> (see <a rel="external" href="https://commwebteam.github.io/gen_dw_format/dreamweaver_paste_formatter/#details-on-changing-strings-indicating-tags-to-actual-tags">readme</a> for details): <br/>
   <input type="checkbox" id="fake_script_tag" name="fake_script_tag" checked>
   <label for="fake_script_tag">Convert visual superscript/subscript tags (with &amp;lt; and so on) to actual tags</label>
   <br/>
   <input type="checkbox" id="fake_math_tag" name="fake_math_tag" checked>
   <label for="fake_math_tag">Convert visual math tags (with &amp;lt; and so on) to actual tags - to be used alongside the macro</label>
   <br/>
+  <br/>
 </form>
 <button onclick="format_file()">Download formatted file</button>
 <br/>
 <br/>
-<p>This tool performs some quick formatting on Dreamweaver documents pasted from word. It is NOT for general use since it takes shortcuts assuming Dreamweaver formatting. It also assumes proper indentation (in Dreamweaver, Edit -> Code -> Apply Source Formatting).</p>
+<p>This tool performs some quick formatting on Dreamweaver documents pasted from word. It assumes proper indentation (in Dreamweaver, Edit -> Code -> Apply Source Formatting).</p>
+<p>Some checks explicitly assume Dreamweaver formatting and may not work if the document has already been partially converted to WET formatting.</p>
 <p>Be sure to apply source formatting with Dreamweaver afterwards to fix the indentation and so on.</p>
 <p>Check the console (ctrl+shift+i) for any errors if nothing is loading.</p>
 <p>More in-depth information can be found in the <a rel="external" href="https://commwebteam.github.io/gen_dw_format/dreamweaver_paste_formatter/">readme</a>.</p>
