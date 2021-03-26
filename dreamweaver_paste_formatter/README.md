@@ -8,6 +8,7 @@ The current formatting checks are as follows (the user can select which to apply
 
 - removes the referential links that Dreamweaver generates (which don't properly function).
 - removes the table of contents links that Dreamweaver generates (which don't properly function).
+- removes the bookmark links that Dreamweaver generates (which don't properly function).
 - removes the French logiterms that Dreamweaver generates (which don't properly function).
 
 
@@ -25,7 +26,8 @@ The current formatting checks are as follows (the user can select which to apply
 
 
 - joins consecutive em and strong tags that are only separated by spaces into a single tag.
-- joins consecutive lists (back-to-back ol tags or back-to-back ul tags) into a single list.
+- joins consecutive ul tags into a single list.
+- joins consecutive ol tags into a single list.
 
 
 - changes em tags to cite tags on lines that have links. If a line contains the "a" tag, then all em tags on the same line are changed to cite tags.

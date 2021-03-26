@@ -36,7 +36,7 @@ function format_file() {
 		if (document.getElementById("empty_line").checked) {
 			html_doc_str = rm_empty_tags(html_doc_str);
 		}
-		// remove spaces before closing p, li, th, td tags
+		// remove spaces before closing p, li, th, td, header tags
 		if (document.getElementById("space_before_close").checked) {
 			html_doc_str = rm_space_before_close(html_doc_str);
 		}
@@ -60,9 +60,13 @@ function format_file() {
 		if (document.getElementById("consecutive_em").checked) {
 			html_doc_str = join_em_strong(html_doc_str);
 		}
-		// join consecutive lists
-		if (document.getElementById("consecutive_lists").checked) {
-			html_doc_str = join_lists(html_doc_str);
+		// join consecutive ul
+		if (document.getElementById("consecutive_ul").checked) {
+			html_doc_str = join_ul(html_doc_str);
+		}
+		// join consecutive ol
+		if (document.getElementById("consecutive_ol").checked) {
+			html_doc_str = join_ol(html_doc_str);
 		}
 		// change italics to cite if the line has a link
 		if (document.getElementById("cite_link").checked) {
@@ -199,7 +203,7 @@ function rm_empty_tags(html_str) {
 	return edited_html_str.replaceAll("<br///>", "<br>").replaceAll("<td///>", "<td>");
 }
 
-// remove spaces before closing p, li, th, td tags
+// remove spaces before closing p, li, th, td, header tags
 function rm_space_before_close(html_str) {
 	let edited_html_str = html_str.replaceAll(/ *<\/p>/g, "</p>");
 	edited_html_str = edited_html_str.replaceAll(/ *<\/li>/g, "</li>");
@@ -248,22 +252,21 @@ function join_em_strong(html_str) {
 	return edited_html_str;
 }
 
-// join consecutive lists
-function join_lists(html_str) {
-	const ol_str = `</ol>
-*<ol>`;
-		 const ul_str = `</ul>
-*<ul>`;
-	const ol_regex = new RegExp(ol_str, "g");
-	const ul_regex = new RegExp(ul_str, "g");
-	return html_str.replaceAll(ol_regex, "").replaceAll(ul_regex, "");
+// join consecutive ul
+function join_ul(html_str) {
+	return html_str.replaceAll(/<\/ul>( |\n)*<ul[^>]*>/g, "");
+}
+
+// join consecutive ol
+function join_ol(html_str) {
+	return html_str.replaceAll(/<\/ol>( |\n)*<ol[^>]*>/g, "");
 }
 
 // helper: change italics to citations if there is a link on the line
 function change_link_em_to_cite_helper(html_line) {
 	let edited_html_line = html_line;
 	if (edited_html_line.includes("<a ") || edited_html_line.includes("<a>")) {
-        edited_html_line = edited_html_line.replaceAll("<em>", "<cite>");
+        edited_html_line = edited_html_line.replaceAll("<em>", "<cite>").replaceAll("<em ", "<cite ");
         edited_html_line = edited_html_line.replaceAll("</em>", "</cite>");
     }
 	return edited_html_line;
@@ -276,27 +279,30 @@ function change_link_em_to_cite(html_str) {
 	return html_arr.join("\n");
 }
 
-// change instances of one tag to another
+// change instances of one tag to another - old_tag and new_tag can have attributes
 function default_tag(html_str, old_tag, new_tag) {
+	let old_tag_open = "<" + old_tag + ">";
+	let new_tag_open = "<" + new_tag + ">";
 	// remove attributes from old and new tags for closing tag
-	let old_tag_close = old_tag.trim().replace(/^(.*?) .*/g, "$1");
-	let new_tag_close = new_tag.trim().replace(/^(.*?) .*/g, "$1");
+	let old_tag_close = old_tag.trim().replace(/^([a-zA-Z0-9]+).*/g, "</$1>");
+	let new_tag_close = new_tag.trim().replace(/^([a-zA-Z0-9]+).*/g, "</$1>");
+	console.log(old_tag_close)
+	console.log(new_tag_close)
+	console.log(old_tag)
+	console.log(new_tag)
 	// replace tags
-	let edited_html_str = html_str.replaceAll("<" + old_tag + ">", "<" + new_tag + ">");
-	edited_html_str = edited_html_str.replaceAll("</" + old_tag_close + ">", "</" + new_tag_close + ">");
+	let edited_html_str = html_str.replaceAll(old_tag_open, new_tag_open);
+	edited_html_str = edited_html_str.replaceAll(old_tag_close, new_tag_close);
 	return edited_html_str;
 }
 
 // splits a p tag divided by br into individual p tags
 function split_p_by_br(html_str) {
 	let edited_html_str = html_str;
-	// replace p into br until there are none left
-	const p_br_regex = /(<p( [^>]*)*>.*?) *<br>( |\n)*/g;
+	// replace br with p until there are none left
+	const p_br_regex = /(<p( [^>]*)*>.*?) *<br(\/)*>( |\n)*/g;
 	while (p_br_regex.test(edited_html_str)) {
-		// note the following:
-		// 1) /.*?/ and / */ don't match newlines
-		// 2) Dreamweaver formatting places any <br> following </p> on its own line, meaning </p><br> should not occur
-		// so this regex should not capture any </p> in the .*?, and will only match an unclosed <p> into <br>
+		// note that Dreamweaver source formatting places any <br> following </p> on its own line, so this regex should not capture any </p><br>, and will only match an unclosed <p> into <br>
 		edited_html_str = edited_html_str.replaceAll(p_br_regex, "$1</p>\n<p>");
 	}
 	return edited_html_str;
@@ -305,13 +311,9 @@ function split_p_by_br(html_str) {
 // splits a p tag divided by br into individual p tags, if the br is before punctuation
 function split_p_by_punct_br(html_str) {
 	let edited_html_str = html_str;
-	// replace p into punctuation + br until there are none left
-	const p_punct_br_regex = /(<p( [^>]*)*>.*?[\.,;:!?\)"’”]) *<br>( |\n)*/g;
+	// replace (punctuation + br) with p until there are none left
+	const p_punct_br_regex = /(<p( [^>]*)*>.*?[\.,;:!?\)"’”]) *<br(\/)*>( |\n)*/g;
 	while (p_punct_br_regex.test(edited_html_str)) {
-		// note the following:
-		// 1) /.*?/ and / */ don't match newlines
-		// 2) Dreamweaver formatting places any <br> following </p> on its own line, meaning </p><br> should not occur
-		// so this regex should not capture any </p> in the .*?, and will only match an unclosed <p> into <br>
 		edited_html_str = edited_html_str.replaceAll(p_punct_br_regex, "$1</p>\n<p>");
 	}
 	return edited_html_str;
@@ -321,16 +323,16 @@ function split_p_by_punct_br(html_str) {
 function rm_empty_br(html_str) {
 	// remove br next to opening tags
 	let edited_html_str = html_str.replaceAll(/(<p( [^>]*)*>) *<br>( |\n)*/g, "$1");
-	edited_html_str = edited_html_str.replaceAll(/(<li( [^>]*)*>) *<br>( |\n)*/g, "$1");
-	edited_html_str = edited_html_str.replaceAll(/(<th( [^>]*)*>) *<br>( |\n)*/g, "$1");
-	edited_html_str = edited_html_str.replaceAll(/(<td( [^>]*)*>) *<br>( |\n)*/g, "$1");
-	edited_html_str = edited_html_str.replaceAll(/(<h[0-9]+( [^>]*)*>) *<br>( |\n)*/g, "$1");
+	edited_html_str = edited_html_str.replaceAll(/(<li( [^>]*)*>) *<br(\/)*>( |\n)*/g, "$1");
+	edited_html_str = edited_html_str.replaceAll(/(<th( [^>]*)*>) *<br(\/)*>( |\n)*/g, "$1");
+	edited_html_str = edited_html_str.replaceAll(/(<td( [^>]*)*>) *<br(\/)*>( |\n)*/g, "$1");
+	edited_html_str = edited_html_str.replaceAll(/(<h[0-9]+( [^>]*)*>) *<br(\/)*>( |\n)*/g, "$1");
 	// remove br next to closing tags
-	edited_html_str = edited_html_str.replaceAll(/( |\n)*<br> *<\/p>/g, "</p>");
-	edited_html_str = edited_html_str.replaceAll(/( |\n)*<br> *<\/li>/g, "</li>");
-	edited_html_str = edited_html_str.replaceAll(/( |\n)*<br> *<\/th>/g, "</th>");
-	edited_html_str = edited_html_str.replaceAll(/( |\n)*<br> *<\/td>/g, "</td>");
-	edited_html_str = edited_html_str.replaceAll(/( |\n)*<br> *<\/h([0-9]+)>/g, "</h$2>");
+	edited_html_str = edited_html_str.replaceAll(/( |\n)*<br(\/)*> *<\/p>/g, "</p>");
+	edited_html_str = edited_html_str.replaceAll(/( |\n)*<br(\/)*> *<\/li>/g, "</li>");
+	edited_html_str = edited_html_str.replaceAll(/( |\n)*<br(\/)*> *<\/th>/g, "</th>");
+	edited_html_str = edited_html_str.replaceAll(/( |\n)*<br(\/)*> *<\/td>/g, "</td>");
+	edited_html_str = edited_html_str.replaceAll(/( |\n)*<br(\/)*> *<\/h([0-9]+)>/g, "</h$3>");
 	return edited_html_str;
 }
 
@@ -345,7 +347,7 @@ function fix_ref_links(html_str) {
 	// get links
 	let orig_links = html_str.match(/<a (.*?)>/g);
 	if (orig_links === null) {
-		orig_links = [];
+		return html_str;
 	}
 	// loop through links
 	for (i = 0; i < orig_links.length; i++) {
@@ -357,7 +359,6 @@ function fix_ref_links(html_str) {
 		}
 		else {
 			// add rel to external links, excluding footnotes, toc, internal links, and emails
-			new_link = curr_link;
 			if (!curr_link.includes("_ftn") && !curr_link.includes("_Toc") && !curr_link.includes("toc_") && !curr_link.includes("fnb") && !curr_link.includes('href *= *"/') && !curr_link.includes("mailto")) {
 				new_link = curr_link.replace(/rel *= *"external"/g, "").replace(/<a /g, '<a rel="external" ');
 			}
@@ -369,8 +370,8 @@ function fix_ref_links(html_str) {
 
 // fix alignment classes
 function fix_align(html_str) {
-	let edited_html_str = html_str.replaceAll(/align="center"/g, 'class="align-center"');
-	edited_html_str = edited_html_str.replaceAll(/align="right"/g, 'class="align-right"');
+	let edited_html_str = html_str.replaceAll(/align *= *"center"/g, 'class="align-center"');
+	edited_html_str = edited_html_str.replaceAll(/align *= *"right"/g, 'class="align-right"');
 	return edited_html_str;
 }
 
