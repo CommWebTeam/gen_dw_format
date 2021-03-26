@@ -440,8 +440,9 @@ function set_caption(table_arr, row, col) {
 
 function remove_tag(table_arr, row, col, tag_type) {
 	let curr_cell = table_arr.rows[row].cells[col];
-	// determines what type of tag to remove
-	curr_cell = curr_cell.replaceAll("<" + tag_type + ">", "").replaceAll("</" + tag_type + ">", "");
+	// find and remove instances of tag
+	const open_tag = new RegExp("<" + tag_type + "[^>]*>", "g");
+	curr_cell = curr_cell.replaceAll(open_tag, "").replaceAll("</" + tag_type + ">", "");
 	table_arr.rows[row].cells[col] = curr_cell;
 	return table_arr;
 }
