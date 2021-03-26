@@ -23,7 +23,10 @@ function format_table() {
 			dim_func = col_apply;
 		}
 		// apply actions across input dimension on table array
-		if (document.getElementById("to_header").checked) {
+		if (document.getElementById("to_header_col").checked) {
+			html_table_arr = dim_func(html_table_arr, table_list_type, table_list, action_list_type, action_list, forward_dir, to_header);
+		}
+		if (document.getElementById("to_header_row").checked) {
 			html_table_arr = dim_func(html_table_arr, table_list_type, table_list, action_list_type, action_list, forward_dir, to_header);
 		}
 		if (document.getElementById("set_caption").checked) {
@@ -385,8 +388,16 @@ Functions for actions to be applied on the cell of a table in the table array
 =================================
 */
 
-// converts td to th
-function to_header(table_arr, row, col) {
+// converts td to th scope col
+function to_header_col(table_arr, row, col) {
+	let curr_cell = table_arr.rows[row].cells[col];
+	// replace td with th
+	table_arr.rows[row].cells[col] = curr_cell.replaceAll("<td", "<th").replaceAll("</td", "</th");
+	return table_arr;
+}
+
+// converts td to th scope row
+function to_header_row(table_arr, row, col) {
 	let curr_cell = table_arr.rows[row].cells[col];
 	// replace td with th
 	table_arr.rows[row].cells[col] = curr_cell.replaceAll("<td", "<th").replaceAll("</td", "</th");
@@ -406,7 +417,7 @@ function set_caption(table_arr, row, col) {
 	curr_caption = curr_caption.replace("</caption>", curr_cell_contents + "</caption>");
 	table_arr.caption = curr_caption;
 	// remove cell contents
-	table_arr.rows[row].cells[col] = "<td></td>";
+	table_arr.rows[row].cells[col] = '<td class="background-light"></td>';
 	return table_arr;
 }
 

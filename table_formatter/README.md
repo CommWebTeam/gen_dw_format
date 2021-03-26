@@ -15,8 +15,8 @@ The inputs are as follows:
     - If option 1 or 2 is selected above, you will have to fill in the textbox with the comma-separated values of the indices for the tables to include / exclude. These are the positions the tables appear in from the start of the document, beginning at 0. For example, if you want to exclude the first 2 tables, then you would select "all tables excluding the following", and enter "0,1" into the textbox.
 - the actions to apply and how to apply them:
     - actions to apply on a cell. So far, the following actions have been implemented:
-        - convert the cell to a header (td to th).
-        - append the cell contents to the caption, then remove the cell.
+        - convert the cell to a header (change td to th) with a scope of "col" or "row". If the scope is "col" and the cell also has a colspan of at least 2, then the scope is changed to "colgroup".
+        - append the cell contents to the caption, then remove the cell by changing it to &lt;td class="background-light">&lt;/td>.
         - remove p tags from the cell.
         - convert the cell to a specific class (e.g. "osfi-txt--bold" or "align-left").
     - actions that apply on other parts of the table. So far, the following actions have been implemented:
@@ -92,7 +92,7 @@ The process to add an action is as follows:
 
 ### Helper functions
 
-Helper functions for actions are placed at the bottom of table_format_helpers.js. They are referred to in the top level function, format_table().
+Helper functions for actions are placed at the bottom of table_format_helpers.js. (Most of the actions are related to editing cells, so they are in the "Functions for actions to be applied on the cell of a table in the table array" section.)
 
 Each action function should take in the following as input:
 - a single table array representing the current table (i.e. one index in the overall array of tables)
