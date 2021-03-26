@@ -32,8 +32,11 @@ function format_table() {
 		if (document.getElementById("set_caption").checked) {
 			html_table_arr = dim_func(html_table_arr, table_list_type, table_list, action_list_type, action_list, forward_dir, set_caption);
 		}
-		if (document.getElementById("remove_p_tags").checked) {
-			html_table_arr = dim_func(html_table_arr, table_list_type, table_list, action_list_type, action_list, forward_dir, remove_p_tags);
+		if (document.getElementById("rm_p_tag").checked) {
+			html_table_arr = dim_func(html_table_arr, table_list_type, table_list, action_list_type, action_list, forward_dir, rm_p_tag);
+		}
+		if (document.getElementById("rm_strong_tag").checked) {
+			html_table_arr = dim_func(html_table_arr, table_list_type, table_list, action_list_type, action_list, forward_dir, rm_strong_tag);
 		}
 		if (document.getElementById("to_bold").checked) {
 			html_table_arr = dim_func(html_table_arr, table_list_type, table_list, action_list_type, action_list, forward_dir, to_otb);
@@ -435,11 +438,20 @@ function set_caption(table_arr, row, col) {
 	return table_arr;
 }
 
-function remove_p_tags(table_arr, row, col) {
+function remove_tag(table_arr, row, col, tag_type) {
 	let curr_cell = table_arr.rows[row].cells[col];
-	curr_cell = curr_cell.replaceAll("<p>", "").replaceAll("</p>", "");
+	// determines what type of tag to remove
+	curr_cell = curr_cell.replaceAll("<" + tag_type + ">", "").replaceAll("</" + tag_type + ">", "");
 	table_arr.rows[row].cells[col] = curr_cell;
 	return table_arr;
+}
+
+function rm_p_tag(table_arr, row, col) {
+	return remove_tag(table_arr, row, col, "p");
+}
+
+function rm_strong_tag(table_arr, row, col) {
+	return remove_tag(table_arr, row, col, "strong");
 }
 
 // helper function - adds class to cell

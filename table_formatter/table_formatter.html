@@ -22,7 +22,7 @@
   <br/>
   If <i>"Only the listed tables"</i> or <i>"All tables except those listed"</i> was selected - <br/>
   List of comma-separated indices for tables: <br/>
-  e.g. 0,2,5 <br/>
+  e.g. 0,2,5 (where Table 1 is denoted by 0)<br/>
   <input id="table_list" type="text" value="0" />
   <br/>
   <br/>
@@ -38,8 +38,11 @@
   <input type="checkbox" id="set_caption" name="set_caption">
   <label for="set_caption">Move cell text to table caption</label>
   <br/>
-  <input type="checkbox" id="remove_p_tags" name="remove_p_tags">
-  <label for="remove_p_tags">Remove paragraph &lt;p> tags inside cells</label>
+  <input type="checkbox" id="rm_p_tag" name="rm_p_tag">
+  <label for="rm_p_tag">Remove paragraph &lt;p> tags inside cells</label>
+  <br/>
+  <input type="checkbox" id="rm_strong_tag" name="rm_strong_tag">
+  <label for="rm_strong_tag">Remove strong &lt;strong> tags inside cells</label>
   <br/>
   <input type="checkbox" id="to_bold" name="to_bold">
   <label for="to_bold">Add <i>osfi-txt--bold</i> class</label>

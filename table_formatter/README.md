@@ -17,7 +17,7 @@ The inputs are as follows:
     - actions to apply on a cell. So far, the following actions have been implemented:
         - convert the cell to a header (change td to th) with a scope of "col" or "row". If the scope is "col" and the cell also has a colspan attribute, then the scope is changed to "colgroup".
         - append the cell contents to the caption, then remove the cell by changing it to &lt;td class="background-light">&lt;/td>.
-        - remove p tags from the cell.
+        - remove desired tags from the cell.
         - convert the cell to a specific class (e.g. "osfi-txt--bold" or "align-left").
     - actions that apply on other parts of the table. So far, the following actions have been implemented:
         - insert an opening thead, tbody, or tfoot tag at the first row index provided below, and the corresponding closing tag at the second row index provided below. For example, inserting the opening thead at row index 0 means placing it before all tr tags (rows). Since thead/tbody/tfoot are only used to group rows, the dimension provided below is ignored. Only the first two indices provided below are used for these actions.
