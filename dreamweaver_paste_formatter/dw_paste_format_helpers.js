@@ -28,6 +28,10 @@ function format_file() {
 		if (document.getElementById("multispace").checked) {
 			html_doc_str = remove_multispace(html_doc_str);
 		}
+		// remove multispaces
+		if (document.getElementById("end_tag_space").checked) {
+			html_doc_str = remove_end_tag_space(html_doc_str);
+		}
 		// remove empty tags
 		if (document.getElementById("empty_line").checked) {
 			html_doc_str = rm_empty_tags(html_doc_str);
@@ -175,18 +179,24 @@ function remove_logiterms(html_str) {
 	return html_str.replaceAll(/<a name="lt_[a-zA-z0-9]+">(.*?)<\/a>/g, "$1");
 }
 
+// remove spaces at the end of tags
+function remove_end_tag_space(html_str) {
+	return html_str.replaceAll(/(<[^>]*?) *>/g, "$1>");
+}
+
 // remove empty tags
 function rm_empty_tags(html_str) {
 	const empty_tag_regex = /<[a-zA-Z0-9]*><\/[a-zA-Z0-9]*>/g;
 	const space_tag_regex = /<[a-zA-Z0-9]*> *(&nbsp;)* *<\/[a-zA-Z0-9]*>/g;
-	// temporarily exclude br tags
+	// temporarily exclude br and td tags, since they can be empty
 	let edited_html_str = html_str.replaceAll("<br>", "<br///>");
+	edited_html_str = edited_html_str.replaceAll("<td>", "<td///>");
 	// replace empty tags until there are none left
 	while (empty_tag_regex.test(edited_html_str) || space_tag_regex.test(edited_html_str)) {
 		edited_html_str = edited_html_str.replaceAll(empty_tag_regex, "");
 		edited_html_str = edited_html_str.replaceAll(space_tag_regex, " ");
 	}
-	return edited_html_str.replaceAll("<br///>", "<br>");
+	return edited_html_str.replaceAll("<br///>", "<br>").replaceAll("<td///>", "<td>");
 }
 
 // remove spaces before closing p, li, th, td tags
