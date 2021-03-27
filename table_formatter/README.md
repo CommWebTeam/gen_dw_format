@@ -1,7 +1,7 @@
 # HTML table formatting
 Provides WET-related options for formatting cells in the specified rows or columns of the specified tables in an HTML document.
 
-[HTML page of tool here.](table_formatter.html)
+[Click here to access the table formatter.](https://commwebteam.github.io/gen_dw_format/table_formatter/table_formatter.html)
 
 ## Inputs
 
