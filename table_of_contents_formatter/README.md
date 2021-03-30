@@ -117,3 +117,10 @@ If the option to remove manual list numbering is checked, then list numberings w
 Note that the list numberings will still be included as optional parts of the tag/line search regex used in step 2. 
 
 This option is ignored if the option to use list numberings isn't also selected.
+
+## Tips
+
+- Sometimes, when copying a Word document into Dreamweaver, the page numberings in a table of contents will be copied over as well. You should manually remove them with a find and replace before running this tool, as those page numberings will prevent string matching.
+- If there are multiple table of contents (e.g. one for sections and one for tables), you can run the tool multiple times.
+- It may be worth running the general Dreamweaver formatting tool on the document first to fix spacing issues that may prevent string matching.
+- don't forget to manually fix any structural errors that may result from running this tool on badly formatted documents.
