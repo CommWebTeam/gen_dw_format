@@ -7,87 +7,162 @@ The current formatting checks are as follows (the user can select which to apply
 
 - Remove Dreamweaver-generated links:
     - removes the referential links that Dreamweaver generates (which don't properly function).
+        - Example: the string "&lt;a href="#_Ref123">Reference link 1&lt;/a>" has its link removed, so it is replaced with "Reference link 1".
         - checked by default
     - removes the table of contents links that Dreamweaver generates (which don't properly function).
+        - Example: the string "&lt;a href="#_Toc12a">Toc link 1&lt;/a>" has its link removed, so it is replaced with "Toc link 1".
         - checked by default
     - removes the bookmark links that Dreamweaver generates (which don't properly function).
+        - Example: the string "&lt;a href="#_bookmark1">Bookmark 1&lt;/a>" has its link removed, so it is replaced with "Bookmark 1".
         - checked by default
     - removes the French logiterms that Dreamweaver generates (which don't properly function).
+        - Example: the string "&lt;a name="lt_12">Logiterm 1&lt;/a>" has its link removed, so it is replaced with "Logiterm 1".
         - checked by default
 
-- Clean up spacing for coding style:
+- Clean up spacing for coding style. These don't affect the document's structural correctness for WET, but it's helpful to keep your document tidy for visual clarity, string searching, and other coding purposes.
     - makes all space hexcodes consistent by converting invisible non-breaking spaces (where it just looks like a regular space in the editor) into regular spaces.
         - checked by default
-    - replaces all multispaces with single spaces for neatness. You should apply source formatting in Dreamweaver to fix indentation if you include this check.
+    - replaces multiple spaces with a single space for neatness. You should apply source formatting in Dreamweaver to fix indentation if you include this check.
         - checked by default
     - removes spaces at the end of tags.
+        - Example: the string "&lt;p >Extra   spacing&lt;/p    >" is replaced with "&lt;p>Extra spacing&lt;/p>".
         - checked by default
     - removes empty attribute-less tags, and replaces all attribute-less tags that consist solely of spaces or nbsp; with a single regular space. This excludes br and td tags.
+        Example: the string "&lt;a> &lt;/a>" has its empty tag removed, so it is replaced with a single space " ".
         - checked by default
     - removes extra spaces before closing p, li, th, td, and header (h1, h2 etc.) tags for neatness.
+        - Example: the string "&lt;li>list item 1 &lt;/li>" is replaced with "&lt;li>list item 1&lt;/li>".
         - checked by default
 
 - Replace word-formatted fancy quotes/dashes:
     - replaces fancy quotes with regular quotes.
+        - Example: replaces *‘a’ “b”* with *'a' "b"*.
         - not checked by default
     - replaces the HTML entities for fancy quotes rsquo, lsquo, rdquo, and ldquo with regular quotes.
+        - Example: replaces *&amp;ldquo; &amp;lsquo;Fancy quotes&amp;rsquo; &amp;rdquo;* with *" 'Fancy quotes' "*.
         - not checked by default
     - replaces the HTML entities for fancy quotes rsquo, lsquo, rdquo, and ldquo with their actual values.
+        - Example: replaces *&amp;ldquo; &amp;lsquo;Fancy quotes&amp;rsquo; &amp;rdquo;* with *“ ‘Fancy quotes’ ”*.
         - not checked by default
     - replaces Word's em dashes with regular dashes.
+        - Example: replaces the string "–" with "-".
         - checked by default
 
 - Join consecutive tags of the same type:
-    - joins consecutive em and strong tags that are only separated by spaces into a single tag.
+    - joins consecutive em tags and consecutive strong tags (with only spaces between them) into a single tag.
+        - Example 1: replaces the string "&lt;em>italics 1&lt;/em> &lt;em>italics 2&lt;/em>" with "&lt;em>italics 1 italics 2&lt;/em>".
+        - Example 2: replaces the string "&lt;strong>bold 1&lt;/strong>&lt;strong>bold 2&lt;/strong>" with "&lt;strong>bold 1bold 2&lt;/strong>".
         - checked by default
     - joins consecutive ul tags into a single list.
+        - Example: replaces
+    *&lt;ul test="x">
+    &lt;li>list item 1&lt;/li>
+    &lt;li>list item 2&lt;/li>
+    &lt;/ul>
+    &lt;ul test="x">
+    &lt;li>list item 3&lt;/li>
+    &lt;/ul>*
+with
+    *&lt;ul test="x">
+    &lt;li>list item 1&lt;/li>
+    &lt;li>list item 2&lt;/li>
+    &lt;li>list item 3&lt;/li>
+    &lt;/ul>*.
         - checked by default
     - joins consecutive ol tags into a single list.
+        - Example: replaces
+    *&lt;ol test="x">
+    &lt;li>list item 1&lt;/li>
+    &lt;li>list item 2&lt;/li>
+    &lt;/ol>
+    &lt;ol test="x">
+    &lt;li>list item 3&lt;/li>
+    &lt;/ol>*
+with
+    *&lt;ol test="x">
+    &lt;li>list item 1&lt;/li>
+    &lt;li>list item 2&lt;/li>
+    &lt;li>list item 3&lt;/li>
+    &lt;/ol>*.
         - checked by default
         - this should be unchecked if the input document is already WET formatted, as the ol lists may have been purposefully split up due to differing numbering systems (e.g. if the first ol list is lower-alpha while the second is lower-roman).
 
 - Replace em/strong with other tags for italics/bold. These checks take precedence in the given order. For example, if both "change em tags to cite tags on lines that have links" and "change all em tags to i tags" are checked, then the first check will take precedence. So on lines that have links, em tags will be changed to cite tags, and on other lines without links, em tags will be changed to i tags.
     - changes em tags to cite tags on lines that have links. If a line contains the "a" tag, then all em tags on the same line are changed to cite tags.
+        - Example 1: the line "&lt;p>&lt;a>link&lt;/a>&lt;em>cite&lt;/em>&lt;/p>" is changed to "&lt;p>&lt;a>link&lt;/a>&lt;cite>cite&lt;/cite>&lt;/p>".
+        - Example 2: the line "&lt;p>&lt;em>non-cite&lt;/em>&lt;/p>" is left unchanged.
         - checked by default
     - changes all em tags to cite tags.
+        - Example: replaces the string "&lt;em>italics&lt;/em>" with "&lt;cite>italics&lt;/cite>".
         - not checked by default
     - changes all em tags to span class="osfi-txt--italic" tags. (The above two checks take precedence.)
+        - Example: replaces the string "&lt;em>italics&lt;/em>" with "&lt;span class="osfi-txt--italic">italics&lt;/span>".
         - not checked by default
     - changes all em tags to i tags. (The above three checks take precedence.)
+        - Example: replaces the string "&lt;em>italics&lt;/em>" with "&lt;i>italics&lt;/i>".
         - not checked by default
     - changes all strong tags to span class="osfi-txt--bold" tags.
+        - Example: replaces the string "&lt;strong>bold&lt;/strong>" with "&lt;span class="osfi-txt--bold">bold&lt;/span>".
         - not checked by default
     - changes all strong tags to b tags. (The above check takes precedence.)
+        - Example: replaces the string "&lt;strong>bold&lt;/strong>" with "&lt;b>bold&lt;/b>".
         - not checked by default
 
 - Replace/remove/format &lt;br> tags:
     - splits up blocks of text that are separated from each other by br within a single &lt;p> tag, by moving each block into its own &lt;p> tag.
+        - Example: replaces
+    *&lt;p>break &lt;br>
+    following text&lt;/p>*
+with
+    *&lt;p>break&lt;/p>
+    &lt;p>following text&lt;/p>*.
         - not checked by default
     - splits up blocks of text that are separated from each other by br within a single &lt;p> tag, by moving each block into its own &lt;p> tag, if the chunk before the br ends in one of the following punctuation symbols: . , ; : ! ? ) " ’ ”
+        - does not implement the example for the above check, but does replace
+    *&lt;p>break punctuation. &lt;br>
+    following text&lt;/p>*
+with
+    *&lt;p>break punctuation.&lt;/p>
+    &lt;p>following text&lt;/p>*.
         - checked by default
-    - removes br tags at the start or end of p, li, td, th, and header (h1, h2 etc.) tags e.g. if a line consists of &lt;p> &lt;br>x &lt;/p>, the  &lt;br> is removed.
+    - removes br tags at the start or end of p, li, td, th, and header (h1, h2 etc.) tags.
+        - Example: replaces
+    *&lt;p> &lt;br>
+    empty br
+    &lt;br>&lt;/p>*
+with
+    *&lt;p>empty br&lt;/p>*.
         - checked by default
     - changes all &lt;br> to &lt;br/>.
         - checked by default
 
 - Add/fix/remove tag attributes:
     - ensures that internal links to the OSFI website are relative by removing the OSFI main page from the URL, and adds rel=external to external links. This ignores links that have keywords indicating footnotes, table of contents, already existing internal links, or email addresses.
+        - Example 1: replaces the string "&lt;a href="osfi-bsif.gc.ca/Eng/test">internal link 1&lt;/a>" with "&lt;a href="/Eng/test">internal link 1&lt;/a>".
+        - Example 2: replaces the string "&lt;a href="https://www.google.ca/">external link&lt;/a>" with "&lt;a rel="external" href="https://www.google.ca/">external link&lt;/a>".
+        - Example 3: the string "&lt;a href="_ftn">not external link&lt;/a>" is left unchanged because the keyword "_ftn" indicates footnote.
         - checked by default
     - replaces Dreamweaver-generated center and right alignment (looks like align="center" or align="right") with their respective WET classes.
+        - Example: replaces the string "&lt;li align="center">center align&lt;/li>" with "&lt;li class="align-center">center align&lt;/li>".
         - checked by default
     - removes attributes from p (paragraph) tags.
+        - Example: replaces the string "&lt;p test="x">p attribute&lt;/p>" with "&lt;p>p attribute&lt;/p>".
         - checked by default
         - this should be unchecked if the input document is already WET formatted, as the attributes may have been manually inserted.
     - removes attributes from ol and ul tags.
+        - Example: replaces the string "&lt;ol test="x">" with "&lt;ol>".
         - checked by default
         - this should be unchecked if the input document is already WET formatted, as the attributes may have been manually inserted.
     - removes attributes from table, th, and tr tags, and removes attributes from td tags except for colspan and rowspan.
+        - Example 1: replaces the string "&lt;table border="1">" with "&lt;table>".
+        - Example 2: replaces the string "&lt;td width="97" rowspan="1" colspan = "1">table 1,2&lt;/td>" with "&lt;td rowspan="1" colspan = "1">table 1,2&lt;/td>".
         - checked by default
         - this should be unchecked if the input document is already WET formatted, as the attributes may have been manually inserted.
 
 - Format Dreamweaver footnotes:
-    - replaces the formatting for Dreamweaver-generated footnotes with WET footnotes. This uses helper functions from the [footnote_formatter tool](https://commwebteam.github.io/gen_dw_format/footnote_formatter/). It assumes Dreamweaver formatting for the footnotes; the footnote formatter tool should be used if this is not the case.
+    - replaces the formatting for Dreamweaver-generated footnotes with WET footnotes. This uses helper functions from the [footnote_formatter tool](https://commwebteam.github.io/gen_dw_format/footnote_formatter/). It assumes explicit Dreamweaver formatting for footnote strings; the footnote formatter tool should be used if this is not the case.
         - checked by default
+        - The WET footnote structure is English by default; use the check two checks below to convert it to French.
 
 - Fix spacing issues surrounding punctuation:
     - replaces common punctuation/spacing misformattings:
@@ -95,26 +170,31 @@ The current formatting checks are as follows (the user can select which to apply
         - " ," and ",," with ","
         - " ;" and ";;" with ";"
         - ": :" and "::" with ":"
-        
         - checked by default
 
 - Translate structure for French documents:
-    - translates internal links to French by searching for /Eng/ and replacing with /Fra/, and translates the WET footnote structure created by the WET footnote formatting check directly above to French.
+    - translates internal links to French by searching for /Eng/ and replacing with /Fra/, and translates the English WET footnote structure created by the earlier footnote check to French.
+        - Example 1: replaces the string "&lt;a href="/Eng/test">internal link 1&lt;/a>" with ""&lt;a href="/Fra/test">internal link 1&lt;/a>".
+        - Example 2: replaces the string "Return to footnote" with "Retour à la référence de la note de bas de page".
         - not checked by default
     - replaces 1er with 1&lt;sup>er&lt;/sup>, and other French list numberings formatted as #e with #&lt;sup>e&lt;/sup>.
+        - Example: replaces the string "1er 2e" with "1&lt;sup>er&lt;/sup> 2&lt;sup>e&lt;/sup>".
         - not checked by default
     - ensures that "%" and "$" symbols have an &amp;nbsp; in front of them (for French spacing around those punctuation symbols).
+        - Example: replaces the string "dollar $ percent%" with "dollar&nbsp;$ percent&nbsp;%".
         - not checked by default
 
-- Convert manually inserted fake tags to actual tags (see below):
+- Convert manually inserted fake tags to actual tags (see below for details):
     - changes strings indicating superscript and subscript tags in the original Word document to be actual tags, and joins these tags together.
+        - Example 1: replaces the string "Regular&amp;lt;sup&amp;gt;s&amp;lt;/sup&amp;gt;&amp;lt;sup&amp;gt;u&amp;lt;/sup&amp;gt;&amp;lt;sup&amp;gt;p&amp;lt;/sup&amp;gt;&amp;lt;sup&amp;gt;e&amp;lt;/sup&amp;gt;&amp;lt;sup&amp;gt;r&amp;lt;/sup&amp;gt;&amp;lt;sup&amp;gt;s&amp;lt;/sup&amp;gt;&amp;lt;sup&amp;gt;c&amp;lt;/sup&amp;gt;&amp;lt;sup&amp;gt;r&amp;lt;/sup&amp;gt;&amp;lt;sup&amp;gt;i&amp;lt;/sup&amp;gt;&amp;lt;sup&amp;gt;p&amp;lt;/sup&amp;gt;&amp;lt;sup&amp;gt;t&amp;lt;/sup&amp;gt;" with "Regular&lt;sup>superscript&lt;/sup>".
+        - Example 2: replaces the string "Regular&amp;lt;sub&amp;gt;s&amp;lt;/sub&amp;gt;&amp;lt;sub&amp;gt;u&amp;lt;/sub&amp;gt;&amp;lt;sub&amp;gt;b&amp;lt;/sub&amp;gt;&amp;lt;sub&amp;gt;s&amp;lt;/sub&amp;gt;&amp;lt;sub&amp;gt;c&amp;lt;/sub&amp;gt;&amp;lt;sub&amp;gt;r&amp;lt;/sub&amp;gt;&amp;lt;sub&amp;gt;i&amp;lt;/sub&amp;gt;&amp;lt;sub&amp;gt;p&amp;lt;/sub&amp;gt;&amp;lt;sub&amp;gt;t&amp;lt;/sub&amp;gt;" with "Regular&lt;sub>subscript&lt;/sub>".
         - checked by default
     - changes strings indicating math tags in the original Word document to be actual tags.
         - checked by default
 
-In my implementations, I sometimes split regex statements up into multiple calls for clarity, but a lot of these checks can be done in one or two regex statements.
+I sometimes split regex statements up into multiple calls for clarity, but a lot of these checks can be done in one or two regex statements.
 
-This is not intended to be an in-depth formatting tool and only covers some basic initial steps.
+This is not intended to be an in-depth formatting tool and only covers some basic initial steps; further manual adjustments to the document may be required to make it fully WET valid.
 
 ## Details on changing strings indicating tags to actual tags
 
@@ -130,7 +210,7 @@ This check is to be used in conjunction with some manual find-and-replace in the
 
 For this tool, you should mark superscripts and subscripts in the Word document with &lt;sup>, &lt;/sup>, &lt;sub>, and &lt;/sub>, as described below.
 
-This tool looks for strings indicating subscript/superscript tags in the html document (where the angle brackets <> have been converted to their html entities by Dreamweaver) and changes them to be actual tags. Afterwards, it joins consecutive sup and sub tags.
+This tool looks for strings indicating subscript/superscript tags in the html document (where the angle brackets &lt;> have been converted to their html entities by Dreamweaver) and changes them to be actual tags. Afterwards, it joins consecutive sup and sub tags.
 
 #### Steps to mark superscripts and subscripts in Word
 
