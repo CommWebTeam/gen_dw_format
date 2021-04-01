@@ -6,19 +6,19 @@ function format_file() {
 		let html_doc_str = event.target.result.replaceAll("\r\n", "\n");
 		// remove _Ref links
 		if (document.getElementById("dw_ref").checked) {
-			html_doc_str = remove_ref_links(html_doc_str);
+			html_doc_str = rm_ref_links(html_doc_str);
 		}
 		// remove _Toc links
 		if (document.getElementById("dw_toc").checked) {
-			html_doc_str = remove_toc_links(html_doc_str);
+			html_doc_str = rm_toc_links(html_doc_str);
 		}
 		// remove _bookmark links
 		if (document.getElementById("dw_bookmark").checked) {
-			html_doc_str = remove_bookmark_links(html_doc_str);
+			html_doc_str = rm_bookmark_links(html_doc_str);
 		}
 		// remove logiterms
 		if (document.getElementById("logiterms").checked) {
-			html_doc_str = remove_logiterms(html_doc_str);
+			html_doc_str = rm_logiterms(html_doc_str);
 		}
 		// make space hexcode consistent
 		if (document.getElementById("space_format").checked) {
@@ -26,11 +26,11 @@ function format_file() {
 		}
 		// remove multispaces
 		if (document.getElementById("multispace").checked) {
-			html_doc_str = remove_multispace(html_doc_str);
+			html_doc_str = rm_multispace(html_doc_str);
 		}
-		// remove multispaces
+		// remove spaces at the end of tags
 		if (document.getElementById("end_tag_space").checked) {
-			html_doc_str = remove_end_tag_space(html_doc_str);
+			html_doc_str = rm_end_tag_space(html_doc_str);
 		}
 		// remove empty tags
 		if (document.getElementById("empty_line").checked) {
@@ -164,27 +164,27 @@ function format_file() {
 /* helpers */
 
 // remove reference links
-function remove_ref_links(html_str) {
+function rm_ref_links(html_str) {
 	return html_str.replaceAll(/<a name="_Ref[a-zA-z0-9]+">(.*?)<\/a>/g, "$1").replaceAll(/<a href="#_Ref[a-zA-z0-9]+">(.*?)<\/a>/g, "$1");
 }
 
 // remove toc links
-function remove_toc_links(html_str) {
+function rm_toc_links(html_str) {
 	return html_str.replaceAll(/<a name="_Toc[a-zA-z0-9]+">(.*?)<\/a>/g, "$1").replaceAll(/<a href="#_Toc[a-zA-z0-9]+">(.*?)<\/a>/g, "$1");
 }
 
 // remove bookmark links
-function remove_bookmark_links(html_str) {
+function rm_bookmark_links(html_str) {
 	return html_str.replaceAll(/<a name="_bookmark[a-zA-z0-9]+">(.*?)<\/a>/g, "$1").replaceAll(/<a href="#_bookmark[a-zA-z0-9]+">(.*?)<\/a>/g, "$1");
 }
 
 // remove logiterms
-function remove_logiterms(html_str) {
+function rm_logiterms(html_str) {
 	return html_str.replaceAll(/<a name="lt_[a-zA-z0-9]+">(.*?)<\/a>/g, "$1");
 }
 
 // remove spaces at the end of tags
-function remove_end_tag_space(html_str) {
+function rm_end_tag_space(html_str) {
 	return html_str.replaceAll(/(<[^>]*?) *>/g, "$1>");
 }
 

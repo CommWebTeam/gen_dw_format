@@ -8,6 +8,39 @@ I'm considering integrating this with the Dreamweaver paste formatting tool, but
 
 Different Word documents produce very different content structures when pasted into Dreamweaver; I've tried to go through a few different cases and work out some patterns, but the inconsistency here means that this tool may not be generally reliable - be sure to double check the output and click through the table of contents links to check that they work.
 
+## Inputs
+
+1. Inputs for where the table of contents is located in the document.
+    - This can optionally consist of two inputs explicitly indicating which line the table of contents starts on, and which it ends on.
+        - These should start at index 0, i.e. the first line in the document is 0, the second line in the document is 1, and so on.
+        - These should include the entire encompassing structure of the Dreamweaver-formatted table of contents, including the div tag that Dreamweaver usually puts the table into. Everything between these two lines, inclusive, will be removed and replaced with a WET-formatted div for the updated table of contents, so include all surrounding lines that you do not want to appear in the cleaned document.
+    - From what I have seen, Dreamweaver usually formats the table of contents tables to be surrounded by two lines that consist of &lt;br clear="all">. So if the start/end lines are not provided, then the tool searches for a block of text between two &lt;br clear="all"> that contains at least two instances of entry separators (described in a following input).
+2. How the tool should attempt to indent the output WET-formatted table of contents, decide header tag level, and generate IDs. The options are as follows:
+    - use existing list numberings from the document (explanation [#list-numbering](in this section)).
+    - use manually inserted list numberings (differences from using existing list numberings explained [#manual-list-numbering](in this section)).
+    - use existing indentation in the table. This is only helpful if the Dreamweaver table is formatted as a list, as described below.
+3. Entry separators in the Dreamweaver table of contents, i.e. how the Dreamweaver table of contents is structured. The following have been implemented so far:
+    - All entries are placed into a single &lt;p> tag, and each entry is separated by &lt;br/> or &lt;br>, e.g.
+        - &lt;p>Entry 1 &lt;br>
+        - Entry 2 &lt;br>
+        - Entry 3 &lt;&lt;/p>
+    - All entries are placed into a single &lt;ul> tag, and each entry is its own &lt;li> element, e.g.
+        - &lt;ul>
+            - &lt;li>Entry 1&lt;/li>
+            - &lt;li>Entry 2&lt;/li>
+            - &lt;li>Entry 3&lt;/li>
+        - &lt;/ul>
+4.  The list type for the output WET-formatted table of contents. For example, if &lt;ol list-numeric> is selected, then the WET table of contents might be formatted as so:
+    - &lt;ol class="list-numeric">
+        - &lt;li>Entry 1
+        - &lt;ol class="list-numeric">
+            - &lt;li>Entry 2&lt;/li>
+            - &lt;li>Entry 3&lt;/li>
+        - &lt;/ol>&lt;/li>
+    - &lt;/ol>
+5. The option for whether to remove table of contents numberings from entries, such as in the following:
+    - Entry ........ 5
+
 ## Details
 
 This tool does two things:
@@ -87,7 +120,9 @@ Any initial list numberings are set to be optional in step 2's regex statement t
 
 ### Entries without list numbering
 
-For table of contents entries that do not have list numberings, the tool sets the level to be [the level of the last list numbering that did exist] + 1. If there have been no list numberings so far, then the tool uses a level of 2. The list numbering value itself is set to a blank string. For example, if the table of contents has the following entries:
+For entries that do not have list numberings, the level is set to be to be [the level of the last list numbering that did exist] + 1. If there have been no list numberings so far, then the tool uses a level of 2. The list numbering value itself is set to a blank string, so it will not be included in the entry.
+
+For example, if the table of contents has the following entries:
 - Introduction
 - 3 Author's note
 - 3.0 Overview

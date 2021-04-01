@@ -8,7 +8,7 @@ function format_toc() {
     let html_file = document.getElementById("html_file").files[0];
     file_reader.onload = function(event) {
         let html_str = event.target.result;
-        let edited_str = format_toc_arr(html_str, document.getElementById("toc_start").value, document.getElementById("toc_end").value, document.getElementById("list_indent").checked, document.getElementById("manual_list").checked, document.getElementById("list_type").value);
+        let edited_str = format_toc_arr(html_str, document.getElementById("toc_start").value, document.getElementById("toc_end").value, document.getElementById("list_indent").checked, document.getElementById("manual_list").checked, document.getElementById("toc_struc").value, document.getElementById("list_type").value);
         download(edited_str, "toc.html", "text/html");
     }
     file_reader.readAsText(html_file);
@@ -83,31 +83,31 @@ function create_toc_table(toc_values, manual_list, list_type) {
     // get list type from input
     let list_open = "<ul>";
     let list_close = "</ul>";
-    if (list_type === "no_bullet") {
-        list_open = "<ol list-bullet-none>";
+    if (list_type === "ol") {
+        list_open = "<ol>";
         list_close = "</ol>";
     }
     else if (list_type === "no_bullet") {
         list_open = "<ol list-bullet-none>";
         list_close = "</ol>";
     }
-    if (list_type === "ol_numeric") {
+    else if (list_type === "ol_numeric") {
         list_open = "<ol list-numeric>";
         list_close = "</ol>";
     }
-    if (list_type === "ol_lower_alpha") {
+    else if (list_type === "ol_lower_alpha") {
         list_open = "<ol list-lower-alpha>";
         list_close = "</ol>";
     }
-    if (list_type === "ol_upper_alpha") {
+    else if (list_type === "ol_upper_alpha") {
         list_open = "<ol list-upper-alpha>";
         list_close = "</ol>";
     }
-    if (list_type === "ol_lower_roman") {
+    else if (list_type === "ol_lower_roman") {
         list_open = "<ol list-lower-roman>";
         list_close = "</ol>";
     } 
-    if (list_type === "ol_upper_roman") {
+    else if (list_type === "ol_upper_roman") {
         list_open = "<ol list-upper-roman>";
         list_close = "</ol>";
     }
@@ -167,19 +167,26 @@ function create_toc_table(toc_values, manual_list, list_type) {
 
 
 // formats html document's table of contents to WET
-function format_toc_arr(html_str, input_start_line, input_end_line, use_list_indent, manual_list, list_type) {
+function format_toc_arr(html_str, input_start_line, input_end_line, use_list_indent, manual_list, toc_struc, list_type) {
 	/*
 	============================
 	Initial cleanup
 	============================
 	*/
-    // get rid of extra existing links, including existing toc links
-    let cleaned_html_str = html_str.replaceAll(/<a name="_Ref[0-9]+">(.*?)<\/a>/g, "$1");
-    cleaned_html_str = cleaned_html_str.replaceAll(/<a name="_Toc[0-9]+">(.*?)<\/a>/g, "$1");
-    cleaned_html_str = cleaned_html_str.replaceAll(/<a name="lt_[a-zA-z0-9]+">(.*?)<\/a>/g, "$1");
-    // perform basic cleaning on html and split into lines
+    // perform basic cleaning on html using general dreamweaver formatting functions
+    let cleaned_html_str = rm_ref_links(html_str);
+    cleaned_html_str = rm_toc_links(cleaned_html_str);
+    cleaned_html_str = rm_bookmark_links(cleaned_html_str);
+    cleaned_html_str = rm_logiterms(cleaned_html_str);
+    cleaned_html_str = replace_invisible_nbsp(cleaned_html_str);
+    cleaned_html_str = rm_multispace(cleaned_html_str);
+    cleaned_html_str = rm_end_tag_space(cleaned_html_str);
+    cleaned_html_str = rm_empty_tags(cleaned_html_str);
+    cleaned_html_str = rm_empty_br(cleaned_html_str);
+    cleaned_html_str = fix_br(cleaned_html_str);
+    // this will be used for regex statements, so escape regex special chars
     cleaned_html_str = replace_special_chars(cleaned_html_str);
-    cleaned_html_str = format_spacing(cleaned_html_str);
+    // split into lines
     let html_arr = cleaned_html_str.split("\n");
     html_arr = trim_arr(html_arr);
 	/*
@@ -208,15 +215,15 @@ function format_toc_arr(html_str, input_start_line, input_end_line, use_list_ind
 	Get contents of table
 	============================
 	*/
-    // search for p tag that includes a <br>
+    // search for p tag that includes a <br/>
     let table_str = table_lines.join("\n");
     const para_regex = new RegExp("(^|(<p.*?>))((.|\n)*?)($|(</p>))", "g");
     let content_list_str = "";
-    // loop through p tags until one with at least two <br> tags is found
+    // loop through p tags until one with at least two <br/> tags is found
 	let contents = para_regex.exec(table_str);
 	while (contents !== null) {
         let curr_p = contents[3];
-        let num_br = count_regex(curr_p, /<br>/g);
+        let num_br = count_regex(curr_p, /<br\/>/g);
         if (num_br >= 2) {
             content_list_str = curr_p;
             console.log("Number of contents: " + num_br);
@@ -230,8 +237,8 @@ function format_toc_arr(html_str, input_start_line, input_end_line, use_list_ind
         console.log("No <p> tag with at least 2 <br> breaks found (this is the assumed format of a Dreamweaver ToC)");
         return html_str;
     }
-    // break content list up by <br>s
-    content_list = content_list_str.split("<br>");
+    // break content list up by <br/>s
+    content_list = content_list_str.split("<br/>");
     // remove other tags inside content list
     content_list = replace_arr(content_list, /<.*?>/g, "");
     content_list = content_list.map(x => format_spacing(x));

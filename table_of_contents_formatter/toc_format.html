@@ -11,11 +11,11 @@
   <input id="html_file" type="file" />
   <br/>
   <br/>
-  (Optional) Enter which line the table of contents starts on in the HTML file:
+  (Optional) Enter which line the table of contents starts on in the HTML file, starting at index 0:
   <input id="toc_start" type="number" value=""/>
   <br/>
   <br/>
-  (Optional) Enter which line the table of contents ends on in the HTML file:&nbsp;
+  (Optional) Enter which line the table of contents ends on in the HTML file, starting at index 0:&nbsp;
   <input id="toc_end" type="number" value=""/>
   <br/>
   <br/>
@@ -29,9 +29,17 @@
   <label for="manual_list">Are list numberings are manually edited into the Dreamweaver file? (The tool will remove them from the output if so.)</label>
   <br/>
   <br/>
-  <label for="list_type">List type for table of contents structure:</label>
+  <label for="toc_struc">Current table of contents structure:</label>
+  <select name="toc_struc" id="toc_struc">
+    <option value="p_br">One &lt;p> tag with entries separated by &lt;br/> or &lt;br></option>
+    <option value="ul_li">One &lt;ul> tag with each entry as a &lt;li> element</option>
+  </select>
+  <br/>
+  <br/>
+  <label for="list_type">List type for output table of contents structure:</label>
   <select name="list_type" id="list_type">
     <option value="ul">&lt;ul></option>
+    <option value="ol">&lt;ol></option>
     <option value="no_bullet">&lt;ol list-bullet-none></option>
     <option value="ol_numeric">&lt;ol list-numeric></option>
     <option value="ol_lower_alpha">&lt;ol list-lower-alpha></option>
@@ -48,6 +56,7 @@
 <p>---</p>
 <p>This application takes in an HTML file with default Dreamweaver table of contents formatting and reformats the table of contents to follow WET guidelines. It also generates clearer links for the table of contents, and replaces the old links in the main document with these new links.</p>
 <p>Note that since this code adds/removes tags while making specific assumptions about formatting / tags used, <strong>the immediate output WILL contain formatting errors</strong> if the original Dreamweaver paste is malformed enough. Be sure to go through the document and manually fix any resulting errors - Dreamweaver is helpful for this.</p>
+<p>This tool will search for each entry in the table of contents and replace all instances of it in the Word document with a header (that the table of contents entry links to). This is one of the most common sources of errors that the tool creates. You will have to fix these manually; to aid in this the original line is included as a comment above the replaced line.</p>
 <p>---</p>
 <p>Details on list numberings:</p>
 <p>If the option to search for list numberings is selected, the tool checks each line in the table of contents to see if it starts with a list number, e.g. 3.1. The list numbering must be formatted with numbers and periods.</p>
@@ -61,6 +70,7 @@
   <p>More in-depth information can be found in the <a rel="external" href="https://commwebteam.github.io/gen_dw_format/table_of_contents_formatter/">readme</a>.</p>
 <script src="https://commwebteam.github.io/util/format_helpers.js"></script> 
 <script src="https://commwebteam.github.io/util/download.js"></script>
+<script src="../dreamweaver_paste_formatter/dw_paste_format_helpers.js"></script>
 <script src="format_toc_array.js"></script>
 </body>
 </html>
