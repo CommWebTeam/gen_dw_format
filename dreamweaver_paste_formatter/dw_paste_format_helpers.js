@@ -4,6 +4,10 @@ function format_file() {
 	let content_str = document.getElementById("html_file").files[0];
 	file_reader_content.onload = function(event) {
 		let html_doc_str = event.target.result.replaceAll("\r\n", "\n");
+		// remove empty links
+		if (document.getElementById("dw_empty_a").checked) {
+			html_doc_str = rm_empty_links(html_doc_str);
+		}
 		// remove _Ref links
 		if (document.getElementById("dw_ref").checked) {
 			html_doc_str = rm_ref_links(html_doc_str);
@@ -33,7 +37,7 @@ function format_file() {
 			html_doc_str = rm_end_tag_space(html_doc_str);
 		}
 		// remove empty tags
-		if (document.getElementById("empty_line").checked) {
+		if (document.getElementById("empty_tag").checked) {
 			html_doc_str = rm_empty_tags(html_doc_str);
 		}
 		// remove spaces before closing p, li, th, td, header tags
@@ -162,6 +166,11 @@ function format_file() {
 }
 
 /* helpers */
+
+// remove empty links
+function rm_empty_links(html_str) {
+	return html_str.replaceAll(/<a>(\s*)<\/a>/g, "$1").replaceAll(/<a [^>]*>(\s*)<\/a>/g, "$1");
+}
 
 // remove reference links
 function rm_ref_links(html_str) {
