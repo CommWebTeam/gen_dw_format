@@ -117,7 +117,7 @@ function create_toc_table(toc_values, manual_list, list_type) {
     let sublist_counter = 0;
     // set first entry - push its contents without closing the list element (in case the next element is a sublist)
     if (manual_list) {
-        // exclude list value in replacement if it was manually input
+        // exclude list numbering in the entry's value if it was manually input
         toc_html_lines.push('<li><a href="#' + toc_values[0].link_id + '">' + toc_values[0].content + "</a>");
     }
     else {
@@ -129,32 +129,45 @@ function create_toc_table(toc_values, manual_list, list_type) {
     for (let i = 1; i < toc_values.length; i++) {
         curr_indent_level = toc_values[i].indent_level;
         if (curr_indent_level > prev_indent_level) {
-            // if the level is greater, then it's part of a sublist, so open a sublist 
-            toc_html_lines.push(list_open);
-            sublist_counter++;
+            // if the level increases, then it's part of a sublist, so open one sublist for each level increase
+            for (let i = 0; i < (curr_indent_level - prev_indent_level); i++) {
+                toc_html_lines.push(list_open);
+                // open new list element
+                toc_html_lines.push("<li>");
+                sublist_counter++;
+            }
         }
         else if (curr_indent_level === prev_indent_level) {
-            // if the level is equal, just close list element of previous line
+            // if the level stays the same, just close list element of previous line
             toc_html_lines.push("</li>");
+            // open new list element
+            toc_html_lines.push("<li>");
         }
         else {
-            // otherwise, the level is smaller, so it ends the sublist of the previous line; close list element of previous line, and then the sublist, and then the list element containing the sublist
+            // otherwise, the level decreases, so it ends the sublist of the previous line
+            // close close list element of previous line
             toc_html_lines.push("</li>");
-            toc_html_lines.push(list_close);
-            toc_html_lines.push("</li>");
-            sublist_counter--;
+            // for each level decrease, close the sublist, then the list element containing the sublist
+            for (let i = 0; i < (prev_indent_level - curr_indent_level); i++) {
+                toc_html_lines.push(list_close);
+                toc_html_lines.push("</li>");
+                sublist_counter--;
+            }
+            // open new list element
+            toc_html_lines.push("<li>");
         }
         // push current contents without closing the list element (in case the next element is a sublist)
         if (manual_list) {
-            // exclude list value in replacement if it was manually input
-            toc_html_lines.push('<li><a href="#' + toc_values[i].link_id + '">' + toc_values[i].content + "</a>");
+            // exclude list numbering in the entry's value if it was manually input
+            toc_html_lines.push('<a href="#' + toc_values[i].link_id + '">' + toc_values[i].content + "</a>");
         }
         else {
-            toc_html_lines.push('<li><a href="#' + toc_values[i].link_id + '">' + toc_values[i].list_numbering + " " + toc_values[i].content + "</a>");
+            toc_html_lines.push('<a href="#' + toc_values[i].link_id + '">' + toc_values[i].list_numbering + " " + toc_values[i].content + "</a>");
         }
+        // store current indent level to compare to in the next entry
         prev_indent_level = curr_indent_level;
     }
-    // close final list element, then close all sublists, then close table list (expanded for clarity)
+    // close final list element, then close all sublists, then close table list
     toc_html_lines.push("</li>");
     for (let i = 0; i < sublist_counter; i++) {
         toc_html_lines.push(list_close);
