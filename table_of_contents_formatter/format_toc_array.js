@@ -180,7 +180,7 @@ function create_toc_table(toc_values, manual_list, list_type) {
 
 
 // formats html document's table of contents to WET
-function format_toc_arr(html_str, toc_struc, input_start_line, input_end_line, indent_type, list_type, page_nums) {
+function format_toc_arr(html_str, toc_struc, input_start_line, input_end_line, indent_type, list_type, rm_page_nums) {
 	/*
 	============================
 	Initial cleanup
@@ -254,6 +254,11 @@ function format_toc_arr(html_str, toc_struc, input_start_line, input_end_line, i
     content_list = content_list_str.split("<br/>");
     // remove other tags inside content list
     content_list = replace_arr(content_list, /<.*?>/g, "");
+    // remove page numbers if the option is selected
+    if (rm_page_nums) {
+        content_list = replace_arr(content_list, /(\.)+\. *[0-9]+/g, "");
+    }
+    // clean up content
     content_list = content_list.map(x => format_spacing(x));
     content_list = trim_arr(content_list);
     content_list = rm_empty_lines(content_list);
