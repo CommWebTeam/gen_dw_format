@@ -1,5 +1,7 @@
 // regex for list numbering
 const list_ind_regex = /^[0-9\.]+/g;
+// @s are used as placeholders, so temporarily replace them
+const at_placeholder = "<at_placeholder/>";
 
 // get uploaded file, fix toc div and links, and redownload
 function format_toc() {
@@ -199,9 +201,11 @@ function format_toc_arr(html_str, toc_struc, input_start_line, input_end_line, i
     cleaned_html_str = fix_br(cleaned_html_str);
     // this will be used for regex statements, so escape regex special chars
     cleaned_html_str = replace_special_chars(cleaned_html_str);
+    // use @ as placeholders
+    cleaned_html_str = cleaned_html_str.replaceAll("@", at_placeholder);
     // split into lines
     let html_arr = cleaned_html_str.split("\n");
-    html_arr = trim_arr(html_arr);
+    let trimmed_arr = trim_arr(html_arr);
 	/*
 	============================
 	Get table of contents div lines
@@ -213,23 +217,29 @@ function format_toc_arr(html_str, toc_struc, input_start_line, input_end_line, i
     if (input_start_line === "" || input_end_line === "") {
         // search for lines that consist of <br clear="all">
         console.log("Starting line:")
-        start_line = html_arr.indexOf('<br clear="all">');
+        start_line = trimmed_arr.indexOf('<br clear="all">');
         console.log(start_line);
         console.log("Ending line:")
-        end_line = html_arr.indexOf('<br clear="all">', start_line + 1);
+        end_line = trimmed_arr.indexOf('<br clear="all">', start_line + 1);
         console.log(end_line);
     } else {
         start_line = parseInt(input_start_line);
         end_line = parseInt(input_end_line);
     }
+    // get contents of original table
     let table_lines = html_arr.slice(start_line, end_line + 1);
+    let table_str = table_lines.join("\n");
+    // mark position of original table
+    cleaned_html_str = cleaned_html_str.replace(table_str, "@" + table_str + "@");
+    // get contents of original table without source formatting
+    table_lines = trimmed_arr.slice(start_line, end_line + 1);
+    table_str = table_lines.join("\n");
     /*
 	============================
 	Get contents of table
 	============================
 	*/
     // search for p tag that includes a <br/>
-    let table_str = table_lines.join("\n");
     const para_regex = new RegExp("(^|(<p.*?>))((.|\n)*?)($|(</p>))", "g");
     let content_list_str = "";
     // loop through p tags until one with at least two <br/> tags is found
@@ -283,8 +293,8 @@ function format_toc_arr(html_str, toc_struc, input_start_line, input_end_line, i
     // replace certain tags (just <li> for now) with placeholders so they aren't treated as headers
     const list_open_placeholder = "list_open_placeholder";
     const list_close_placeholder = "list_close_placeholder";
-    html_arr = replace_arr(html_arr, "<li>", list_open_placeholder);
-    html_arr = replace_arr(html_arr, "</li>", list_close_placeholder);
+    cleaned_html_str = cleaned_html_str.replaceAll("<li>", list_open_placeholder);
+    cleaned_html_str = cleaned_html_str.replaceAll("</li>", list_close_placeholder);
     // add headers with ids to the html document's main body
     for (let i = 0; i < wet_table_info.length; i++) {
         let curr_numbering = wet_table_info[i].list_numbering;
@@ -303,11 +313,11 @@ function format_toc_arr(html_str, toc_struc, input_start_line, input_end_line, i
         else {
             replacement = replacement + "<h" + curr_level + ' id="' + curr_link + '">' + curr_numbering + ' ' + curr_content + "</h" + curr_level + ">";
         }
-        html_arr = replace_arr(html_arr, header_regex, replacement);
+        cleaned_html_str = cleaned_html_str.replaceAll(header_regex, replacement);
     }
     // add placeholder tags back in
-    html_arr = replace_arr(html_arr, list_open_placeholder, "<li>");
-    html_arr = replace_arr(html_arr, list_close_placeholder, "</li>");
+    cleaned_html_str = cleaned_html_str.replaceAll(list_open_placeholder, "<li>");
+    cleaned_html_str = cleaned_html_str.replaceAll(list_close_placeholder, "</li>");
     /*
 	============================
 	Replace original table of contents lines with formatted table
@@ -319,6 +329,9 @@ function format_toc_arr(html_str, toc_struc, input_start_line, input_end_line, i
     new_table_lines = new_table_lines.concat(entry_lines);
     new_table_lines.push("</div>");
     // add formatted table into document
-    let html_arr_replaced_table = html_arr.slice(0, start_line).concat(new_table_lines).concat(html_arr.slice(end_line + 1));
-    return html_arr_replaced_table.join('\n');
+    let new_table_str = new_table_lines.join("\n");
+    cleaned_html_str = cleaned_html_str.replace(/@([^@]|\n)*@/g, new_table_str);
+    // add @ back in
+    cleaned_html_str = cleaned_html_str.replaceAll(at_placeholder, "@");
+    return cleaned_html_str.replace(table_str, new_table_str);
 }
