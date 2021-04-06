@@ -8,7 +8,7 @@ function format_toc() {
     let html_file = document.getElementById("html_file").files[0];
     file_reader.onload = function(event) {
         let html_str = event.target.result;
-        let edited_str = format_toc_arr(html_str, document.getElementById("toc_start").value, document.getElementById("toc_end").value, document.getElementById("list_indent").checked, document.getElementById("manual_list").checked, document.getElementById("toc_struc").value, document.getElementById("list_type").value);
+        let edited_str = format_toc_arr(html_str, document.getElementById("toc_struc").value, document.getElementById("toc_start").value, document.getElementById("toc_end").value, document.getElementById("indent_type").value, document.getElementById("list_type").value, document.getElementById("page_nums").checked);
         download(edited_str, "toc.html", "text/html");
     }
     file_reader.readAsText(html_file);
@@ -167,7 +167,7 @@ function create_toc_table(toc_values, manual_list, list_type) {
 
 
 // formats html document's table of contents to WET
-function format_toc_arr(html_str, input_start_line, input_end_line, use_list_indent, manual_list, toc_struc, list_type) {
+function format_toc_arr(html_str, toc_struc, input_start_line, input_end_line, indent_type, list_type, page_nums) {
 	/*
 	============================
 	Initial cleanup
@@ -253,6 +253,9 @@ function format_toc_arr(html_str, input_start_line, input_end_line, use_list_ind
         <li><a href="{link id}">{list numbering} {content of link text}</a></li>
     {</ul> based on level of indentation}
     */
+    // set how to decide indentation
+    let use_list_indent = (indent_type === "list_num") || (indent_type === "manual_list_num");
+    let manual_list = (indent_type === "manual_list_num");
     let wet_table_info = [];
     if (use_list_indent) {
         wet_table_info = get_toc_table_listnum(content_list);
