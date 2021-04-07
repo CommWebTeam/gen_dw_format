@@ -479,9 +479,7 @@ function fix_fake_scripts(html_str) {
 
 // fix fake math tags
 function fix_fake_math(html_str) {
-	let edited_html_str = html_str.replaceAll(/&lt;(math.*?)&gt;/g, "<$1>");
-	edited_html_str = edited_html_str.replaceAll(/&lt;(\/math)&gt;/g, "<$1>");
-	edited_html_str = edited_html_str.replaceAll(/&lt;(m[ion].*?)&gt;/g, "<$1>");
-	edited_html_str = edited_html_str.replaceAll(/&lt;(\/m[ion])&gt;/g, "<$1>");
+	let edited_html_str = html_str.replaceAll(/&lt;(m.*?)&gt;/g, "<$1>");
+	edited_html_str = edited_html_str.replaceAll(/&lt;(\/m.*?)&gt;/g, "<$1>");
 	return edited_html_str;
 }
