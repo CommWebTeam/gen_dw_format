@@ -37,14 +37,17 @@ The current formatting checks are as follows (the user can select which to apply
         - Example: the string "&lt;li>list item 1 &lt;/li>" is replaced with "&lt;li>list item 1&lt;/li>".
         - checked by default
 
-- Replace word-formatted fancy quotes/dashes:
-    - replaces fancy quotes with regular quotes.
+- Replace word-formatted characters/html entities:
+    - replaces the HTML entities for straight quotes apos, quot, #39, and #34 with their actual values.
+        - Example: replaces *&amp;quot; &amp;apos;quotes&amp;apos; &amp;quot;* with *" 'quotes' "*.
+        - checked by default
+    - replaces fancy (slanted) quotes with regular quotes.
         - Example: replaces *‘a’ “b”* with *'a' "b"*.
         - not checked by default
-    - replaces the HTML entities for fancy quotes rsquo, lsquo, rdquo, and ldquo with regular quotes.
+    - replaces the HTML entities for fancy quotes rsquo, lsquo, rdquo, ldquo, #8216, #8217, #8220, and #8221 with regular quotes.
         - Example: replaces *&amp;ldquo; &amp;lsquo;Fancy quotes&amp;rsquo; &amp;rdquo;* with *" 'Fancy quotes' "*.
         - not checked by default
-    - replaces the HTML entities for fancy quotes rsquo, lsquo, rdquo, and ldquo with their actual values.
+    - replaces the HTML entities for fancy quotes rsquo, lsquo, rdquo, ldquo, #8216, #8217, #8220, and #8221 with their actual values.
         - Example: replaces *&amp;ldquo; &amp;lsquo;Fancy quotes&amp;rsquo; &amp;rdquo;* with *“ ‘Fancy quotes’ ”*.
         - not checked by default
     - replaces Word's em dashes with regular dashes.

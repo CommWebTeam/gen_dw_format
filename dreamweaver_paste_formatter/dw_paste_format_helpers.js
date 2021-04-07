@@ -44,16 +44,20 @@ function format_file() {
 		if (document.getElementById("space_before_close").checked) {
 			html_doc_str = rm_space_before_close(html_doc_str);
 		}
+		// replace quote entities
+		if (document.getElementById("quote_values").checked) {
+			html_doc_str = replace_quote_entities(html_doc_str);
+		}
 		// replace fancy quotes
-		if (document.getElementById("quotes").checked) {
+		if (document.getElementById("fancy_quotes").checked) {
 			html_doc_str = replace_fancy_quotes(html_doc_str);
 		}
-		// replace fancy quote html entities
-		if (document.getElementById("quote_entities").checked) {
+		// replace fancy quote entities
+		if (document.getElementById("fancy_quote_entities").checked) {
 			html_doc_str = replace_fancy_quote_entities(html_doc_str);
 		}
 		// set fancy quote values
-		if (document.getElementById("quote_values").checked) {
+		if (document.getElementById("fancy_quote_values").checked) {
 			html_doc_str = set_fancy_quotes(html_doc_str);
 		}
 		// replace emdashes
@@ -222,6 +226,15 @@ function rm_space_before_close(html_str) {
 	return edited_html_str;
 }
 
+// replace straight quote entities
+function replace_quote_entities(html_str) {
+	let edited_html_str = html_str.replaceAll("&apos;", "'");
+	edited_html_str = edited_html_str.replaceAll("&quot;", '"');
+	edited_html_str = edited_html_str.replaceAll("&#39;", "'");
+	edited_html_str = edited_html_str.replaceAll("&#34;", '"');
+	return edited_html_str;
+}
+
 // replace fancy quotes
 function replace_fancy_quotes(html_str) {
 	let edited_html_str = html_str.replaceAll("‘", "'");
@@ -233,19 +246,27 @@ function replace_fancy_quotes(html_str) {
 
 // replace fancy quote html entities
 function replace_fancy_quote_entities(html_str) {
-	let edited_html_str = html_str.replaceAll("&rsquo;", "'");
-	edited_html_str = edited_html_str.replaceAll("&lsquo;", "'");
-	edited_html_str = edited_html_str.replaceAll("&rdquo;", '"');
+	let edited_html_str = html_str.replaceAll("&lsquo;", "'");
+	edited_html_str = edited_html_str.replaceAll("&rsquo;", "'");
 	edited_html_str = edited_html_str.replaceAll("&ldquo;", '"');
+	edited_html_str = edited_html_str.replaceAll("&rdquo;", '"');
+	edited_html_str = edited_html_str.replaceAll("&#8216;", "'");
+	edited_html_str = edited_html_str.replaceAll("&#8217;", "'");
+	edited_html_str = edited_html_str.replaceAll("&#8220;", '"');
+	edited_html_str = edited_html_str.replaceAll("&#8221;", '"');
 	return edited_html_str;
 }
 
 // replace fancy quote html entities with actual fancy quotes
 function set_fancy_quotes(html_str) {
-	let edited_html_str = html_str.replaceAll("&rsquo;", "’");
-	edited_html_str = edited_html_str.replaceAll("&lsquo;", "‘");
-	edited_html_str = edited_html_str.replaceAll("&rdquo;", '”');
+	let edited_html_str = html_str.replaceAll("&lsquo;", "‘");
+	edited_html_str = edited_html_str.replaceAll("&rsquo;", "’");
 	edited_html_str = edited_html_str.replaceAll("&ldquo;", '“');
+	edited_html_str = edited_html_str.replaceAll("&rdquo;", '”');
+	edited_html_str = edited_html_str.replaceAll("&#8216;", "‘");
+	edited_html_str = edited_html_str.replaceAll("&#8217;", "’");
+	edited_html_str = edited_html_str.replaceAll("&#8220;", '“');
+	edited_html_str = edited_html_str.replaceAll("&#8221;", '”');
 	return edited_html_str;
 }
 
