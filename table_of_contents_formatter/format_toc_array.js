@@ -201,39 +201,51 @@ function format_toc_arr(html_str, toc_struc, input_start_line, input_end_line, i
     cleaned_html_str = fix_br(cleaned_html_str);
     // this will be used for regex statements, so escape regex special chars
     cleaned_html_str = replace_special_chars(cleaned_html_str);
-    // use @ as placeholders
+    // need to use @ as placeholders, so remove them for now
     cleaned_html_str = cleaned_html_str.replaceAll("@", at_placeholder);
-    // split into lines
+    // remove indentation
     let html_arr = cleaned_html_str.split("\n");
-    let trimmed_arr = trim_arr(html_arr);
+    html_arr = trim_arr(html_arr);
+    cleaned_html_str = html_arr.join("\n");
 	/*
 	============================
 	Get table of contents div lines
 	============================
 	*/
-    // find start and end lines of table of contents
-    let start_line = 0;
-    let end_line = 0;
+    // find start to end of table of contents
+    let table_str = "";
     if (input_start_line === "" || input_end_line === "") {
-        // search for lines that consist of <br clear="all">
-        console.log("Starting line:")
-        start_line = trimmed_arr.indexOf('<br clear="all">');
-        console.log(start_line);
-        console.log("Ending line:")
-        end_line = trimmed_arr.indexOf('<br clear="all">', start_line + 1);
-        console.log(end_line);
+        // replace <br clear="all"> with placeholders for now
+        cleaned_html_str = cleaned_html_str.replaceAll('<br clear="all">', "@");
+        // search for lines between two <br clear="all"> that have at least one separator of the toc structure
+        if (toc_struc === "p_br") {
+            const p_br_regex = /@([^@]|\n)*?<p([^>]|\n)*>(([^@]|\n)*?<br\/>([^@]|\n)*?)<\/p>([^@]|\n)*@/g;
+            let table_str_matches = cleaned_html_str.match(p_br_regex);
+            if (table_str_matches === null) {
+                console.log('No table of contents structure found: currently searching for a single <p>, between two <br clear="all">, with internal entries separated by <br>');
+                return html_str;
+            }
+            table_str = table_str_matches[0];
+            cleaned_html_str = cleaned_html_str.replace(p_br_regex, '<br clear="all">$3<br clear="all">');
+        }
+        else if (toc_struc === "ul_li") {
+            const ul_li_regex = /@(([^@]|\n)*?<\/li>([^@]|\n)*)@/g;
+            let table_str_matches = cleaned_html_str.match(ul_li_regex);
+            if (table_str_matches === null) {
+                console.log('No table of contents structure found: currently searching for a single <p>, between two <br clear="all">, with internal entries separated by <br>');
+                return html_str;
+            }
+            table_str = table_str_matches[0];
+            cleaned_html_str = cleaned_html_str.replace(ul_li_regex, '<br clear="all">$1<br clear="all">')
+        }
+        cleaned_html_str = cleaned_html_str.replaceAll("@", '<br clear="all">');
     } else {
-        start_line = parseInt(input_start_line);
-        end_line = parseInt(input_end_line);
+        // use inputs for start/end line if both are provided
+        let table_lines = html_arr.slice(parseInt(input_start_line), parseInt(input_end_line) + 1);
+        table_str = table_lines.join("\n");
+        // mark position of original table
+        cleaned_html_str = cleaned_html_str.replace(table_str, "@" + table_str + "@");
     }
-    // get contents of original table
-    let table_lines = html_arr.slice(start_line, end_line + 1);
-    let table_str = table_lines.join("\n");
-    // mark position of original table
-    cleaned_html_str = cleaned_html_str.replace(table_str, "@" + table_str + "@");
-    // get contents of original table without source formatting
-    table_lines = trimmed_arr.slice(start_line, end_line + 1);
-    table_str = table_lines.join("\n");
     /*
 	============================
 	Get contents of table
