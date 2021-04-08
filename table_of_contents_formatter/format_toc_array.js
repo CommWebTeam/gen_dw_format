@@ -25,7 +25,27 @@ the toc table values consist of an array of objects with four values for each ta
 - indentation level, based on list numbering
 - entry content without the list numbering
 */
-function get_toc_table_listnum(toc_arr) {
+function get_toc_table_listnum(table_str, toc_struc, rm_page_nums) {
+    // split table string into entries
+    let toc_arr = [];
+    if (toc_struc === "p_br") {
+        toc_arr = table_str.split("<br/>");
+    }
+    else if (toc_struc === "ul_li") {
+        toc_arr = table_str.match(/<li>(.|\n)*?<\/li>/g);
+    }
+    console.log("Number of contents: " + toc_arr.length);
+    // remove other tags inside each entry
+    toc_arr = replace_arr(toc_arr, /<.*?>/g, "");
+    // remove page numbers if the option is selected
+    if (rm_page_nums) {
+        toc_arr = replace_arr(toc_arr, /(\.)+\. *[0-9]+/g, "");
+    }
+    // clean up content
+    toc_arr = toc_arr.map(x => format_spacing(x));
+    toc_arr = trim_arr(toc_arr);
+    toc_arr = rm_empty_lines(toc_arr);
+    // get values of each entry
     let toc_values = [];
     // set values to use when an entry does not have a list numbering
     let last_indent_level = 1;
@@ -63,7 +83,7 @@ function get_toc_table_listnum(toc_arr) {
 
 /* get toc table values without checking for list numberings
 */
-function get_toc_table_nonum(toc_arr) {
+function get_toc_table_prev_indent(toc_arr) {
     let toc_values = [];
     // loop through table lines
     for (let i = 0; i < toc_arr.length; i++) {
@@ -83,36 +103,12 @@ function create_toc_table(toc_values, manual_list, list_type) {
         return [];
     }
     // get list type from input
-    let list_open = "<ul>";
-    let list_close = "</ul>";
-    if (list_type === "ol") {
-        list_open = "<ol>";
-        list_close = "</ol>";
-    }
-    else if (list_type === "no_bullet") {
-        list_open = "<ol list-bullet-none>";
-        list_close = "</ol>";
-    }
-    else if (list_type === "ol_numeric") {
-        list_open = "<ol list-numeric>";
-        list_close = "</ol>";
-    }
-    else if (list_type === "ol_lower_alpha") {
-        list_open = "<ol list-lower-alpha>";
-        list_close = "</ol>";
-    }
-    else if (list_type === "ol_upper_alpha") {
-        list_open = "<ol list-upper-alpha>";
-        list_close = "</ol>";
-    }
-    else if (list_type === "ol_lower_roman") {
-        list_open = "<ol list-lower-roman>";
-        list_close = "</ol>";
-    } 
-    else if (list_type === "ol_upper_roman") {
-        list_open = "<ol list-upper-roman>";
-        list_close = "</ol>";
-    }
+    const list_type_map = {"ul": ["<ul>", "</ul>"], "ol": ["<ol>", "</ol>"],
+                           "no_bullet": ["<ol list-bullet-none>", "</ol>"], "ol_numeric": ["<ol list-numeric>", "</ol>"],
+                           "ol_lower_alpha": ["<ol list-lower-alpha>", "</ol>"], "ol_upper_alpha": ["<ol list-upper-alpha>", "</ol>"],
+                           "ol_lower_roman": ["<ol list-lower-roman>", "</ol>"], "ol_upper_roman": ["<ol list-upper-roman>", "</ol>"]}
+    const list_open = list_type_map[list_type][0];
+    const list_close = list_type_map[list_type][1];
     // create list of html lines - open the table list
     let toc_html_lines = [list_open];
     // create counter for number of sublists to close after looping through all entries
@@ -209,7 +205,7 @@ function format_toc_arr(html_str, toc_struc, input_start_line, input_end_line, i
     cleaned_html_str = html_arr.join("\n");
 	/*
 	============================
-	Get table of contents div lines
+	Get table of contents string
 	============================
 	*/
     // find start to end of table of contents
@@ -225,17 +221,17 @@ function format_toc_arr(html_str, toc_struc, input_start_line, input_end_line, i
                 console.log('No table of contents structure found: currently searching for a single <p>, between two <br clear="all">, with internal entries separated by <br>');
                 return html_str;
             }
-            table_str = table_str_matches[0];
+            table_str = table_str_matches[0].replaceAll("@", "");
             cleaned_html_str = cleaned_html_str.replace(p_br_regex, '<br clear="all">$3<br clear="all">');
         }
         else if (toc_struc === "ul_li") {
             const ul_li_regex = /@(([^@]|\n)*?<\/li>([^@]|\n)*)@/g;
             let table_str_matches = cleaned_html_str.match(ul_li_regex);
             if (table_str_matches === null) {
-                console.log('No table of contents structure found: currently searching for a single <p>, between two <br clear="all">, with internal entries separated by <br>');
+                console.log('No table of contents structure found: currently searching for a <ul> list, between two <br clear="all"> with <li> elements');
                 return html_str;
             }
-            table_str = table_str_matches[0];
+            table_str = table_str_matches[0].replaceAll("@", "");
             cleaned_html_str = cleaned_html_str.replace(ul_li_regex, '<br clear="all">$1<br clear="all">')
         }
         cleaned_html_str = cleaned_html_str.replaceAll("@", '<br clear="all">');
@@ -250,58 +246,34 @@ function format_toc_arr(html_str, toc_struc, input_start_line, input_end_line, i
 	============================
 	Get contents of table
 	============================
-	*/
-    // search for p tag that includes a <br/>
-    const para_regex = new RegExp("(^|(<p.*?>))((.|\n)*?)($|(</p>))", "g");
-    let content_list_str = "";
-    // loop through p tags until one with at least two <br/> tags is found
-	let contents = para_regex.exec(table_str);
-	while (contents !== null) {
-        let curr_p = contents[3];
-        let num_br = count_regex(curr_p, /<br\/>/g);
-        if (num_br >= 2) {
-            content_list_str = curr_p;
-            console.log("Number of contents: " + num_br);
-            contents = null;
-        } else {
-            contents = para_regex.exec(table_str);
-        }
-    }
-    // end function if no contents are found
-    if (content_list_str === "") {
-        console.log("No <p> tag with at least 2 <br> breaks found (this is the assumed format of a Dreamweaver ToC)");
-        return html_str;
-    }
-    // break content list up by <br/>s
-    content_list = content_list_str.split("<br/>");
-    // remove other tags inside content list
-    content_list = replace_arr(content_list, /<.*?>/g, "");
-    // remove page numbers if the option is selected
-    if (rm_page_nums) {
-        content_list = replace_arr(content_list, /(\.)+\. *[0-9]+/g, "");
-    }
-    // clean up content
-    content_list = content_list.map(x => format_spacing(x));
-    content_list = trim_arr(content_list);
-    content_list = rm_empty_lines(content_list);
-    /*
-	============================
-	Add entries in table of contents to main document
-	============================
+
     Each entry in the table of contents is to be formatted as so:
     {<ul> based on level of indentation}
         <li><a href="{link id}">{list numbering} {content of link text}</a></li>
     {</ul> based on level of indentation}
-    */
-    // set how to decide indentation
+
+    organize info for each entry into an array of objects with four values:
+    - list numbering extracted from the start of the entry's content
+    - link id to be used in the main body that includes list numbering
+    - indentation level (based on list numbering or existing indentation depending on user input)
+    - entry content without the list numbering
+	*/
+
+    // set how to decide indentation and list numbering
     let use_list_indent = (indent_type === "list_num") || (indent_type === "manual_list_num");
     let manual_list = (indent_type === "manual_list_num");
     let wet_table_info = [];
     if (use_list_indent) {
-        wet_table_info = get_toc_table_listnum(content_list);
+        wet_table_info = get_toc_table_listnum(table_str, toc_struc, rm_page_nums);
     } else {
-        wet_table_info = get_toc_table_nonum(content_list);
+        wet_table_info = get_toc_table_prev_indent(table_str, rm_page_nums);
     }
+    /*
+	============================
+	Add entries in table of contents to main document
+	============================
+    */
+    
     // replace certain tags (just <li> for now) with placeholders so they aren't treated as headers
     const list_open_placeholder = "list_open_placeholder";
     const list_close_placeholder = "list_close_placeholder";
