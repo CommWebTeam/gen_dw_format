@@ -83,8 +83,30 @@ function get_toc_table_listnum(table_str, toc_struc, rm_page_nums) {
 
 /* get toc table values without checking for list numberings
 */
-function get_toc_table_prev_indent(toc_arr) {
-    let toc_values = [];
+function get_toc_table_prev_indent(table_str, rm_page_nums) {
+
+    let toc_values = [];// split table string into entries
+    let toc_arr = [];
+    if (toc_struc === "p_br") {
+        toc_arr = table_str.split("<br/>");
+    }
+    else if (toc_struc === "ul_li") {
+        toc_arr = table_str.match(/<li>(.|\n)*?<\/li>/g);
+    }
+    console.log("Number of contents: " + toc_arr.length);
+    // remove other tags inside each entry
+    toc_arr = replace_arr(toc_arr, /<.*?>/g, "");
+    // remove page numbers if the option is selected
+    if (rm_page_nums) {
+        toc_arr = replace_arr(toc_arr, /(\.)+\. *[0-9]+/g, "");
+    }
+    // clean up content
+    toc_arr = toc_arr.map(x => format_spacing(x));
+    toc_arr = trim_arr(toc_arr);
+    toc_arr = rm_empty_lines(toc_arr);
+
+
+    
     // loop through table lines
     for (let i = 0; i < toc_arr.length; i++) {
         // get content without list numbering
@@ -214,27 +236,20 @@ function format_toc_arr(html_str, toc_struc, input_start_line, input_end_line, i
         // replace <br clear="all"> with placeholders for now
         cleaned_html_str = cleaned_html_str.replaceAll('<br clear="all">', "@");
         // search for lines between two <br clear="all"> that have at least one separator of the toc structure
-        if (toc_struc === "p_br") {
-            const p_br_regex = /@([^@]|\n)*?<p([^>]|\n)*>(([^@]|\n)*?<br\/>([^@]|\n)*?)<\/p>([^@]|\n)*@/g;
-            let table_str_matches = cleaned_html_str.match(p_br_regex);
-            if (table_str_matches === null) {
-                console.log('No table of contents structure found: currently searching for a single <p>, between two <br clear="all">, with internal entries separated by <br>');
-                return html_str;
-            }
-            table_str = table_str_matches[0].replaceAll("@", "");
-            cleaned_html_str = cleaned_html_str.replace(p_br_regex, '<br clear="all">$3<br clear="all">');
+        let toc_struc_regex = /@(?:[^@]|\n)*?<p(?:[^>]|\n)*>(([^@]|\n)*?<br\/>([^@]|\n)*?)<\/p>([^@]|\n)*@/g;
+        if (toc_struc === "ul_li") {
+            toc_struc_regex = /@(([^@]|\n)*?<\/li>([^@]|\n)*)@/g;
         }
-        else if (toc_struc === "ul_li") {
-            const ul_li_regex = /@(([^@]|\n)*?<\/li>([^@]|\n)*)@/g;
-            let table_str_matches = cleaned_html_str.match(ul_li_regex);
-            if (table_str_matches === null) {
-                console.log('No table of contents structure found: currently searching for a <ul> list, between two <br clear="all"> with <li> elements');
-                return html_str;
-            }
-            table_str = table_str_matches[0].replaceAll("@", "");
-            cleaned_html_str = cleaned_html_str.replace(ul_li_regex, '<br clear="all">$1<br clear="all">')
+        let table_str_matches = cleaned_html_str.match(toc_struc_regex);
+        if (table_str_matches === null) {
+            console.log('No table of contents structure found: currently searching for a single <p>, between two <br clear="all">, with internal entries separated by <br>');
+            return html_str;
         }
+        // get string of current table
+        table_str = table_str_matches[0].replaceAll("@", "");
+        // add <br clear="all"> back in and add placeholder @s around current table location
         cleaned_html_str = cleaned_html_str.replaceAll("@", '<br clear="all">');
+        cleaned_html_str = cleaned_html_str.replace(table_str, "\n@@\n");
     } else {
         // use inputs for start/end line if both are provided
         let table_lines = html_arr.slice(parseInt(input_start_line), parseInt(input_end_line) + 1);
@@ -286,16 +301,19 @@ function format_toc_arr(html_str, toc_struc, input_start_line, input_end_line, i
         let curr_level = wet_table_info[i].indent_level;
         let curr_content = wet_table_info[i].content;
         // search for tag or line that contains text of table of contents entry, list numbering optional
-        let header_regex = new RegExp("^(((<.*?>)* *)*(" + escape_regex_chars(curr_numbering) + ")* *" + escape_regex_chars(curr_content) + "( *(<.*?>)*)*)$", "g");
+        let header_regex = new RegExp("\n *(( *<[^>]*> *)*(" + escape_regex_chars(curr_numbering) + ")* *" + escape_regex_chars(curr_content) + "( *<[^>]*> *)*) *\n", "g");
+        if (curr_numbering === "") {
+            header_regex = new RegExp("\n *(( *<[^>]*> *)*" + escape_regex_chars(curr_content) + "( *<[^>]*> *)*) *\n", "g");
+        }
         // in the replacement string, include a comment of original tag for easier removal of false positives
-        let replacement =  "<!-- Original tag: $1 -->\n";
+        let replacement =  "\n<!-- Original tag: $1 -->\n";
         // replace original tag with header tag following the formatting of <h3 id="toc_3.1">3.1 Overview</h3>
         if (manual_list) {
             // exclude list values in replacement if they were manually input
-            replacement = replacement + "<h" + curr_level + ' id="' + curr_link + '">' + curr_content + "</h" + curr_level + ">";
+            replacement = replacement + "<h" + curr_level + ' id="' + curr_link + '">' + curr_content + "</h" + curr_level + ">\n";
         }
         else {
-            replacement = replacement + "<h" + curr_level + ' id="' + curr_link + '">' + curr_numbering + ' ' + curr_content + "</h" + curr_level + ">";
+            replacement = replacement + "<h" + curr_level + ' id="' + curr_link + '">' + curr_numbering + ' ' + curr_content + "</h" + curr_level + ">\n";
         }
         cleaned_html_str = cleaned_html_str.replaceAll(header_regex, replacement);
     }
@@ -314,7 +332,7 @@ function format_toc_arr(html_str, toc_struc, input_start_line, input_end_line, i
     new_table_lines.push("</div>");
     // add formatted table into document
     let new_table_str = new_table_lines.join("\n");
-    cleaned_html_str = cleaned_html_str.replace(/@([^@]|\n)*@/g, new_table_str);
+    cleaned_html_str = cleaned_html_str.replace(/@@/g, new_table_str);
     // add @ back in
     cleaned_html_str = cleaned_html_str.replaceAll(at_placeholder, "@");
     return cleaned_html_str.replace(table_str, new_table_str);
