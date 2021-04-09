@@ -81,40 +81,45 @@ function get_toc_table_listnum(table_str, toc_struc, rm_page_nums) {
     return toc_values;
 }
 
-/* get toc table values without checking for list numberings
+/* get toc table values using existing indentation without checking for list numberings
+the toc table values consist of an array of objects with four values for each table of contents entry:
+- list numbering extracted from the start of the entry's content
+- link id to be used in the main body that includes list numbering
+- indentation level, based on list numbering
+- entry content without the list numbering
 */
-function get_toc_table_prev_indent(table_str, rm_page_nums) {
+function get_toc_table_prev_indent(table_str, toc_struc, rm_page_nums) {
 
-    let toc_values = [];// split table string into entries
+    let toc_values = [];
+    // split table string into entries
     let toc_arr = [];
     if (toc_struc === "p_br") {
+        // if toc structure wasn't a list, then just assume no indentation for all values
         toc_arr = table_str.split("<br/>");
+        console.log("Number of contents: " + toc_arr.length);
+        // remove other tags inside each entry
+        toc_arr = replace_arr(toc_arr, /<.*?>/g, "");
+        // remove page numbers if the option is selected
+        if (rm_page_nums) {
+            toc_arr = replace_arr(toc_arr, /(\.)+\. *[0-9]+/g, "");
+        }
+        // clean up content
+        toc_arr = toc_arr.map(x => format_spacing(x));
+        toc_arr = trim_arr(toc_arr);
+        toc_arr = rm_empty_lines(toc_arr);
+        // loop through table lines
+        for (let i = 0; i < toc_arr.length; i++) {
+            // get content without list numbering
+            let content = toc_arr[i].replace(list_ind_regex, "").trim();
+            // use index for id, assume empty list numbering, set header level to a default of 3 (for h3)
+            toc_values.push({list_numbering: "", link_id: "toc_" + i, indent_level: 3, content: content});
+        }
+        
+        return toc_values;
     }
     else if (toc_struc === "ul_li") {
         toc_arr = table_str.match(/<li>(.|\n)*?<\/li>/g);
-    }
-    console.log("Number of contents: " + toc_arr.length);
-    // remove other tags inside each entry
-    toc_arr = replace_arr(toc_arr, /<.*?>/g, "");
-    // remove page numbers if the option is selected
-    if (rm_page_nums) {
-        toc_arr = replace_arr(toc_arr, /(\.)+\. *[0-9]+/g, "");
-    }
-    // clean up content
-    toc_arr = toc_arr.map(x => format_spacing(x));
-    toc_arr = trim_arr(toc_arr);
-    toc_arr = rm_empty_lines(toc_arr);
-
-
-    
-    // loop through table lines
-    for (let i = 0; i < toc_arr.length; i++) {
-        // get content without list numbering
-        let content = toc_arr[i].replace(list_ind_regex, "").trim();
-        // use index for id, assume empty list numbering, set header level to a default of 3 (for h3)
-        toc_values.push({list_numbering: "", link_id: "toc_" + i, indent_level: 3, content: content});
-        
-    }
+    }    
     return toc_values;
 }
 
@@ -281,7 +286,7 @@ function format_toc_arr(html_str, toc_struc, input_start_line, input_end_line, i
     if (use_list_indent) {
         wet_table_info = get_toc_table_listnum(table_str, toc_struc, rm_page_nums);
     } else {
-        wet_table_info = get_toc_table_prev_indent(table_str, rm_page_nums);
+        wet_table_info = get_toc_table_prev_indent(table_str, toc_struc, rm_page_nums);
     }
     /*
 	============================
