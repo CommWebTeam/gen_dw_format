@@ -25,6 +25,7 @@ function clean_entry(curr_content, rm_page_nums) {
     // remove page numbers if option is selected
     if (rm_page_nums) {
         cleaned_content = cleaned_content.replaceAll(/(\.)+\. *[0-9]+/g, "");
+        cleaned_content = cleaned_content.replaceAll(/(\.)+ [0-9]+ *$/g, "");
     }
     // clean up spacing
     cleaned_content = format_spacing(cleaned_content);
