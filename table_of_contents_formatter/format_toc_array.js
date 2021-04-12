@@ -174,9 +174,9 @@ function create_toc_table(toc_values, manual_list, list_type) {
     }
     // get list type from input
     const list_type_map = {"ul": ["<ul>", "</ul>"], "ol": ["<ol>", "</ol>"],
-                           "no_bullet": ["<ol list-bullet-none>", "</ol>"], "ol_numeric": ["<ol list-numeric>", "</ol>"],
-                           "ol_lower_alpha": ["<ol list-lower-alpha>", "</ol>"], "ol_upper_alpha": ["<ol list-upper-alpha>", "</ol>"],
-                           "ol_lower_roman": ["<ol list-lower-roman>", "</ol>"], "ol_upper_roman": ["<ol list-upper-roman>", "</ol>"]}
+                           "no_bullet": ['<ol class="list-bullet-none">', "</ol>"], "ol_numeric": ['<ol class="list-numeric">', "</ol>"],
+                           "ol_lower_alpha": ['<ol class="list-lower-alpha">', "</ol>"], "ol_upper_alpha": ['<ol class="list-upper-alpha">', "</ol>"],
+                           "ol_lower_roman": ['<ol class="list-lower-roman">', "</ol>"], "ol_upper_roman": ['<ol class="list-upper-roman">', "</ol>"]}
     const list_open = list_type_map[list_type][0];
     const list_close = list_type_map[list_type][1];
     // create list of html lines - open the table list
