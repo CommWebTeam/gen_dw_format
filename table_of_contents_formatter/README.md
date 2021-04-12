@@ -40,8 +40,11 @@ Different Word documents produce very different content structures when pasted i
             - &lt;li>Entry 3&lt;/li>
         - &lt;/ol>&lt;/li>
     - &lt;/ol>
-5. The option for whether to remove table of contents page numbers from entries. Page numbers are expected to consist of at least two periods, followed by any number of spaces, followed by a number, such as the following:
-    - Entry ........ 5
+5. The option for whether to remove table of contents page numbers from entries. Page numbers are expected to be at the end of the table of contents entry, and to use one of the following two formats. If the page numbers follow a different format, then you should remove them from the document manually *before* running the tool.
+    - at least two periods, followed by any number of spaces, followed by a number, such as the following:
+        - &lt;li>Entry........ 5&lt;/li>
+    - at least one period, followed by at least one space, followed by a number, such as the following:
+        - &lt;Entry . 3&lt;/li>
 
 ## Details
 
