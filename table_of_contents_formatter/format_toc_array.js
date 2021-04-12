@@ -163,7 +163,6 @@ function get_toc_table_prev_indent(table_str, toc_struc, rm_page_nums) {
         }
         console.log("Number of contents: " + toc_count);
     }
-    console.log(toc_values)
     return toc_values;
 }
 
