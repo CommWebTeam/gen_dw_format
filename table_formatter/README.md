@@ -89,19 +89,27 @@ This tool makes some assumptions about the HTML document's formatting when readi
 The process to add an action is as follows:
 1. In table_formatter.html: Add the action as an option under "Actions to perform".
 2. In table_format_helpers.js:
-    - Create a helper function for the action at the bottom of the script.
-    - Refer to the new helper function when the action is selected in format_table().
-3. In README.md (this file): If necessary, add a mention of the action in the Inputs section.
+    - At the bottom of the script, create a helper function for the action.
+    - In format_table(), refer to the new helper function when the action is selected.
+3. In README.md (this file): If necessary, add a mention of the action to the Inputs section at the beginning of the document.
 
-### Helper functions
+### Helper functions for actions
 
-Helper functions for actions are placed at the bottom of table_format_helpers.js. (Most of the actions are related to editing cells, so they are in the "Functions for actions to be applied on the cell of a table in the table array" section.)
+Helper functions for each action are placed at the bottom of table_format_helpers.js.
 
-Each action function should take in the following as input:
+#### Actions applied by cell
+
+Most of the actions are to edit individual cells, so they are in the **Functions for actions to be applied on the cell of a table in the table array** section.
+
+Each of these action functions should take in the following as input:
 - a single table array representing the current table (i.e. one index in the overall array of tables)
 - the current row of the cell to work with
 - the current column of the cell to work with
 
-The function should return the array of the table.
+These action functions should return the table array given in the first input, but with the cell value changed.
 
-The action for **appending the preceding paragraph above a table to its caption** is implemented differently from the other actions because it uses code from outside of the tables. It does not use the table array used for other actions.
+#### Other actions
+
+The helper functions for actions that are not applied by cell may be formatted differently. 
+
+For example, the action for **appending the preceding paragraph above a table to its caption** is implemented differently from the other actions because it uses code from outside the tables. It does not use the table array used for other actions.
