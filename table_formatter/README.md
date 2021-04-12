@@ -1,5 +1,5 @@
 # HTML table formatting
-Provides WET-related options for formatting cells in the specified rows or columns of the specified tables in an HTML document.
+Provides WET-related options for formatting cells in the specified rows and columns of the specified tables in an HTML document.
 
 [Click here to access the table formatter.](https://commwebteam.github.io/gen_dw_format/table_formatter/table_formatter.html)
 
@@ -12,7 +12,16 @@ The inputs are as follows:
         1. "Only the listed tables"
         2. "All tables except those listed"
         3. "All tables"
-    - If option 1 or 2 is selected above, you will have to fill in the textbox with the comma-separated values of the indices for the tables to include / exclude. These are the positions the tables appear in from the start of the document, beginning at 0. For example, if you want to exclude the first 2 tables, then you would select "all tables excluding the following", and enter "0,1" into the textbox.
+    - If option 1 or 2 is selected above, you will have to fill in the textbox with the comma-separated values of the indices for the tables to include / exclude. These are the positions the tables appear in from the start of the document, beginning at 0.
+        - For example, if you want to exclude the first 2 tables, then you would select "all tables excluding the following", and enter "0,1" into the textbox.
+- the rows to edit:
+    - a selection for which rows to perform the actions on, which can be one of the following:
+        1. "Only the listed rows"
+        2. "All rows except those listed"
+        3. "All rows"
+    - If option 1 or 2 is selected above, you will have to fill in the textbox with the comma-separated values of the indices for which rows to include / exclude. These are the positions the rows appear in from the start or end of the table, depending on the direction selected below, beginning at 0.
+    - the direction to read the table in for the row indices provided above. If "top to bottom" is selected, then the rows are read in their regular order; the first row is at index 0, the second row is at index 1, and so on. If "bottom to top" is selected, then they are read in reverse order instead; the last row is at index 0, the second last row is at index 1, and so on.
+- the columns to edit, formatted in the same way as the rows to edit.
 - the actions to apply and how to apply them:
     - actions to apply on a cell. So far, the following actions have been implemented:
         - convert the cell to a header (change td to th) with a scope of "col" or "row". If the scope is "col" and the cell also has a colspan attribute, then the scope is changed to "colgroup".
@@ -20,15 +29,8 @@ The inputs are as follows:
         - remove specific tags from the cell (e.g. "&lt;p>" tags).
         - convert the cell to a specific class (e.g. "osfi-txt--bold" or "align-left").
     - actions that apply on other parts of the table. So far, the following actions have been implemented:
-        - insert an opening thead, tbody, or tfoot tag at the first row index provided below, and the corresponding closing tag at the second row index provided below. For example, inserting the opening thead at row index 0 means placing it before all tr tags (rows). Since thead/tbody/tfoot are only used to group rows, the dimension provided below is ignored. Only the first two indices provided below are used for these actions.
-        - append the paragraph preceding a table, either immediately above a table or separated by &lt;br>, to the table's caption. This action ignores cells completely and only uses the table inputs above, as it is only applied once per table, so the following inputs are ignored.
-    - the table dimension to perform the actions on, which can be rows or columns.
-    - a selection for which rows/columns to perform the actions on, which can be one of the following:
-        1. "Only the listed rows/columns"
-        2. "All rows/columns except those listed"
-        3. "All rows/columns"
-    - If option 1 or 2 is selected above, you will have to fill in the textbox with the comma-separated values of the indices for which rows/columns to include / exclude. These are the positions the rows/columns appear in from the start or end of the table, depending on the direction selected below, beginning at 0.
-    - the direction to read the table in for the row/column indices provided above. If "top to bottom" is selected, then the rows/columns are read in their regular order; the first row/column is at index 0, the second row/column is at index 1, and so on. If "bottom to top" is selected, then they are read in reverse order instead; the last row/column is at index 0, the second last row/column is at index 1, and so on.
+        - insert an opening thead, tbody, or tfoot tag at the first row index provided above, and the corresponding closing tag at the second row index provided above. For example, inserting the opening thead at row index 0 means placing it before all tr tags (rows). Only the first two row indices given are used. Since thead/tbody/tfoot are only used to group rows, the column indices given above are ignored.
+        - append the paragraph preceding a table, either immediately above a table or separated by &lt;br>, to the table's caption. This action ignores cells completely and only uses the table inputs above, as it is only applied once per table, so the row/column inputs are ignored.
 
 ### Running the tool multiple times
 
