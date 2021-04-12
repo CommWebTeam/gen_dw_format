@@ -18,6 +18,20 @@ function format_toc() {
 
 /* helpers */
 
+// cleans up the content of a toc entry's content string
+function clean_entry(curr_content, rm_page_nums) {
+    // remove other tags inside the entry
+    cleaned_content = curr_content.replaceAll(/<.*?>/g, "");
+    // remove page numbers if option is selected
+    if (rm_page_nums) {
+        cleaned_content = cleaned_content.replaceAll(/(\.)+\. *[0-9]+/g, "");
+    }
+    // clean up spacing
+    cleaned_content = format_spacing(cleaned_content);
+    cleaned_content = cleaned_content.trim();
+    return cleaned_content;
+}
+
 /* get toc table values while checking for list numberings
 the toc table values consist of an array of objects with four values for each table of contents entry:
 - list numbering extracted from the start of the entry's content
@@ -35,15 +49,8 @@ function get_toc_table_listnum(table_str, toc_struc, rm_page_nums) {
         toc_arr = table_str.match(/<li>(.|\n)*?<\/li>/g);
     }
     console.log("Number of contents: " + toc_arr.length);
-    // remove other tags inside each entry
-    toc_arr = replace_arr(toc_arr, /<.*?>/g, "");
-    // remove page numbers if the option is selected
-    if (rm_page_nums) {
-        toc_arr = replace_arr(toc_arr, /(\.)+\. *[0-9]+/g, "");
-    }
     // clean up content
-    toc_arr = toc_arr.map(x => format_spacing(x));
-    toc_arr = trim_arr(toc_arr);
+    toc_arr = toc_arr.map(x => clean_entry(x, rm_page_nums));
     toc_arr = rm_empty_lines(toc_arr);
     // get values of each entry
     let toc_values = [];
@@ -97,15 +104,8 @@ function get_toc_table_prev_indent(table_str, toc_struc, rm_page_nums) {
         // split table string into entries
         let toc_arr = table_str.split("<br/>");
         console.log("Number of contents: " + toc_arr.length);
-        // remove other tags inside each entry
-        toc_arr = replace_arr(toc_arr, /<.*?>/g, "");
-        // remove page numbers if the option is selected
-        if (rm_page_nums) {
-            toc_arr = replace_arr(toc_arr, /(\.)+\. *[0-9]+/g, "");
-        }
         // clean up content
-        toc_arr = toc_arr.map(x => format_spacing(x));
-        toc_arr = trim_arr(toc_arr);
+        toc_arr = toc_arr.map(x => clean_entry(x, rm_page_nums));
         toc_arr = rm_empty_lines(toc_arr);
         // loop through table lines
         for (let i = 0; i < toc_arr.length; i++) {
@@ -124,44 +124,45 @@ function get_toc_table_prev_indent(table_str, toc_struc, rm_page_nums) {
         // set counter for current entry number
         let toc_count = 0;
         // set initial indentation
-        let curr_indent = 2;
+        let curr_indent = 1;
         // loop through each line in the table
         let toc_arr = table_str.split("\n");
         for (let i = 0; i < toc_arr.length; i++) {
+            let curr_line = toc_arr[i].trim();
             // if it opens a new sublist, increment indentation
-            if (toc_arr[i].includes("<ul")) {
+            if (curr_line.includes("<ul")) {
                 curr_indent++;
             }
             // if it closes a previous sublist, decrement indentation
-            else if (toc_arr[i].includes("</ul")) {
+            else if (curr_line.includes("</ul")) {
                 curr_indent--;
             }
-            // if it's a list item, add to table values
-            else if (toc_arr[i].includes("<li")) {
+            // if it's a list item for an entry (has values after list opening), add to table values
+            else if (/<li[^>]*>.+/g.test(curr_line)) {
                 toc_count++;
                 // extract entry content 
-                let curr_content = toc_arr[i].replaceAll(/.*?<li[^>]*>(.*?)((<\/li>.*)|$)/g, "$1");
-                // remove other tags inside the entry
-                curr_content = curr_content.replaceAll(/<.*?>/g, "");
-                // remove page numbers if option is selected
-                if (rm_page_nums) {
-                    curr_content = curr_content.replaceAll(/(\.)+\. *[0-9]+/g, "");
-                }
+                let curr_content = curr_line.replaceAll(/.*?<li[^>]*>(.*?)((<\/li>.*)|$)/g, "$1");
                 // clean up content
-                curr_content = format_spacing(curr_content);
-                curr_content = curr_content.trim();
+                curr_content = clean_entry(curr_content, rm_page_nums);
                 // assume empty list numbering
                 toc_values.push({list_numbering: "", link_id: "toc_" + toc_count, indent_level: curr_indent, content: curr_content});
             }
-            // otherwise, append current line to previous entry's list content 
+            // if it opens or closes the list item of a sublist, then skip it (sublists are covered by the first two cases)
+            else if (curr_line.includes("<li") || curr_line === "</li>") {
+                continue;
+            }
+            // otherwise, assume it is part of previous entry's content
             else {
                 if (toc_values.length > 0) {
-                  toc_values[toc_values.length - 1].content = toc_values[toc_values.length - 1].content + toc_arr[i];
+                    // clean up content
+                    let curr_content = clean_entry(curr_line, rm_page_nums);
+                    toc_values[toc_values.length - 1].content = toc_values[toc_values.length - 1].content + " " + curr_content;
                 }
             }
         }
         console.log("Number of contents: " + toc_count);
-    }    
+    }
+    console.log(toc_values)
     return toc_values;
 }
 

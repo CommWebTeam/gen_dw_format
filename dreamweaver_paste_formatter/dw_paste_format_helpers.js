@@ -171,6 +171,8 @@ function format_file() {
 
 /* helpers */
 
+// I sometimes split regex statements up into multiple calls for clarity, but a lot of these checks can be done in one or two regex statements.
+
 // remove empty links
 function rm_empty_links(html_str) {
 	return html_str.replaceAll(/<a>(\s*)<\/a>/g, "$1").replaceAll(/<a [^>]*>(\s*)<\/a>/g, "$1");
