@@ -25,7 +25,7 @@ function clean_entry(curr_content, rm_page_nums) {
     // remove page numbers if option is selected
     if (rm_page_nums) {
         cleaned_content = cleaned_content.replaceAll(/(\.)+\. *[0-9]+/g, "");
-        cleaned_content = cleaned_content.replaceAll(/(\.)+ [0-9]+ *$/g, "");
+        cleaned_content = cleaned_content.replaceAll(/(\.)+ +[0-9]+ *$/g, "");
     }
     // clean up spacing
     cleaned_content = format_spacing(cleaned_content);
@@ -303,7 +303,7 @@ function format_toc_arr(html_str, toc_struc, input_start_line, input_end_line, i
         let table_lines = html_arr.slice(parseInt(input_start_line), parseInt(input_end_line) + 1);
         table_str = table_lines.join("\n");
         // mark position of original table
-        cleaned_html_str = cleaned_html_str.replace(table_str, "@" + table_str + "@");
+        cleaned_html_str = cleaned_html_str.replace(table_str, "\n@@\n");
     }
     /*
 	============================
