@@ -64,13 +64,13 @@ The table of contents entry contains the link "#toc_3.1", which links to this he
 
 ### Misformatting introduced in step 2
 
-Step 2 is very likely to produce false positives because it replaces *all* tags and lines, except for &lt;li> tags, that have the same value as each table of contents entry. For example, if there is a table of contents entry containing "3.1 Overview", then if there are multiple paragraphs later in the document that consist solely of "3.1 Overview" or "Overview", then all of them will be replaced, even though only one of them can be the actual header.
+Step 2 is very likely to produce false positives because it replaces *all* tags and lines, except for &lt;li> and &lt;td> tags, that have the same value as each table of contents entry. For example, if there is a table of contents entry containing "3.1 Overview", then if there are multiple paragraphs later in the document that consist solely of "3.1 Overview" or "Overview", all of them will be replaced, even though only one of them can be the actual header.
 
 These false positives will have to be manually fixed afterward. Since the IDs will be duplicated as well, this will show up as an error in the HTML structure (IDs have to be unique), which should make them easier to locate in Dreamweaver.
 
 The tool adds a comment above every tag/line that is replaced which consists of the original value of the line. This is to help with figuring out whether the replaced line was a false positive or not.
 
-&lt;li> tags in particular are ignored by the tool in this step because headers are usually not formatted as list items, so those tags are almost always false positives.
+&lt;li> and &lt;td> tags in particular are ignored by the tool in this step because headers are usually not formatted as list or table data items, so those tags are almost always false positives.
 
 In addition, since the entire tag or line is replaced, the resulting HTML may not be well structured. For example, it may find the following lines:
 

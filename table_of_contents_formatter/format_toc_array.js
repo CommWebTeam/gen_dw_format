@@ -337,11 +337,15 @@ function format_toc_arr(html_str, toc_struc, input_start_line, input_end_line, i
 	============================
     */
     
-    // replace certain tags (just <li> for now) with placeholders so they aren't treated as headers
+    // replace certain tags with placeholders so they aren't treated as headers
     const list_open_placeholder = "list_open_placeholder";
     const list_close_placeholder = "list_close_placeholder";
+    const td_open_placeholder = "td_open_placeholder";
+    const td_close_placeholder = "td_close_placeholder";
     cleaned_html_str = cleaned_html_str.replaceAll("<li>", list_open_placeholder);
     cleaned_html_str = cleaned_html_str.replaceAll("</li>", list_close_placeholder);
+    cleaned_html_str = cleaned_html_str.replaceAll("<td>", td_open_placeholder);
+    cleaned_html_str = cleaned_html_str.replaceAll("</td>", td_close_placeholder);
     // add headers with ids to the html document's main body
     for (let i = 0; i < wet_table_info.length; i++) {
         let curr_numbering = wet_table_info[i].list_numbering;
@@ -368,6 +372,8 @@ function format_toc_arr(html_str, toc_struc, input_start_line, input_end_line, i
     // add placeholder tags back in
     cleaned_html_str = cleaned_html_str.replaceAll(list_open_placeholder, "<li>");
     cleaned_html_str = cleaned_html_str.replaceAll(list_close_placeholder, "</li>");
+    cleaned_html_str = cleaned_html_str.replaceAll(td_open_placeholder, "<td>");
+    cleaned_html_str = cleaned_html_str.replaceAll(td_close_placeholder, "</td>");
     /*
 	============================
 	Replace original table of contents lines with formatted table
