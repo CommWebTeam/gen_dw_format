@@ -21,7 +21,7 @@ The inputs are as follows:
         3. "All rows"
     - If option 1 or 2 is selected above, you will have to fill in the textbox with the comma-separated values of the indices for which rows to include / exclude. These are the positions the rows appear in from the start or end of the table, depending on the direction selected below, beginning at 0.
     - the direction to read the table in for the row indices provided above. If "top to bottom" is selected, then the rows are read in their regular order; the first row is at index 0, the second row is at index 1, and so on. If "bottom to top" is selected, then they are read in reverse order instead; the last row is at index 0, the second last row is at index 1, and so on.
-- the columns to edit, formatted in the same way as the rows to edit.
+- the columns to edit, formatted in the same way as the rows to edit. Note that only cells that are part of both the specified rows and columns will be edited. For example, if only row 0 and column 0 is specified, then (0,0) will be the only cell that is edited.
 - the actions to apply and how to apply them:
     - actions to apply on a cell. So far, the following actions have been implemented:
         - convert the cell to a header (change td to th) with a scope of "col" or "row". If the scope is "col" and the cell also has a colspan attribute, then the scope is changed to "colgroup".
