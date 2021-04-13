@@ -1,5 +1,6 @@
 const extra_span_cell = "<td><span placeholder/></td>";
 const table_placeholder = "<TABLEPLACEHOLDER/>";
+const at_placeholder = "<ATPLACEHOLDER>";
 const open_caption_placeholder = "<OPENCAPTIONPLACEHOLDER>";
 const close_caption_placeholder = "<CLOSECAPTIONPLACEHOLDER>";
 
@@ -536,12 +537,15 @@ Function to handle the action of setting the preceding paragraph before a table 
 function set_prev_caption(html_doc_str, prev_tag_name, table_list_type, table_list) {
 	// temporarily replace table tags with placeholders to mark whether table has been visited yet
 	let edited_html_doc_str = html_doc_str.replaceAll("<table", table_placeholder);
-	// regex to get full document up to the </table that closes the current table
-	const close_curr_table = new RegExp("^(.|\n)*?" + table_placeholder + "(.|\n)*?</table>", "g");
-	// regex to find caption tag before a table placeholder
+	// temporarily replace @ with a placeholder to use it to mark caption tags
+	edited_html_doc_str = edited_html_doc_str.replaceAll("@", at_placeholder);
 	const prev_open_tag = "<" + prev_tag_name + "([^>]*)>";
 	const prev_close_tag = "</" + prev_tag_name + ">";
-	const prev_tag = new RegExp(prev_open_tag + "((.|\n)*?)" + prev_close_tag + "( |\n|(<br[^>]*>))*" + table_placeholder, "g");
+	edited_html_doc_str = edited_html_doc_str.replaceAll(new RegExp("(" + prev_close_tag + ")", "g"), "@$1");
+	// regex to find caption tag before a table placeholder
+	const prev_tag = new RegExp(prev_open_tag + "(([^@]|\n)*)@" + prev_close_tag + "( |\n|(<br[^>]*>))*" + table_placeholder, "g");
+	// regex to get full document up to the </table that closes the current table
+	const close_curr_table = new RegExp("^(.|\n)*?" + table_placeholder + "(.|\n)*?</table>", "g");
 	// regex to find the full tag of the current table
 	const table_tag = new RegExp("(" + table_placeholder + "[^>]*>)", "g");
 	// loop through tables to apply function to
@@ -554,7 +558,10 @@ function set_prev_caption(html_doc_str, prev_tag_name, table_list_type, table_li
 			let orig_doc_part = match_with_empty(edited_html_doc_str, close_curr_table)[0];
 			let curr_doc_part = orig_doc_part;
 			// check to see if there is a caption tag before current table
+			console.log(curr_doc_part)
+			console.log(prev_tag)
 			let prev_tag_match = match_with_empty(curr_doc_part, prev_tag);
+			console.log("here1")
 			if (prev_tag_match.length > 0) {
 				// if there is, append its contents to caption, and set caption to placeholder to avoid matching later
 				let prev_tag_attr = prev_tag_match[0].replace(prev_tag, "$1");
@@ -567,12 +574,15 @@ function set_prev_caption(html_doc_str, prev_tag_name, table_list_type, table_li
 				// remove original caption tag
 				curr_doc_part = curr_doc_part.replace(prev_tag, table_placeholder);
 				edited_html_doc_str = edited_html_doc_str.replace(orig_doc_part, curr_doc_part);
-				
 			}
+			console.log("here2")
 		}
 		// move to next table by removing placeholder
 		edited_html_doc_str = edited_html_doc_str.replace(table_placeholder, "<table");
 		i++;
 	}
+	// add @ back in
+	edited_html_doc_str = edited_html_doc_str.replaceAll("@", "");
+	edited_html_doc_str = edited_html_doc_str.replaceAll(at_placeholder, "@");
 	return edited_html_doc_str;
 }
