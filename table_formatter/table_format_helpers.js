@@ -558,10 +558,7 @@ function set_prev_caption(html_doc_str, prev_tag_name, table_list_type, table_li
 			let orig_doc_part = match_with_empty(edited_html_doc_str, close_curr_table)[0];
 			let curr_doc_part = orig_doc_part;
 			// check to see if there is a caption tag before current table
-			console.log(curr_doc_part)
-			console.log(prev_tag)
 			let prev_tag_match = match_with_empty(curr_doc_part, prev_tag);
-			console.log("here1")
 			if (prev_tag_match.length > 0) {
 				// if there is, append its contents to caption, and set caption to placeholder to avoid matching later
 				let prev_tag_attr = prev_tag_match[0].replace(prev_tag, "$1");
@@ -575,7 +572,6 @@ function set_prev_caption(html_doc_str, prev_tag_name, table_list_type, table_li
 				curr_doc_part = curr_doc_part.replace(prev_tag, table_placeholder);
 				edited_html_doc_str = edited_html_doc_str.replace(orig_doc_part, curr_doc_part);
 			}
-			console.log("here2")
 		}
 		// move to next table by removing placeholder
 		edited_html_doc_str = edited_html_doc_str.replace(table_placeholder, "<table");
