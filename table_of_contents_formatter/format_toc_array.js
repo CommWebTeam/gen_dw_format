@@ -383,5 +383,8 @@ function format_toc_arr(html_str, toc_struc, input_start_line, input_end_line, i
     cleaned_html_str = cleaned_html_str.replace(/@@/g, new_table_str);
     // add @ back in
     cleaned_html_str = cleaned_html_str.replaceAll(at_placeholder, "@");
+    // fix formatting
+    cleaned_html_str = cleaned_html_str.replaceAll(/(<li[^>]*>)( |\n)*(<a[^>]*>)( |\n)*(.*?)( |\n)*<\/a>( |\n)*<\/li>/g, "$1$3$5</a></li>");
+    cleaned_html_str = cleaned_html_str.replaceAll(/(<li[^>]*>)( |\n)*(<a[^>]*>)( |\n)*(.*?)( |\n)*<\/a>/g, "$1$3$5</a>");
     return cleaned_html_str.replace(table_str, new_table_str);
 }
