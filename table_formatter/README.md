@@ -30,7 +30,7 @@ The inputs are as follows:
         - convert the cell to a specific class (e.g. "osfi-txt--bold" or "align-left").
     - actions that apply on other parts of the table. So far, the following actions have been implemented:
         - insert an opening thead, tbody, or tfoot tag at the first row index provided above, and the corresponding closing tag at the second row index provided above. For example, inserting the opening thead at row index 0 means placing it before all tr tags (rows). Only the first two row indices given are used. Since thead/tbody/tfoot are only used to group rows, the column indices given above are ignored.
-        - append the paragraph preceding a table, either immediately above a table or separated by &lt;br>, to the table's caption. This action ignores cells completely and only uses the table inputs above, as it is only applied once per table, so the row/column inputs are ignored.
+        - append the paragraph or header preceding a table, either immediately above a table or separated by &lt;br>, to the table's caption. This action ignores cells completely and only uses the table inputs above, as it is only applied once per table, so the row/column inputs are ignored.
 
 ### Running the tool multiple times
 
