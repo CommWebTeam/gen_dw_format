@@ -4,6 +4,10 @@ function format_file() {
 	let content_str = document.getElementById("html_file").files[0];
 	file_reader_content.onload = function(event) {
 		let html_doc_str = event.target.result.replaceAll("\r\n", "\n");
+		// fix footnotes
+		if (document.getElementById("footnotes").checked) {
+			html_doc_str = fix_footnotes(html_doc_str);
+		}
 		// remove empty links
 		if (document.getElementById("dw_empty_a").checked) {
 			html_doc_str = rm_empty_links(html_doc_str);
@@ -132,10 +136,6 @@ function format_file() {
 		if (document.getElementById("ol_ul_tag").checked) {
 			html_doc_str = rm_ol_ul_attributes(html_doc_str, "p");
 		}
-		// fix footnotes
-		if (document.getElementById("footnotes").checked) {
-			html_doc_str = fix_footnotes(html_doc_str);
-		}
 		// fix punctuation
 		if (document.getElementById("fix_punct").checked) {
 			html_doc_str = fix_punctuation(html_doc_str);
@@ -172,6 +172,24 @@ function format_file() {
 /* helpers */
 
 // I sometimes split regex statements up into multiple calls for clarity, but a lot of these checks can be done in one or two regex statements.
+
+// fix footnotes using functions from footnote_helpers.js
+function fix_footnotes(html_str) {
+	// set regex statements that find footnotes using Dreamweaver's formatting
+	const footnote_top_regex = '<a href="#_ftn[0-9]+" name="_ftnref[0-9]+" title="">(.*?)</a>';
+	const footnote_bot_regex = `<div id="ftn[0-9]+">(<br>)* *
+* *(
+ *<ul> *
+ *<li>)*(<p>)*<a href="#_ftnref[0-9]+" name="_ftn[0-9]+" title=""> *</a>((\n*.)*?)(</p> *
+)* *(</li> *
+ *</ul> *
+ *)* *</div>`;
+	// use wet footnote formatting functions
+	let edited_html_str = replace_footnote_str(html_str, footnote_top_regex, footnote_bot_regex, 4, "");
+	edited_html_str = add_footnote_div(edited_html_str);
+	edited_html_str = add_consecutive_commas(edited_html_str);
+	return edited_html_str;
+}
 
 // remove empty links
 function rm_empty_links(html_str) {
@@ -415,24 +433,6 @@ function rm_p_attributes(html_str) {
 // remove attributes from ol and ul tags
 function rm_ol_ul_attributes(html_str) {
 	return html_str.replaceAll(/<ol [^>]*>/g,  "<ol>").replaceAll(/<ul [^>]*>/g,  "<ul>");
-}
-
-// fix footnotes using functions from footnote_helpers.js
-function fix_footnotes(html_str) {
-	// set regex statements that find footnotes using Dreamweaver's formatting
-	const footnote_top_regex = '<a href="#_ftn[0-9]+" name="_ftnref[0-9]+" title="">(.*?)</a>';
-	const footnote_bot_regex = `<div id="ftn[0-9]+">(<br>)* *
-* *(
- *<ul> *
- *<li>)*(<p>)*<a href="#_ftnref[0-9]+" name="_ftn[0-9]+" title=""> *</a>((\n*.)*?)(</p> *
-)* *(</li> *
- *</ul> *
- *)* *</div>`;
-	// use wet footnote formatting functions
-	let edited_html_str = replace_footnote_str(html_str, footnote_top_regex, footnote_bot_regex, 4, "");
-	edited_html_str = add_footnote_div(edited_html_str);
-	edited_html_str = add_consecutive_commas(edited_html_str);
-	return edited_html_str;
 }
 
 // fix common punctuation/spacing mistakes
