@@ -143,14 +143,15 @@ with
         - checked by default
 
 - Add/fix/remove tag attributes:
+    - replaces Dreamweaver-generated center and right alignment (looks like align="center" or align="right") with their respective WET classes.
+        - Example: replaces the string "&lt;li align="center">center align&lt;/li>" with "&lt;li class="align-center">center align&lt;/li>".
+        - checked by default
     - ensures that internal links to the OSFI website are relative by removing the OSFI main page from the URL, and adds rel=external to external links. This ignores links that have keywords indicating footnotes, table of contents, already existing internal links, or email addresses.
         - Example 1: replaces the string "&lt;a href="osfi-bsif.gc.ca/Eng/test">internal link 1&lt;/a>" with "&lt;a href="/Eng/test">internal link 1&lt;/a>".
         - Example 2: replaces the string "&lt;a href="https://www.google.ca/">external link&lt;/a>" with "&lt;a rel="external" href="https://www.google.ca/">external link&lt;/a>".
         - Example 3: the string "&lt;a href="_ftn">not external link&lt;/a>" is left unchanged because the keyword "_ftn" indicates footnote.
         - checked by default
-    - replaces Dreamweaver-generated center and right alignment (looks like align="center" or align="right") with their respective WET classes.
-        - Example: replaces the string "&lt;li align="center">center align&lt;/li>" with "&lt;li class="align-center">center align&lt;/li>".
-        - checked by default
+        - this should be unchecked if the input is already WET formatted, because links that have already been converted to referential links will now appear as external.
     - removes attributes from p (paragraph) tags.
         - Example: replaces the string "&lt;p test="x">p attribute&lt;/p>" with "&lt;p>p attribute&lt;/p>".
         - checked by default

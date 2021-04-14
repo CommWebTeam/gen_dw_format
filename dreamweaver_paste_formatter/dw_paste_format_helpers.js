@@ -116,13 +116,13 @@ function format_file() {
 		if (document.getElementById("fix_br").checked) {
 			html_doc_str = fix_br(html_doc_str);
 		}
-		// fix referential and external links
-		if (document.getElementById("ref_links").checked) {
-			html_doc_str = fix_ref_links(html_doc_str);
-		}
 		// fix align-center and align-right
 		if (document.getElementById("align").checked) {
 			html_doc_str = fix_align(html_doc_str);
+		}
+		// fix referential and external links
+		if (document.getElementById("ref_links").checked) {
+			html_doc_str = fix_ref_links(html_doc_str);
 		}
 		// remove attributes from paragraph tags
 		if (document.getElementById("p_tag").checked) {
@@ -373,6 +373,13 @@ function fix_br(html_str) {
 	return html_str.replaceAll("<br>", "<br/>");
 }
 
+// fix alignment classes
+function fix_align(html_str) {
+	let edited_html_str = html_str.replaceAll(/align *= *"center"/g, 'class="align-center"');
+	edited_html_str = edited_html_str.replaceAll(/align *= *"right"/g, 'class="align-right"');
+	return edited_html_str;
+}
+
 // fix referential and internal links in line
 function fix_ref_links(html_str) {
 	let edited_html_str = html_str;
@@ -397,13 +404,6 @@ function fix_ref_links(html_str) {
 		}
 		edited_html_str = edited_html_str.replaceAll(curr_link, new_link);
 	}
-	return edited_html_str;
-}
-
-// fix alignment classes
-function fix_align(html_str) {
-	let edited_html_str = html_str.replaceAll(/align *= *"center"/g, 'class="align-center"');
-	edited_html_str = edited_html_str.replaceAll(/align *= *"right"/g, 'class="align-right"');
 	return edited_html_str;
 }
 
