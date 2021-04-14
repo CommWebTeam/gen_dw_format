@@ -367,7 +367,12 @@ function format_toc_arr(html_str, toc_struc, input_start_line, input_end_line, i
         else {
             replacement = replacement + "<h" + curr_level + ' id="' + curr_link + '">' + curr_numbering + ' ' + curr_content + "</h" + curr_level + ">\n";
         }
-        cleaned_html_str = cleaned_html_str.replaceAll(header_regex, replacement);
+        if (header_regex.test(cleaned_html_str)) {
+            cleaned_html_str = cleaned_html_str.replaceAll(header_regex, replacement);
+        }
+        else {
+            console.log("Entry not found in main body: " + curr_content);
+        }
     }
     // add placeholder tags back in
     cleaned_html_str = cleaned_html_str.replaceAll(list_open_placeholder, "<li>");
