@@ -10,11 +10,14 @@ Group containing content: 1
 
 
 
-Dreamweaver-generated formatting. This should more easily grab every footnote, but you will have to fix any strange formatting within the footnotes themselves manually, and you will have to remove the following statement using regex afterwards:
-<a href="#_ftnref[0-9]+" name="_ftn[0-9]+" title=""> *</a>
+Dreamweaver-generated formatting. This should more easily grab every footnote, but you will have to fix any strange formatting within the footnotes themselves manually.
 
 <div id="ftn[0-9]+">([\s\S]*?)</div>
 Group containing content: 1
+
+You may have to remove the following statement using regex afterwards:
+<a href="#_ftnref[0-9]+" name="_ftn[0-9]+" title=""> *</a>
+
 
 
 
