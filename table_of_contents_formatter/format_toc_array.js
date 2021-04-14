@@ -10,7 +10,7 @@ function format_toc() {
     let html_file = document.getElementById("html_file").files[0];
     file_reader.onload = function(event) {
         let html_str = event.target.result;
-        let edited_str = format_toc_arr(html_str, document.getElementById("toc_struc").value, document.getElementById("toc_start").value, document.getElementById("toc_end").value, document.getElementById("indent_type").value, document.getElementById("list_type").value, document.getElementById("page_nums").checked);
+        let edited_str = format_toc_arr(html_str, document.getElementById("toc_struc").value, document.getElementById("toc_start").value, document.getElementById("toc_end").value, document.getElementById("init_id").value, document.getElementById("indent_type").value, document.getElementById("list_type").value, document.getElementById("page_nums").checked);
         download(edited_str, "toc.html", "text/html");
     }
     file_reader.readAsText(html_file);
@@ -40,7 +40,7 @@ the toc table values consist of an array of objects with four values for each ta
 - indentation level, based on list numbering
 - entry content without the list numbering
 */
-function get_toc_table_listnum(table_str, toc_struc, rm_page_nums) {
+function get_toc_table_listnum(table_str, init_id, toc_struc, rm_page_nums) {
     // split table string into entries
     let toc_arr = [];
     if (toc_struc === "p_br") {
@@ -70,14 +70,14 @@ function get_toc_table_listnum(table_str, toc_struc, rm_page_nums) {
         if (list_ind_regex.test(curr_line)) {
             // if so, use that for id instead (remove consecutive periods first)
             list_numbering = curr_line.match(list_ind_regex)[0].trim().replaceAll(/\.+/g, ".");
-            link_id = "toc_" + list_numbering;
+            link_id = init_id + list_numbering;
             // get level of id based on periods followed by numbers in list numbering
             indent_level = count_regex(list_numbering, /\.[0-9]/g) + 2;
             last_indent_level = indent_level;
         }
         else {
             // otherwise, increment internal id counter to keep it unique
-            link_id = "toc_nonum_" + default_id_counter;
+            link_id = init_id + "nonum_" + default_id_counter;
             default_id_counter++;
             // set level of id to be previous properly generated header level + 1
             indent_level = last_indent_level + 1;
@@ -96,7 +96,7 @@ the toc table values consist of an array of objects with four values for each ta
 - indentation level, based on list numbering
 - entry content without the list numbering
 */
-function get_toc_table_prev_indent(table_str, toc_struc, rm_page_nums) {
+function get_toc_table_prev_indent(table_str, init_id, toc_struc, rm_page_nums) {
     let toc_values = [];
     /*
     if toc structure isn't a list, then just assume no indentation for all values
@@ -113,7 +113,7 @@ function get_toc_table_prev_indent(table_str, toc_struc, rm_page_nums) {
             // get content without list numbering
             let content = toc_arr[i].replace(list_ind_regex, "").trim();
             // use index for id, assume empty list numbering, set header level to a default of 3 (for h3)
-            toc_values.push({list_numbering: "", link_id: "toc_" + i, indent_level: 3, content: content});
+            toc_values.push({list_numbering: "", link_id: init_id + i, indent_level: 3, content: content});
         }
         
         return toc_values;
@@ -146,7 +146,7 @@ function get_toc_table_prev_indent(table_str, toc_struc, rm_page_nums) {
                 // clean up content
                 curr_content = clean_entry(curr_content, rm_page_nums);
                 // assume empty list numbering
-                toc_values.push({list_numbering: "", link_id: "toc_" + toc_count, indent_level: curr_indent, content: curr_content});
+                toc_values.push({list_numbering: "", link_id: inid_id + toc_count, indent_level: curr_indent, content: curr_content});
             }
             // if it opens or closes the list item of a sublist, then skip it (sublists are covered by the first two cases)
             else if (curr_line.includes("<li") || curr_line === "</li>") {
@@ -248,7 +248,7 @@ function create_toc_table(toc_values, manual_list, list_type) {
 
 
 // formats html document's table of contents to WET
-function format_toc_arr(html_str, toc_struc, input_start_line, input_end_line, indent_type, list_type, rm_page_nums) {
+function format_toc_arr(html_str, toc_struc, input_start_line, input_end_line, init_id, indent_type, list_type, rm_page_nums) {
 	/*
 	============================
 	Initial cleanup
@@ -327,9 +327,9 @@ function format_toc_arr(html_str, toc_struc, input_start_line, input_end_line, i
     let manual_list = (indent_type === "manual_list_num");
     let wet_table_info = [];
     if (use_list_indent) {
-        wet_table_info = get_toc_table_listnum(table_str, toc_struc, rm_page_nums);
+        wet_table_info = get_toc_table_listnum(table_str, init_id, toc_struc, rm_page_nums);
     } else {
-        wet_table_info = get_toc_table_prev_indent(table_str, toc_struc, rm_page_nums);
+        wet_table_info = get_toc_table_prev_indent(table_str, init_id, toc_struc, rm_page_nums);
     }
     /*
 	============================
