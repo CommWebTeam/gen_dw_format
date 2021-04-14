@@ -399,7 +399,7 @@ function fix_ref_links(html_str) {
 		else {
 			// add rel to external links, excluding footnotes, toc, internal links, and emails
 			if (!curr_link.includes("_ftn") && !curr_link.includes("_Toc") && !curr_link.includes("toc_") && !curr_link.includes("fnb") && !curr_link.includes('href *= *"/') && !curr_link.includes("mailto")) {
-				new_link = curr_link.replace(/rel *= *"external"/g, "").replace(/<a /g, '<a rel="external" ');
+				new_link = curr_link.replace(/ *rel *= *"external"/g, "").replace(/<a /g, '<a rel="external" ');
 			}
 		}
 		edited_html_str = edited_html_str.replaceAll(curr_link, new_link);
