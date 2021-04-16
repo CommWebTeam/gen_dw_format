@@ -372,7 +372,7 @@ function to_header_col(table_arr, row, col) {
 	// replace td with th
 	curr_cell = curr_cell.replace("<td", "<th").replaceAll("</td", "</th");
 	// remove existing scope
-	curr_cell = curr_cell.replace(/(<th[^>]*)scope *= *['"].*?['"]/g, "$1");
+	curr_cell = curr_cell.replace(/(<th[^>]*) *scope *= *['"].*?['"]/g, "$1");
 	// add scope of col or colgroup, depending on whether cell tag has a span
 	if (/(<th[^>]*)colspan *= */.test(curr_cell)) {
 		curr_cell = curr_cell.replace("<th", '<th scope="colgroup"');
@@ -389,7 +389,7 @@ function to_header_row(table_arr, row, col) {
 	// replace td with th
 	curr_cell = curr_cell.replace("<td", "<th").replaceAll("</td", "</th");
 	// remove existing scope
-	curr_cell = curr_cell.replace(/(<th[^>]*)scope *= *['"].*?['"]/g, "$1");
+	curr_cell = curr_cell.replace(/(<th[^>]*) *scope *= *['"].*?['"]/g, "$1");
 	// add scope of row
 	curr_cell = curr_cell.replace("<th", '<th scope="row"');
 	table_arr.rows[row].cells[col] = curr_cell;
@@ -500,6 +500,10 @@ function set_t_inds(table_arr, table_list_type, table_list, row_inds, forward_di
 		if ((table_list_type === "all") ||
 		  (table_list_type === "exclude" && !table_list.includes(i)) ||
 		  (table_list_type === "include" && table_list.includes(i))) {
+			// create attribute-less tag if it is currently empty
+			if (edited_table_arr[i][group].attr === "") {
+				edited_table_arr[i][group].attr = "<" + group + ">";
+			}
 			// set new opening tag index
 			if (row_inds.length > 0) {
 				let open_ind = row_inds[0];
