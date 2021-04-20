@@ -9,7 +9,7 @@ function format_toc() {
     let file_reader = new FileReader();
     let html_file = document.getElementById("html_file").files[0];
     file_reader.onload = function(event) {
-        let html_str = event.target.result;
+        let html_str = event.target.result.replaceAll("\r\n", "\n");
         let edited_str = format_toc_arr(html_str, document.getElementById("toc_struc").value, document.getElementById("toc_start").value, document.getElementById("toc_end").value, document.getElementById("init_id").value, document.getElementById("indent_type").value, document.getElementById("list_type").value, document.getElementById("page_nums").checked);
         download(edited_str, "toc.html", "text/html");
     }
@@ -28,7 +28,8 @@ function clean_entry(curr_content, rm_page_nums) {
         cleaned_content = cleaned_content.replaceAll(/(\.)+ +[0-9]+ *$/g, "");
     }
     // clean up spacing
-    cleaned_content = format_spacing(cleaned_content);
+    cleaned_content = replace_invisible_nbsp(cleaned_content);
+    cleaned_content = rm_multispace(cleaned_content);
     cleaned_content = cleaned_content.trim();
     return cleaned_content;
 }
@@ -72,7 +73,7 @@ function get_toc_table_listnum(table_str, init_id, toc_struc, rm_page_nums) {
             list_numbering = curr_line.match(list_ind_regex)[0].trim().replaceAll(/\.+/g, ".");
             link_id = init_id + list_numbering;
             // get level of id based on periods followed by numbers in list numbering
-            indent_level = count_regex(list_numbering, /\.[0-9]/g) + 2;
+            indent_level = match_with_empty(list_numbering, /\.[0-9]/g).length + 2;
             last_indent_level = indent_level;
         }
         else {
@@ -271,7 +272,7 @@ function format_toc_arr(html_str, toc_struc, input_start_line, input_end_line, i
     cleaned_html_str = cleaned_html_str.replaceAll("@", at_placeholder);
     // remove indentation
     let html_arr = cleaned_html_str.split("\n");
-    html_arr = trim_arr(html_arr);
+    html_arr = html_arr.trim();
     cleaned_html_str = html_arr.join("\n");
 	/*
 	============================

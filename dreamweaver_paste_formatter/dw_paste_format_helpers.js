@@ -216,6 +216,16 @@ function rm_logiterms(html_str) {
 	return html_str.replaceAll(/<a name="lt_[a-zA-z0-9]+">(.*?)<\/a>/g, "$1");
 }
 
+// replace invisible nbsp
+function replace_invisible_nbsp(html_line) {
+	return html_line.replaceAll(/[  ­­	]+/g, " ");
+}
+
+// remove multispaces
+function rm_multispace(html_line) {
+	return html_line.replaceAll(/  +/g, " ");
+}
+
 // remove spaces at the end of tags
 function rm_end_tag_space(html_str) {
 	return html_str.replaceAll(/(<[^>]*?) *>/g, "$1>");
