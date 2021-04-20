@@ -272,7 +272,7 @@ function format_toc_arr(html_str, toc_struc, input_start_line, input_end_line, i
     cleaned_html_str = cleaned_html_str.replaceAll("@", at_placeholder);
     // remove indentation
     let html_arr = cleaned_html_str.split("\n");
-    html_arr = html_arr.trim();
+    html_arr = html_arr.map(x => x.trim());
     cleaned_html_str = html_arr.join("\n");
 	/*
 	============================

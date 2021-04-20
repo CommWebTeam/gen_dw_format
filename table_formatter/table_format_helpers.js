@@ -299,7 +299,7 @@ function int_csv_to_arr(csv_str) {
 	}
 	// split string by comma and clean values
 	let int_arr = csv_str.split(",");
-	int_arr = int_arr.trim();
+	int_arr = int_arr.map(x => x.trim());
 	int_arr = rm_empty_lines(int_arr);
 	// convert values to int
 	for (let i = 0; i < int_arr.length; i++) {

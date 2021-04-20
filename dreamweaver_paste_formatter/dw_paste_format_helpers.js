@@ -346,10 +346,6 @@ function default_tag(html_str, old_tag, new_tag) {
 	// remove attributes from old and new tags for closing tag
 	let old_tag_close = old_tag.trim().replace(/^([a-zA-Z0-9]+).*/g, "</$1>");
 	let new_tag_close = new_tag.trim().replace(/^([a-zA-Z0-9]+).*/g, "</$1>");
-	console.log(old_tag_close)
-	console.log(new_tag_close)
-	console.log(old_tag)
-	console.log(new_tag)
 	// replace tags
 	let edited_html_str = html_str.replaceAll(old_tag_open, new_tag_open);
 	edited_html_str = edited_html_str.replaceAll(old_tag_close, new_tag_close);
