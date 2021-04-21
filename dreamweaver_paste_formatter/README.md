@@ -144,7 +144,7 @@ with
 with
     *&lt;p>empty br&lt;/p>*.
         - checked by default
-    - changes all &lt;br> to &lt;br/>.
+    - changes all &lt;br> to &lt;br />.
         - checked by default
 
 - Add/fix/remove tag attributes:
@@ -252,7 +252,7 @@ Similarly to superscripts/subscripts, you can't copy a Word document with equati
 
 The steps to add a check that follows the tool's current formatting/organization are as follows:
 
-1. In dw_paste_format.html: Add the new check into the form where the other checks are located. Different groups of checks are separated by two &lt;br/> instead of one; put the check in whichever group you think makes the most sense.
+1. In dw_paste_format.html: Add the new check into the form where the other checks are located. Different groups of checks are separated by two &lt;br /> instead of one; put the check in whichever group you think makes the most sense.
 2. In dw_paste_format_helpers.js:
     - In format_file(), create an if statement for the new check, positioned at the same place as where you put it in the HTML document. For the sake of consistency, put the logic for the check in a helper function even if it's only one line.
     - Create the helper function below format_file(), positioned at the same place as where you put it in the HTML document.

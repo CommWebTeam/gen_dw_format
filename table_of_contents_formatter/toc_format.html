@@ -9,38 +9,38 @@
 <form>
   HTML file:
   <input id="html_file" type="file" />
-  <br/>
-  <br/>
+  <br />
+  <br />
   <label for="toc_struc">Current table of contents structure:</label>
   <select name="toc_struc" id="toc_struc">
     <option value="p_br">One &lt;p> tag with entries separated by &lt;br/> or &lt;br></option>
     <option value="ul_li">One &lt;ul> tag with each entry as a &lt;li> element</option>
   </select>
-  <br/>
-  <br/>
+  <br />
+  <br />
   (Optional) Enter which line the table of contents starts on in the HTML file, starting at index 0:
   <input id="toc_start" type="number" value=""/>
-  <br/>
-  <br/>
+  <br />
+  <br />
   (Optional) Enter which line the table of contents ends on in the HTML file, starting at index 0:&nbsp;
   <input id="toc_end" type="number" value=""/>
-  <br/>
-  <br/>
+  <br />
+  <br />
   Include any lines that should be part of the formatted table of contents, e.g. the header that states "Table of Contents". If the above values aren't filled in, the tool will search for the first two lines between &lt;br clear="all"> in the document that contain the table of contents structure selected above.
-  <br/>
-  <br/>
-  Initial string for table of contents entry IDs: <br/>
+  <br />
+  <br />
+  Initial string for table of contents entry IDs: <br />
   <input id="init_id" type="text" value="toc_" />
-  <br/>
-  <br/>
+  <br />
+  <br />
   <label for="indent_type">How to generate table of contents indentation:</label>
   <select name="indent_type" id="indent_type">
     <option value="list_num">Use existing list numberings (see below for details on list numberings)</option>
     <option value="manual_list_num">Use manually inserted list numberings (the tool will remove the list numberings from the output)</option>
     <option value="curr_indent">Use current table indentation</option>
   </select>
-  <br/>
-  <br/>
+  <br />
+  <br />
   <label for="list_type">List type for output table of contents structure:</label>
   <select name="list_type" id="list_type">
     <option value="ul">&lt;ul></option>
@@ -52,16 +52,16 @@
     <option value="ol_lower_roman">&lt;ol list-lower-roman></option>
     <option value="ol_upper_roman">&lt;ol list-upper-roman></option>
   </select>
-  <br/>
-  <br/>
+  <br />
+  <br />
   <input type="checkbox" id="page_nums" name="page_nums" checked>
   <label for="page_nums">Remove page numbers from table of contents entries</label>
-  <br/>
-  <br/>
+  <br />
+  <br />
 </form>
 <button type="button" onclick="format_toc()">Download with WET table of contents</button>
-<br/>
-<br/>
+<br />
+<br />
 <p>---</p>
 <p>This application takes in an HTML file with default Dreamweaver table of contents formatting and reformats the table of contents to follow WET guidelines. It also generates clearer links for the table of contents, and replaces the old links in the main document with these new links.</p>
 <p>Note that since this code adds/removes tags while making specific assumptions about formatting / tags used, <strong>the immediate output WILL contain formatting errors</strong> if the original Dreamweaver paste is malformed enough. Be sure to go through the document and manually fix any resulting errors - Dreamweaver is helpful for this.</p>

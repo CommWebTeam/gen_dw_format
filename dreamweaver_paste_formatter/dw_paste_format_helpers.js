@@ -116,7 +116,7 @@ function format_file() {
 		if (document.getElementById("rm_empty_br").checked) {
 			html_doc_str = rm_empty_br(html_doc_str);
 		}
-		// change <br> to <br/>
+		// change <br> to <br />
 		if (document.getElementById("fix_br").checked) {
 			html_doc_str = fix_br(html_doc_str);
 		}
@@ -231,10 +231,10 @@ function rm_end_tag_space(html_str) {
 	return html_str.replaceAll(/(<[^>]*?) *>/g, "$1>");
 }
 
-// remove empty tags
+// remove empty attribute-less tags
 function rm_empty_tags(html_str) {
-	const empty_tag_regex = /<[a-zA-Z0-9]*><\/[a-zA-Z0-9]*>/g;
-	const space_tag_regex = /<[a-zA-Z0-9]*> *(&nbsp;)* *<\/[a-zA-Z0-9]*>/g;
+	const empty_tag_regex = /<[a-zA-Z0-9 ]*><\/[a-zA-Z0-9 ]*>/g;
+	const space_tag_regex = /<[a-zA-Z0-9 ]*> *(&nbsp;)* *<\/[a-zA-Z0-9 ]*>/g;
 	// temporarily exclude br and td tags, since they can be empty
 	let edited_html_str = html_str.replaceAll("<br>", "<br///>");
 	edited_html_str = edited_html_str.replaceAll("<td>", "<td///>");
@@ -355,8 +355,8 @@ function default_tag(html_str, old_tag, new_tag) {
 // splits a p tag divided by br into individual p tags
 function split_p_by_br(html_str) {
 	let edited_html_str = html_str;
-	// replace br with p until there are none left
-	const p_br_regex = /(<p( [^>]*)*>.*?) *<br(\/)*>( |\n)*/g;
+	// replace p into br with closing p until there are no p into br left
+	const p_br_regex = /(<p( [^>]*)*>.*?) *<br[ \/]*>( |\n)*/g;
 	while (p_br_regex.test(edited_html_str)) {
 		// note that Dreamweaver source formatting places any <br> following </p> on its own line, so this regex should not capture any </p><br>, and will only match an unclosed <p> into <br>
 		edited_html_str = edited_html_str.replaceAll(p_br_regex, "$1</p>\n<p>");
@@ -367,8 +367,8 @@ function split_p_by_br(html_str) {
 // splits a p tag divided by br into individual p tags, if the br is before punctuation
 function split_p_by_punct_br(html_str) {
 	let edited_html_str = html_str;
-	// replace (punctuation + br) with p until there are none left
-	const p_punct_br_regex = /(<p( [^>]*)*>.*?[\.,;:!?\)"’”]) *<br(\/)*>( |\n)*/g;
+	// replace p into (punctuation + br) with closing p until there are no p into (punctuation + br) left
+	const p_punct_br_regex = /(<p( [^>]*)*>.*?[\.,;:!?\)"’”]) *<br[ \/]*>( |\n)*/g;
 	while (p_punct_br_regex.test(edited_html_str)) {
 		edited_html_str = edited_html_str.replaceAll(p_punct_br_regex, "$1</p>\n<p>");
 	}
@@ -378,23 +378,23 @@ function split_p_by_punct_br(html_str) {
 // removes br at the start or end of p, li, th, or td tags
 function rm_empty_br(html_str) {
 	// remove br next to opening tags
-	let edited_html_str = html_str.replaceAll(/(<p( [^>]*)*>) *<br>( |\n)*/g, "$1");
-	edited_html_str = edited_html_str.replaceAll(/(<li( [^>]*)*>) *<br(\/)*>( |\n)*/g, "$1");
-	edited_html_str = edited_html_str.replaceAll(/(<th( [^>]*)*>) *<br(\/)*>( |\n)*/g, "$1");
-	edited_html_str = edited_html_str.replaceAll(/(<td( [^>]*)*>) *<br(\/)*>( |\n)*/g, "$1");
-	edited_html_str = edited_html_str.replaceAll(/(<h[0-9]+( [^>]*)*>) *<br(\/)*>( |\n)*/g, "$1");
+	let edited_html_str = html_str.replaceAll(/(<p( [^>]*)*>) *<br[ \/]*>( |\n)*/g, "$1");
+	edited_html_str = edited_html_str.replaceAll(/(<li( [^>]*)*>) *<br[ \/]*>( |\n)*/g, "$1");
+	edited_html_str = edited_html_str.replaceAll(/(<th( [^>]*)*>) *<br[ \/]*>( |\n)*/g, "$1");
+	edited_html_str = edited_html_str.replaceAll(/(<td( [^>]*)*>) *<br[ \/]*>( |\n)*/g, "$1");
+	edited_html_str = edited_html_str.replaceAll(/(<h[0-9]+( [^>]*)*>) *<br[ \/]*>( |\n)*/g, "$1");
 	// remove br next to closing tags
-	edited_html_str = edited_html_str.replaceAll(/( |\n)*<br(\/)*> *<\/p>/g, "</p>");
-	edited_html_str = edited_html_str.replaceAll(/( |\n)*<br(\/)*> *<\/li>/g, "</li>");
-	edited_html_str = edited_html_str.replaceAll(/( |\n)*<br(\/)*> *<\/th>/g, "</th>");
-	edited_html_str = edited_html_str.replaceAll(/( |\n)*<br(\/)*> *<\/td>/g, "</td>");
-	edited_html_str = edited_html_str.replaceAll(/( |\n)*<br(\/)*> *<\/h([0-9]+)>/g, "</h$3>");
+	edited_html_str = edited_html_str.replaceAll(/( |\n)*<br[ \/]*> *<\/p>/g, "</p>");
+	edited_html_str = edited_html_str.replaceAll(/( |\n)*<br[ \/]*> *<\/li>/g, "</li>");
+	edited_html_str = edited_html_str.replaceAll(/( |\n)*<br[ \/]*> *<\/th>/g, "</th>");
+	edited_html_str = edited_html_str.replaceAll(/( |\n)*<br[ \/]*> *<\/td>/g, "</td>");
+	edited_html_str = edited_html_str.replaceAll(/( |\n)*<br[ \/]*> *<\/h([0-9]+)>/g, "</h$2>");
 	return edited_html_str;
 }
 
-// replace <br> with <br/>
+// replace <br> with <br />
 function fix_br(html_str) {
-	return html_str.replaceAll("<br>", "<br/>");
+	return html_str.replaceAll("<br>", "<br />").replaceAll("<br/>", "<br />");
 }
 
 // fix alignment classes

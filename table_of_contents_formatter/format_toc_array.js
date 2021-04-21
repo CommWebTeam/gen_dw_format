@@ -45,7 +45,7 @@ function get_toc_table_listnum(table_str, init_id, toc_struc, rm_page_nums) {
     // split table string into entries
     let toc_arr = [];
     if (toc_struc === "p_br") {
-        toc_arr = table_str.split("<br/>");
+        toc_arr = table_str.split("<br />");
     }
     else if (toc_struc === "ul_li") {
         toc_arr = table_str.match(/<li>(.|\n)*?<\/li>/g);
@@ -104,7 +104,7 @@ function get_toc_table_prev_indent(table_str, init_id, toc_struc, rm_page_nums) 
     */
     if (toc_struc === "p_br") {
         // split table string into entries
-        let toc_arr = table_str.split("<br/>");
+        let toc_arr = table_str.split("<br />");
         console.log("Number of contents: " + toc_arr.length);
         // clean up content
         toc_arr = toc_arr.map(x => clean_entry(x, rm_page_nums));
@@ -285,7 +285,7 @@ function format_toc_arr(html_str, toc_struc, input_start_line, input_end_line, i
         // replace <br clear="all"> with placeholders for now
         cleaned_html_str = cleaned_html_str.replaceAll('<br clear="all">', "@");
         // search for lines between two <br clear="all"> that have at least one separator of the toc structure
-        let toc_struc_regex = /@(?:[^@]|\n)*?<p(?:[^>]|\n)*>(([^@]|\n)*?<br\/>([^@]|\n)*?)<\/p>([^@]|\n)*@/g;
+        let toc_struc_regex = /@(?:[^@]|\n)*?<p(?:[^>]|\n)*>(([^@]|\n)*?<br *\/>([^@]|\n)*?)<\/p>([^@]|\n)*@/g;
         if (toc_struc === "ul_li") {
             toc_struc_regex = /@(([^@]|\n)*?<\/li>([^@]|\n)*)@/g;
         }

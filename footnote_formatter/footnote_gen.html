@@ -9,37 +9,37 @@
 <form>
   HTML file:
   <input id="html_file" type="file" />
-  <br/>
-  <br/>
-  Regex for top footnote locations: <br/>
+  <br />
+  <br />
+  Regex for top footnote locations: <br />
   <textarea id="top_footnote" rows="10" cols="100">&lt;sup id="fnb[0-9]+-ref"&gt; *&lt;a class="footnote-link" href="#fnb[0-9]+"&gt; *&lt;span class="wb-invisible"&gt;Footnote &lt;/span&gt;[0-9]+&lt;/a&gt;,*&lt;/sup&gt;</textarea>
-  <br/>
-  <a href="top_footnote_formats.txt">Common top footnote formats</a><br/><br/>
-  Regex for bottom footnote text: <br/>
+  <br />
+  <a href="top_footnote_formats.txt">Common top footnote formats</a><br /><br />
+  Regex for bottom footnote text: <br />
   <textarea id="bot_footnote" rows="10" cols="100">&lt;dt&gt;Footnote [0-9]+&lt;/dt&gt;\s*
 \s*&lt;dd id="fnb[0-9]+"&gt;\s*
 \s*([\s\S]*?)&lt;p class="footnote-return"&gt; *&lt;a href="#fnb[0-9]+-ref"&gt; *&lt;span class="wb-invisible"&gt;Return to footnote &lt;/span&gt;[0-9]+&lt;/a&gt;&lt;/p&gt;\s*
 \s*&lt;/dd&gt;</textarea>
-  <br/>
-  Group containing content:<br/>
+  <br />
+  Group containing content:<br />
   <input id="regex_sub" type="number" value="1"/>
-  <br/>
-  <a href="bottom_footnote_formats.txt">Common bottom footnote formats</a><br/><br/>
-  Duplicate top footnotes (not heavily tested) - format as so (make sure they're in order of appearance from the top):<br/>
-  index,value;index,value;...<br/>
-  where the index is of the duplicate footnote location's position from the top, and the value is whichever bottom footnote it should point to instead.<br/>
-  e.g. 4,3;5,3;10,1<br/>
-  So the 4th footnote found in the main body would point to the 3rd footnote in the bottom section and so on.<br/>
+  <br />
+  <a href="bottom_footnote_formats.txt">Common bottom footnote formats</a><br /><br />
+  Duplicate top footnotes (not heavily tested) - format as so (make sure they're in order of appearance from the top):<br />
+  index,value;index,value;...<br />
+  where the index is of the duplicate footnote location's position from the top, and the value is whichever bottom footnote it should point to instead.<br />
+  e.g. 4,3;5,3;10,1<br />
+  So the 4th footnote found in the main body would point to the 3rd footnote in the bottom section and so on.<br />
   <textarea id="dup_footnotes" rows="10" cols="100"></textarea>
-  <br/>
-  <br/>
-  Output footnote language:<br/>
+  <br />
+  <br />
+  Output footnote language:<br />
   <select id="lang">
     <option value="e">English</option>
     <option value="f">French</option>
   </select>
-  <br/>
-  <br/>
+  <br />
+  <br />
 </form>
 <button type="button" onclick="add_footnotes()">Download with WET footnotes</button>
 <p>This application uses a counter to increment the current footnote number, finds the top and bottom footnotes using the regex provided, and replaces them with WET-valid footnotes that have the counter value.</p>

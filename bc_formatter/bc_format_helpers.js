@@ -34,7 +34,7 @@ function rm_footnote_text(html_str) {
 
 // replace br with newlines
 function replace_br_p(html_str) {
-	return html_str.replaceAll("<br/>", "<p></p>");
+	return html_str.replaceAll(/<br *\/>/g, "<p></p>");
 }
 
 // remove math

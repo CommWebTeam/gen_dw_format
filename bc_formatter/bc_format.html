@@ -9,24 +9,24 @@
 <form>
   File to format:
   <input id="html_file" type="file">
-  <br/>
-  <br/>
+  <br />
+  <br />
   <input type="checkbox" id="footnotes" name="footnotes" checked>
   <label for="footnotes">Remove text from WET footnote markers</label>
-  <br/>
+  <br />
   <input type="checkbox" id="br_newline" name="br_newline" checked>
   <label for="br_newline">Replace &lt;br/> with &lt;p>&lt;/p> (to show up on a separate line)</label>
-  <br/>
+  <br />
   <input type="checkbox" id="math_placeholder" name="math_placeholder" checked>
   <label for="math_placeholder">Replace math tags with placeholder string, MATHPLACEHOLDER</label>
-  <br/>
+  <br />
   <input type="checkbox" id="basel_cite" name="basel_cite">
   <label for="basel_cite">Remove Basel citations</label>
-  <br/>
+  <br />
 </form>
 <button onclick="format_file()">Download formatted file</button>
-<br/>
-<br/>
+<br />
+<br />
 <p>This tool performs some quick formatting on WET-formatted HTML documents to remove false flags for mismatches in Beyond Compare.</p>
 <p>Do NOT edit or otherwise use this tool's output as the actual document, since it is intentionally introducing formatting issues to make Beyond Comparing easier. Edit the original document instead.</p>
 <p>Check the console (ctrl+shift+i) for any errors if nothing is loading.</p>

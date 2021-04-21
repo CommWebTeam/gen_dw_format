@@ -9,145 +9,145 @@
 <form>
   HTML file:
   <input id="html_file" type="file" />
-  <br/>
-  <br/>
-  <br/>
+  <br />
+  <br />
+  <br />
   <strong>Tables</strong>
-  <br/>
-  <br/>
+  <br />
+  <br />
   <label for="table_list_type">Tables to edit:</label>
   <select name="table_list_type" id="table_list_type">
     <option value="include">Only the listed tables</option>
     <option value="exclude">All tables except those listed</option>
     <option value="all">All tables</option>
   </select>
-  <br/>
-  <br/>
-  If <i>"Only the listed tables"</i> or <i>"All tables except those listed"</i> was selected - <br/>
-  List of comma-separated indices for table locations (where the first table is denoted by 0): <br/>
-  e.g. 0,2,5 (indicating the 1st, 3rd, and 6th tables)<br/>
+  <br />
+  <br />
+  If <i>"Only the listed tables"</i> or <i>"All tables except those listed"</i> was selected - <br />
+  List of comma-separated indices for table locations (where the first table is denoted by 0): <br />
+  e.g. 0,2,5 (indicating the 1st, 3rd, and 6th tables)<br />
   <input id="table_list" type="text" value="0" />
-  <br/>
-  <br/>
-  <br/>
+  <br />
+  <br />
+  <br />
   <strong>Rows</strong>
-  <br/>
-  <br/>
+  <br />
+  <br />
   <label for="row_list_type">Rows to perform actions on (only within the columns specified below):</label>
   <select name="row_list_type" id="row_list_type">
     <option value="include">Only the listed rows</option>
     <option value="exclude">All rows except those listed</option>
     <option value="all">All rows</option>
   </select>
-  <br/>
-  <br/>
-  If <i>"Only the listed rows"</i> or <i>"All rows except those listed"</i> was selected - <br/>
-  List of comma-separated indices for rows (beginning at 0): <br/>
-  e.g. 0,1,2 (indicating first three rows) <br/>
+  <br />
+  <br />
+  If <i>"Only the listed rows"</i> or <i>"All rows except those listed"</i> was selected - <br />
+  List of comma-separated indices for rows (beginning at 0): <br />
+  e.g. 0,1,2 (indicating first three rows) <br />
   <input id="row_list" type="text" value="0" />
-  <br/>
-  <br/>
+  <br />
+  <br />
   <label for="row_list_dir">Direction to read indices in:</label>
   <select name="row_list_dir" id="row_list_dir">
     <option value="forward">Top to bottom - first row is at index 0</option>
     <option value="backward">Bottom to top - last row is at index 0</option>
   </select>
-  <br/>
-  <br/>
-  <br/>
+  <br />
+  <br />
+  <br />
   <strong>Columns</strong>
-  <br/>
-  <br/>
+  <br />
+  <br />
   <label for="col_list_type">Columns to perform actions on (only within the rows specified above):</label>
   <select name="col_list_type" id="col_list_type">
     <option value="include">Only the listed columns</option>
     <option value="exclude">All columns except those listed</option>
     <option value="all">All columns</option>
   </select>
-  <br/>
-  <br/>
-  If <i>"Only the listed columns"</i> or <i>"All columns except those listed"</i> was selected - <br/>
-  List of comma-separated indices for columns (beginning at 0): <br/>
-  e.g. 0,1,2 (indicating first three columns) <br/>
+  <br />
+  <br />
+  If <i>"Only the listed columns"</i> or <i>"All columns except those listed"</i> was selected - <br />
+  List of comma-separated indices for columns (beginning at 0): <br />
+  e.g. 0,1,2 (indicating first three columns) <br />
   <input id="col_list" type="text" value="0" />
-  <br/>
-  <br/>
+  <br />
+  <br />
   <label for="col_list_dir">Direction to read indices in:</label>
   <select name="col_list_dir" id="col_list_dir">
     <option value="forward">Top to bottom - first column is at index 0</option>
     <option value="backward">Bottom to top - last column is at index 0</option>
   </select>
-  <br/>
-  <br/>
-  <br/>
+  <br />
+  <br />
+  <br />
   <strong>Action(s) to perform on selected cells:</strong>
-  <br/>
+  <br />
   <input type="checkbox" id="to_header_col" name="to_header_col">
   <label for="to_header_col">Convert cells to a header &lt;th> col scope tag</label>
-  <br/>
+  <br />
   <input type="checkbox" id="to_header_row" name="to_header_row">
   <label for="to_header_row">Convert cells to a header &lt;th> row scope tag</label>
-  <br/>
+  <br />
   <input type="checkbox" id="set_caption" name="set_caption">
   <label for="set_caption">Move cell text to table caption</label>
-  <br/>
+  <br />
   <input type="checkbox" id="rm_p_tag" name="rm_p_tag">
   <label for="rm_p_tag">Remove paragraph &lt;p> tags inside cells</label>
-  <br/>
+  <br />
   <input type="checkbox" id="rm_strong_tag" name="rm_strong_tag">
   <label for="rm_strong_tag">Remove bolded &lt;strong> tags inside cells</label>
-  <br/>
+  <br />
   <input type="checkbox" id="to_bold" name="to_bold">
   <label for="to_bold">Add <i>osfi-txt--bold</i> class</label>
-  <br/>
+  <br />
   <input type="checkbox" id="to_align_left" name="to_align_left">
   <label for="to_align_left">Add <i>align-left</i> class</label>
-  <br/>
+  <br />
   <input type="checkbox" id="to_align_right" name="to_align_right">
   <label for="to_align_right">Add <i>align-right</i> class</label>
-  <br/>
+  <br />
   <input type="checkbox" id="to_align_bottom" name="to_align_bottom">
   <label for="to_align_bottom">Add <i>align-bottom</i> class</label>
-  <br/>
+  <br />
   <input type="checkbox" id="to_align_center" name="to_align_center">
   <label for="to_align_center">Add <i>align-center</i> class</label>
-  <br/>
+  <br />
   <input type="checkbox" id="to_bg_white" name="to_bg_white">
   <label for="to_bg_white">Add <i>background-white</i> class</label>
-  <br/>
+  <br />
   <input type="checkbox" id="to_bg_light" name="to_bg_light">
   <label for="to_bg_light">Add <i>background-light</i> class</label>
-  <br/>
+  <br />
   <input type="checkbox" id="to_indent_small" name="to_indent_small">
   <label for="to_indent_small">Add <i>indent-small</i> class</label>
-  <br/>
+  <br />
   <input type="checkbox" id="to_indent_medium" name="to_indent_medium">
   <label for="to_indent_medium">Add <i>indent-medium</i> class</label>
-  <br/>
+  <br />
   <input type="checkbox" id="to_indent_large" name="to_indent_large">
   <label for="to_indent_large">Add <i>indent-large</i> class</label>
-  <br/>
+  <br />
   <input type="checkbox" id="insert_thead" name="insert_thead">
   <label for="insert_thead">Set &lt;thead> and &lt;/thead> row index (always uses first and second row index given above, respectively)</label>
-  <br/>
+  <br />
   <input type="checkbox" id="insert_tbody" name="insert_tbody">
   <label for="insert_tbody">Set &lt;tbody> and &lt;/tbody> row index (always uses first and second row index given above, respectively)</label>
-  <br/>
+  <br />
   <input type="checkbox" id="insert_tfoot" name="insert_tfoot">
   <label for="insert_tfoot">Set &lt;tfoot> and &lt;/tfoot> row index (always uses first and second row index given above, respectively)</label>
-  <br/>
+  <br />
   <input type="checkbox" id="set_caption_para" name="set_caption_para">
   <label for="set_caption_para">Move the paragraph preceding a table to the table caption</label>
-  <br/>
+  <br />
   <input type="checkbox" id="set_caption_header" name="set_caption_header">
   <label for="set_caption_header">Move the header preceding a table to the table caption</label>
-  <br/>
-  <br/>
-  <br/>
+  <br />
+  <br />
+  <br />
 </form>
 <button type="button" onclick="format_table()">Format table</button>
-<br/>
-<br/>
+<br />
+<br />
 <p>This tool helps to apply WET formatting on HTML tables across rows or columns.</p>
 <p>It removes indentation, so be sure to apply source formatting with Dreamweaver afterwards to fix it.</p>
 <p>More in-depth information can be found in the <a rel="external" href="https://commwebteam.github.io/gen_dw_format/table_formatter/">readme</a>.</p>
