@@ -10,7 +10,7 @@ This tool aims to use the input regex statements to find footnotes in the docume
 
 # Inputs
 
-This tool assumes all footnotes in the document should be put into a single module. If this is not the case, e.g. if individual tables should have their footnotes in their own modules, then the piece of html with its own footnote module, such as the table, should be separated into its own input document.
+This tool assumes all footnotes in the document should be put into a single module. If this is not the case, e.g. if individual tables should have their footnotes in their own modules, then the piece of html with its own footnote module, such as the table, should be run in its own document.
 
 ## Top and bottom footnotes
 

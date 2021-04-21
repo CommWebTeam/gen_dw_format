@@ -4,15 +4,10 @@ function add_footnotes() {
 	let file_reader = new FileReader();
 	let html_file = document.getElementById("html_file").files[0];
 	file_reader.onload = function(event) {
-		const html_str = event.target.result;
-    const top_regex_str = document.getElementById("top_footnote").value;
-    const bot_regex_str = document.getElementById("bot_footnote").value;
-    const bot_regex_sub = document.getElementById("regex_sub").value;
-    const duplicate_footnotes = document.getElementById("dup_footnotes").value;
-    let edited_str = replace_footnote_str(html_str, top_regex_str, bot_regex_str,
-                                          bot_regex_sub, duplicate_footnotes);
-    edited_str = add_footnote_div(edited_str);
-    edited_str = add_consecutive_commas(edited_str);
+		let html_str = event.target.result;
+    let edited_str = replace_footnote_str(html_str, document.getElementById("init_id").value, document.getElementById("top_footnote").value, document.getElementById("bot_footnote").value, document.getElementById("regex_sub").value, document.getElementById("dup_footnotes").value);
+    edited_str = add_footnote_div(edited_str, document.getElementById("init_id").value);
+    edited_str = add_consecutive_commas(edited_str, document.getElementById("init_id").value);
     if (document.getElementById("lang").value === 'f') {
       edited_str = translate_footnotes(edited_str);
     }
@@ -98,8 +93,7 @@ Generate and format WET footnotes
 */
 
 // searches html for footnote regex statements and replaces them
-function replace_footnote_str(html_str, top_regex_str, bot_regex_str, bot_regex_sub,
-                              duplicate_footnotes) {
+function replace_footnote_str(html_str, init_id, top_regex_str, bot_regex_str, bot_regex_sub, duplicate_footnotes) {
     // find indices of matches
     const top_regex = new RegExp(top_regex_str, "g");
     const top_matches = html_str.match(top_regex);
@@ -131,9 +125,9 @@ function replace_footnote_str(html_str, top_regex_str, bot_regex_str, bot_regex_
           bot_footnote_content = "<p>" + bot_footnote_content + "</p>";
         }
         let bot_footnote = '<dt>Footnote ' + ind + '</dt>\n' +
-          '<dd id="fnb' + ind + '">\n' +
+          '<dd id="' + init_id + ind + '">\n' +
           bot_footnote_content + '\n' +
-          '<p class="footnote-return"><a href="#fnb' + ind + '-ref"><span class="wb-invisible">Return to footnote </span>' + ind + '</a></p>\n' +
+          '<p class="footnote-return"><a href="#' + init_id + ind + '-ref"><span class="wb-invisible">Return to footnote </span>' + ind + '</a></p>\n' +
           '</dd>';
         output_str = output_str.replace(bot_footnote_str, bot_footnote);
     }
@@ -141,31 +135,31 @@ function replace_footnote_str(html_str, top_regex_str, bot_regex_str, bot_regex_
     let footnote_nums_dup = get_footnote_nums(num_footnotes, duplicate_footnotes);
     for (i = 0; i < num_footnotes; i++) {
         let footnote_ind = footnote_nums_dup[i];
-        let top_footnote = '<sup id="fnb' + footnote_ind + '-ref"><a class="footnote-link" href="#fnb' + footnote_ind + '"><span class="wb-invisible">Footnote </span>' + footnote_ind + '</a></sup>';
+        let top_footnote = '<sup id="' + init_id + footnote_ind + '-ref"><a class="footnote-link" href="#' + init_id + footnote_ind + '"><span class="wb-invisible">Footnote </span>' + footnote_ind + '</a></sup>';
         output_str = output_str.replace(top_matches[i], top_footnote);
     }
     return output_str;
 }
 
 // creates WET div around bottom footnotes
-function add_footnote_div(html_str) {
+function add_footnote_div(html_str, init_id) {
   let output_str = html_str.replace(/<div>([\s\n]*)<dt>Footnote 1<\/dt>/,
   `<div class="wet-boew-footnotes" role="note">
   <section>
-    <h3 class="wb-invisible" id="fnb">Footnotes</h3>
+    <h3 class="wb-invisible" id="` + init_id + `">Footnotes</h3>
     <dl>
     <dt>Footnote 1</dt>`);
   output_str = output_str.replace(/<\/dd>([\s\n]*)<\/div>/, `</dd>
     </dl>
   </section>
-</div>`)
+</div>`);
 return output_str;
 }
 
 // adds commas for consecutive top footnotes
-function add_consecutive_commas(html_str) {
-  let output_str = html_str.replaceAll(/Footnote *<\/span>([0-9 ]+)<\/a> *<\/sup> *<sup id="fnb([0-9]+)-ref"> *<a class="footnote-link"/g,
-  'Footnote </span>$1</a>,</sup><sup id="fnb$2-ref"><a class="footnote-link"')
+function add_consecutive_commas(html_str, init_id) {
+  const consecutive_footnote_regex = new RegExp('Footnote *<\/span>([0-9 ]+)<\/a> *<\/sup> *<sup id="' + init_id + '([0-9]+)-ref"> *<a class="footnote-link"', "g");
+  let output_str = html_str.replaceAll(consecutive_footnote_regex, 'Footnote </span>$1</a>,</sup><sup id="' + init_id + '$2-ref"><a class="footnote-link"');
   return output_str;
 }
 
