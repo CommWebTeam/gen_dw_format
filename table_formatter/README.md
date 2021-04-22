@@ -82,7 +82,7 @@ This tool makes some assumptions about the HTML document's formatting when readi
 - each table has at most one caption.
 - the only tags in a table that aren't contained within cells (td or th tags) are tr, caption, thead, tbody, and tfoot tags.
 - there are at most one of each of the thead, tbody, and tfoot tags per table.
-- each cell can only have a scope of "col" or "row", not both.
+- each cell can only have a scope of "col" or "row", not both. (The check that converts a cell to a header overwrites the existing scope attribute.)
 
 ## Adding actions
 

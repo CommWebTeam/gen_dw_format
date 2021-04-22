@@ -356,35 +356,33 @@ function apply_on_cells(table_arr, table_list_type, table_list, row_list_type, r
 	return edited_table_arr;
 }
 
-
-// converts td to th scope col
-function to_header_col(table_arr, row, col) {
+// converts td to th with input scope
+function to_header(table_arr, row, col, scope) {
 	let curr_cell = table_arr.rows[row].cells[col];
 	// replace td with th
 	curr_cell = curr_cell.replace("<td", "<th").replaceAll("</td", "</th");
 	// remove existing scope
-	curr_cell = curr_cell.replace(/(<th[^>]*) *scope *= *['"].*?['"]/g, "$1");
-	// add scope of col or colgroup, depending on whether cell tag has a span
-	if (/(<th[^>]*)colspan *= */.test(curr_cell)) {
-		curr_cell = curr_cell.replace("<th", '<th scope="colgroup"');
+	curr_cell = curr_cell.replace(/(<th[^>]*?) *scope *= *['"].*?['"]/g, "$1");
+	// add scope, using group if cell tag has a span
+	const check_span = new RegExp("(<th[^>]*)" + scope + "span *= *");
+	if (check_span.test(curr_cell)) {
+		curr_cell = curr_cell.replace("<th", '<th scope="' + scope + 'group"');
 	} else {
-		curr_cell = curr_cell.replace("<th", '<th scope="col"');
+		curr_cell = curr_cell.replace("<th", '<th scope="' + scope + '"');
 	}
 	table_arr.rows[row].cells[col] = curr_cell;
 	return table_arr;
 }
 
+
+// converts td to th scope col
+function to_header_col(table_arr, row, col) {
+	return to_header(table_arr, row, col, "col");
+}
+
 // converts td to th scope row
 function to_header_row(table_arr, row, col) {
-	let curr_cell = table_arr.rows[row].cells[col];
-	// replace td with th
-	curr_cell = curr_cell.replace("<td", "<th").replaceAll("</td", "</th");
-	// remove existing scope
-	curr_cell = curr_cell.replace(/(<th[^>]*) *scope *= *['"].*?['"]/g, "$1");
-	// add scope of row
-	curr_cell = curr_cell.replace("<th", '<th scope="row"');
-	table_arr.rows[row].cells[col] = curr_cell;
-	return table_arr;
+	return to_header(table_arr, row, col, "row");
 }
 
 // sets cell value as caption
