@@ -14,19 +14,16 @@
   <br />
   <h3>Tables</h3>
   <label for="table_list_type">Tables to edit:</label>
-  <select name="table_list_type" id="table_list_type">
+  <select name="table_list_type" id="table_list_type" onChange = "toggle_inds('table')">
     <option value="include">Only the listed tables</option>
     <option value="exclude">All tables except those listed</option>
     <option value="all">All tables</option>
   </select>
-  <br />
-  <br />
-  If <i>"Only the listed tables"</i> or <i>"All tables except those listed"</i> was selected - <br />
+  <div id="table_inds">
   List of comma-separated indices for table locations (where the first table is denoted by 0): <br />
   e.g. 0,2,5 (indicating the 1st, 3rd, and 6th tables)<br />
   <input id="table_list" type="text" value="0" />
-  <br />
-  <br />
+  </div>
   <br />
   <h3>Dimensions</h3>
   <h4>Rows</h4>
