@@ -3,7 +3,19 @@ const table_placeholder = "<TABLEPLACEHOLDER/>";
 const at_placeholder = "<ATPLACEHOLDER>";
 const caption_placeholder = "<CAPTIONPLACEHOLDER>";
 
-// edit html tables
+// show row/column index inputs if not all rows/columns are selected
+function toggle_inds(dim) {
+	let set_inds = document.getElementById(dim + "_list_type").value !== "all";
+	let ind_inputs = document.getElementById(dim + "_inds");
+	if (set_inds) {
+		ind_inputs.style.display = "block";
+	}
+	else {
+		ind_inputs.style.display = "none";
+	}
+}
+
+// run the form to edit html tables
 function format_table() {
 	let file_reader_content = new FileReader();
 	let content_str = document.getElementById("html_file").files[0];

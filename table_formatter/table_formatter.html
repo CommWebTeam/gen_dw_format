@@ -12,9 +12,7 @@
   <br />
   <br />
   <br />
-  <strong>Tables</strong>
-  <br />
-  <br />
+  <h3>Tables</h3>
   <label for="table_list_type">Tables to edit:</label>
   <select name="table_list_type" id="table_list_type">
     <option value="include">Only the listed tables</option>
@@ -30,18 +28,15 @@
   <br />
   <br />
   <br />
-  <strong>Rows</strong>
-  <br />
-  <br />
+  <h3>Dimensions</h3>
+  <h4>Rows</h4>
   <label for="row_list_type">Rows to perform actions on (only within the columns specified below):</label>
-  <select name="row_list_type" id="row_list_type">
+  <select name="row_list_type" id="row_list_type" onChange = "toggle_inds('row')">
     <option value="include">Only the listed rows</option>
     <option value="exclude">All rows except those listed</option>
     <option value="all">All rows</option>
   </select>
-  <br />
-  <br />
-  If <i>"Only the listed rows"</i> or <i>"All rows except those listed"</i> was selected - <br />
+  <div id="row_inds">
   List of comma-separated indices for rows (beginning at 0): <br />
   e.g. 0,1,2 (indicating first three rows) <br />
   <input id="row_list" type="text" value="0" />
@@ -52,21 +47,17 @@
     <option value="forward">Top to bottom - first row is at index 0</option>
     <option value="backward">Bottom to top - last row is at index 0</option>
   </select>
+  </div>
   <br />
   <br />
-  <br />
-  <strong>Columns</strong>
-  <br />
-  <br />
+  <h4>Columns</h4>
   <label for="col_list_type">Columns to perform actions on (only within the rows specified above):</label>
-  <select name="col_list_type" id="col_list_type">
+  <select name="col_list_type" id="col_list_type" onChange = "toggle_inds('col')">
     <option value="include">Only the listed columns</option>
     <option value="exclude">All columns except those listed</option>
     <option value="all">All columns</option>
   </select>
-  <br />
-  <br />
-  If <i>"Only the listed columns"</i> or <i>"All columns except those listed"</i> was selected - <br />
+  <div id="col_inds">
   List of comma-separated indices for columns (beginning at 0): <br />
   e.g. 0,1,2 (indicating first three columns) <br />
   <input id="col_list" type="text" value="0" />
@@ -77,10 +68,10 @@
     <option value="forward">Top to bottom - first column is at index 0</option>
     <option value="backward">Bottom to top - last column is at index 0</option>
   </select>
+  </div>
   <br />
   <br />
-  <br />
-  <strong>Action(s) to perform on selected cells:</strong>
+  <h3>Action(s) to perform on selected cells</h3>
   <br />
   <input type="checkbox" id="to_header_col" name="to_header_col">
   <label for="to_header_col">Convert cells to a header &lt;th> col scope tag</label>
