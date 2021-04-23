@@ -60,10 +60,14 @@ The current formatting checks are as follows (the user can select which to apply
         - checked by default
 
 - Join consecutive tags of the same type:
-    - joins consecutive em tags and consecutive strong tags (with only spaces between them) into a single tag.
+    - joins consecutive em tags and consecutive strong tags, with only spaces/newlines between them, into a single tag.
         - Example 1: replaces the string "&lt;em>italics 1&lt;/em> &lt;em>italics 2&lt;/em>" with "&lt;em>italics 1 italics 2&lt;/em>".
         - Example 2: replaces the string "&lt;strong>bold 1&lt;/strong>&lt;strong>bold 2&lt;/strong>" with "&lt;strong>bold 1bold 2&lt;/strong>".
         - checked by default
+    - joins consecutive em tags and consecutive strong tags, with only non-alphanumeric characters between them, into a single tag.
+        - implements the examples from the above check
+        - Example 3: replaces the string "&lt;em>italics 1&lt;/em>, &lt;em>italics 2&lt;/em>" with "&lt;em>italics 1, italics 2&lt;/em>".
+        - not checked by default
     - joins consecutive ul tags into a single list.
         - Example: replaces
     *&lt;ul test="x">

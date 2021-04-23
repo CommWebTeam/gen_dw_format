@@ -72,6 +72,10 @@ function format_file() {
 		if (document.getElementById("consecutive_em").checked) {
 			html_doc_str = join_em_strong(html_doc_str);
 		}
+		// join consecutive em/strong over punctuation
+		if (document.getElementById("consecutive_em_punct").checked) {
+			html_doc_str = join_em_strong_punct(html_doc_str);
+		}
 		// join consecutive ul
 		if (document.getElementById("consecutive_ul").checked) {
 			html_doc_str = join_ul(html_doc_str);
@@ -307,8 +311,15 @@ function replace_dashes(html_str) {
 
 // join consecutive fonts
 function join_em_strong(html_str) {
-	let edited_html_str = html_str.replaceAll(/<\/em>( *)<em>/g, "$1");
-	edited_html_str = edited_html_str.replaceAll(/<\/strong>( *)<strong>/g, "$1");
+	let edited_html_str = html_str.replaceAll(/<\/em>(( |\n)*)<em>/g, "$1");
+	edited_html_str = edited_html_str.replaceAll(/<\/strong>(( |\n)*)<strong>/g, "$1");
+	return edited_html_str;
+}
+
+// join consecutive fonts over punctuation
+function join_em_strong_punct(html_str) {
+	let edited_html_str = html_str.replaceAll(/<\/em>(([^a-zA-Z0-9]|\n)*)<em>/g, "$1");
+	edited_html_str = edited_html_str.replaceAll(/<\/strong>(([^a-zA-Z0-9]|\n)*)<strong>/g, "$1");
 	return edited_html_str;
 }
 
