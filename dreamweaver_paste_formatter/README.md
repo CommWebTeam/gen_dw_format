@@ -38,6 +38,9 @@ The current formatting checks are as follows (the user can select which to apply
     - removes empty attribute-less tags, and replaces all attribute-less tags that consist solely of spaces or nbsp; with a single regular space. This excludes br and td tags.
         Example: the string "&lt;a> &lt;/a>" has its empty tag removed, so it is replaced with a single space " ".
         - checked by default
+    - removes extra spaces after opening p, li, th, td, and header (h1, h2 etc.) tags for neatness.
+        - Example: the string "&lt;li> list item 1&lt;/li>" is replaced with "&lt;li>list item 1&lt;/li>".
+        - checked by default
     - removes extra spaces before closing p, li, th, td, and header (h1, h2 etc.) tags for neatness.
         - Example: the string "&lt;li>list item 1 &lt;/li>" is replaced with "&lt;li>list item 1&lt;/li>".
         - checked by default

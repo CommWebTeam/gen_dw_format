@@ -44,6 +44,10 @@ function format_file() {
 		if (document.getElementById("empty_tag").checked) {
 			html_doc_str = rm_empty_tags(html_doc_str);
 		}
+		// remove spaces after opening p, li, th, td, header tags
+		if (document.getElementById("space_after_open").checked) {
+			html_doc_str = rm_space_after_open(html_doc_str);
+		}
 		// remove spaces before closing p, li, th, td, header tags
 		if (document.getElementById("space_before_close").checked) {
 			html_doc_str = rm_space_before_close(html_doc_str);
@@ -242,6 +246,16 @@ function rm_empty_tags(html_str) {
 		edited_html_str = edited_html_str.replaceAll(space_tag_regex, " ");
 	}
 	return edited_html_str.replaceAll("<br///>", "<br>").replaceAll("<td///>", "<td>");
+}
+
+// remove spaces after opening p, li, th, td, header tags
+function rm_space_after_open(html_str) {
+	let edited_html_str = html_str.replaceAll(/<p( [^>]*)*> */g, "<p$1>");
+	edited_html_str = edited_html_str.replaceAll(/<li( [^>]*)*> */g, "<li$1>");
+	edited_html_str = edited_html_str.replaceAll(/<th( [^>]*)*> */g, "<th$1>");
+	edited_html_str = edited_html_str.replaceAll(/<td( [^>]*)*> */g, "<td$1>");
+	edited_html_str = edited_html_str.replaceAll(/<h([0-9]+)( [^>]*)*> */g, "<h$1$2>");
+	return edited_html_str;
 }
 
 // remove spaces before closing p, li, th, td, header tags
