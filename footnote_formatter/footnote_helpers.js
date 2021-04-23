@@ -1,10 +1,48 @@
-// get uploaded file, find indices with footnote, change their values, and download
+// set top footnote regex value
+function set_top_footnote_regex() {
+  document.getElementById("top_warning").innerHTML = "";
+	let footnote_format = document.getElementById("top_footnote_format").value;
+  if (footnote_format === "en_wet") {
+    document.getElementById("top_footnote").value = '<sup id="fnb[0-9]+-ref"> *<a class="footnote-link" href="#fnb[0-9]+"> *<span class="wb-invisible">Footnote </span>[0-9]+</a>,*</sup>';
+  }
+  else if (footnote_format === "fr_wet") {
+    document.getElementById("top_footnote").value = '<sup id="fnb[0-9]+-ref"> *<a class="footnote-link" href="#fnb[0-9]+"> *<span class="wb-invisible">Note de bas de page </span>[0-9]+</a>,*</sup>';
+  }
+  else if (footnote_format === "dw") {
+    document.getElementById("top_footnote").value = '<a href="#_ftn[0-9]+" name="_ftnref[0-9]+" title="">(.*?)</a>';
+  }
+  else if (footnote_format === "oca") {
+    document.getElementById("top_footnote").value = '\\([0-9]+\\)';
+    document.getElementById("top_warning").innerHTML = "Please double-check for false positives.";
+  }
+}
+
+// set bottom footnote regex value
+function set_bot_footnote_regex() {
+  document.getElementById("bot_warning").innerHTML = "";
+	let footnote_format = document.getElementById("bot_footnote_format").value;
+  if (footnote_format === "en_wet") {
+    document.getElementById("bot_footnote").value = '<dt>Footnote [0-9]+</dt>(?: |\n)*<dd id="fnb[0-9]+">(?: |\n)*((.|\n)*?)<p class="footnote-return"> *<a href="#fnb[0-9]+-ref"> *<span class="wb-invisible"> *Return to footnote *</span>[0-9]+(<span class="wb-invisible"> *referrer *</span>)*</a> *</p>( |\n)*</dd>';
+    document.getElementById("regex_sub").value = 1;
+  }
+  else if (footnote_format === "fr_wet") {
+    document.getElementById("bot_footnote").value = '<dt>Note de bas de page [0-9]+</dt>(?: |\n)*<dd id="fnb[0-9]+">(?: |\n)*((.|\n)*?)<p class="footnote-return"> *<a href="#fnb[0-9]+-ref"> *<span class="wb-invisible"> *Retour à la référence de la note de bas de page *</span>[0-9]+(<span class="wb-invisible"> *referrer *</span>)*</a> *</p>( |\n)*</dd>';
+    document.getElementById("regex_sub").value = 1;
+  }
+  else if (footnote_format === "dw") {
+    document.getElementById("bot_footnote").value = '<div id="ftn[0-9]+">(?:.|\n)*?<a href="#_ftnref[0-9]+" name="_ftn[0-9]+" title=""> *</a>((.|\n)*?)((<[^>]*>)|\ |\n)*</div>';
+    document.getElementById("regex_sub").value = 1;
+    document.getElementById("bot_warning").innerHTML = "Minor formatting errors may be introduced if the Dreamweaver paste is malformed enough.";
+  }
+}
+
+// get uploaded file, find footnotes, change their values, and download
 function add_footnotes() {
 	// read in uploaded file as string
 	let file_reader = new FileReader();
 	let html_file = document.getElementById("html_file").files[0];
 	file_reader.onload = function(event) {
-		let html_str = event.target.result;
+		let html_str = event.target.result.replaceAll("\r\n", "\n");
     let edited_str = replace_footnote_str(html_str, document.getElementById("init_id").value, document.getElementById("top_footnote").value, document.getElementById("bot_footnote").value, document.getElementById("regex_sub").value, document.getElementById("dup_footnotes").value);
     edited_str = add_footnote_div(edited_str, document.getElementById("init_id").value);
     edited_str = add_consecutive_commas(edited_str, document.getElementById("init_id").value);
@@ -139,13 +177,13 @@ function replace_footnote_str(html_str, init_id, top_regex_str, bot_regex_str, b
 
 // creates WET div around bottom footnotes
 function add_footnote_div(html_str, init_id) {
-  let output_str = html_str.replace(/<div>([\s\n]*)<dt>Footnote 1<\/dt>/,
+  let output_str = html_str.replace(/<div>([ \n]*)<dt>Footnote 1<\/dt>/,
   `<div class="wet-boew-footnotes" role="note">
   <section>
     <h3 class="wb-invisible" id="` + init_id + `">Footnotes</h3>
     <dl>
     <dt>Footnote 1</dt>`);
-  output_str = output_str.replace(/<\/dd>([\s\n]*)<\/div>/, `</dd>
+  output_str = output_str.replace(/<\/dd>([ \n]*)<\/div>/, `</dd>
     </dl>
   </section>
 </div>`);

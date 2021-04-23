@@ -18,8 +18,18 @@
   Regex for top footnote locations: <br />
   <textarea id="top_footnote" rows="10" cols="100">&lt;sup id="fnb[0-9]+-ref"&gt; *&lt;a class="footnote-link" href="#fnb[0-9]+"&gt; *&lt;span class="wb-invisible"&gt;Footnote &lt;/span&gt;[0-9]+&lt;/a&gt;,*&lt;/sup&gt;</textarea>
   <br />
-  <a href="top_footnote_formats.txt">Common top footnote formats</a><br /><br />
-  Regex for bottom footnote text: <br />
+  <label for="top_footnote_format">Top footnote formatting:</label>
+  <select name="top_footnote_format" id="top_footnote_format" onchange = "set_top_footnote_regex()">
+    <option value="en_wet">English WET footnotes</option>
+    <option value="fr_wet">French WET footnotes</option>
+    <option value="dw">Dreamweaver-generated footnotes</option>
+    <option value="oca">OCA table footnotes</option>
+    <option value="custom">custom</option>
+  </select>
+  <br />
+  <div id="top_warning"> </div>
+  <br />
+  <br />
   <textarea id="bot_footnote" rows="10" cols="100">&lt;dt&gt;Footnote [0-9]+&lt;/dt&gt;\s*
 \s*&lt;dd id="fnb[0-9]+"&gt;\s*
 \s*([\s\S]*?)&lt;p class="footnote-return"&gt; *&lt;a href="#fnb[0-9]+-ref"&gt; *&lt;span class="wb-invisible"&gt;Return to footnote &lt;/span&gt;[0-9]+&lt;/a&gt;&lt;/p&gt;\s*
@@ -28,7 +38,17 @@
   Group containing content:<br />
   <input id="regex_sub" type="number" value="1"/>
   <br />
-  <a href="bottom_footnote_formats.txt">Common bottom footnote formats</a><br /><br />
+  <label for="bot_footnote_format">Bottom footnote formatting:</label>
+  <select name="bot_footnote_format" id="bot_footnote_format" onchange = "set_bot_footnote_regex()">
+    <option value="en_wet">English WET footnotes</option>
+    <option value="fr_wet">French WET footnotes</option>
+    <option value="dw">Dreamweaver-generated footnotes</option>
+    <option value="custom">custom</option>
+  </select>
+  <br />
+  <div id="bot_warning"> </div>
+  <br />
+  <br />
   Duplicate top footnotes (not heavily tested) - format as so (make sure they're in order of appearance from the top):<br />
   index,value;index,value;...<br />
   where the index is of the duplicate footnote location's position from the top, and the value is whichever bottom footnote it should point to instead.<br />

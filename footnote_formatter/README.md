@@ -16,9 +16,9 @@ This tool assumes all footnotes in the document should be put into a single modu
 
 **Top footnotes** refers to the footnote markers in the main body of the text. **Bottom footnotes** refers to the module containing the text for the footnotes which we put at the end of the document.
 
-The default regex statements for these inputs are to find existing WET footnotes, which is useful for renumbering the footnotes in a cleaned document after any footnotes are added or removed.
+The default regex statements for these inputs are to find existing English WET footnotes, which is useful for renumbering the footnotes in a cleaned document after any footnotes are added or removed.
 
-Here are some regex statements for [top footnote formats](top_footnote_formats.txt) and [bottom footnote formats](bottom_footnote_formats.txt). Make sure not to accidentally copy surrounding spacing or newlines when using these regex statements. These include the regex statements to find Dreamweaver-formatted footnotes to format a Dreamweaver paste's footnotes from scratch. 
+I have included the option to set these regex statements to some common footnote formats, including English/French WET footnotes and Dreamweaver-generated footnotes.
 
 The "group containing content" input for the bottom footnote regex is to indicate which group - subexpression in () - contains the footnote text; the tool will access this with $ to create the bottom module. All formats in the link above use group 1 (meaning the footnote text is accessed with $1).
 
