@@ -105,27 +105,6 @@ with
         - checked by default
         - this should be unchecked if the input document is already WET formatted, as the ol lists may have been purposefully split up due to differing numbering systems (e.g. if the first ol list is lower-alpha while the second is lower-roman).
 
-- Replace em/strong with other tags for italics/bold. These checks take precedence in the given order. For example, if both "change em tags to cite tags on lines that have links" and "change all em tags to i tags" are checked, then the first check will take precedence. So on lines that have links, em tags will be changed to cite tags, and on other lines without links, em tags will be changed to i tags.
-    - changes em tags to cite tags on lines that have links. If a line contains the "a" tag, then all em tags on the same line are changed to cite tags.
-        - Example 1: the line "&lt;p>&lt;a>link&lt;/a>&lt;em>cite&lt;/em>&lt;/p>" is changed to "&lt;p>&lt;a>link&lt;/a>&lt;cite>cite&lt;/cite>&lt;/p>".
-        - Example 2: the line "&lt;p>&lt;em>non-cite&lt;/em>&lt;/p>" is left unchanged.
-        - checked by default
-    - changes all em tags to cite tags.
-        - Example: replaces the string "&lt;em>italics&lt;/em>" with "&lt;cite>italics&lt;/cite>".
-        - not checked by default
-    - changes all em tags to span class="osfi-txt--italic" tags. (The above two checks take precedence.)
-        - Example: replaces the string "&lt;em>italics&lt;/em>" with "&lt;span class="osfi-txt--italic">italics&lt;/span>".
-        - not checked by default
-    - changes all em tags to i tags. (The above three checks take precedence.)
-        - Example: replaces the string "&lt;em>italics&lt;/em>" with "&lt;i>italics&lt;/i>".
-        - not checked by default
-    - changes all strong tags to span class="osfi-txt--bold" tags.
-        - Example: replaces the string "&lt;strong>bold&lt;/strong>" with "&lt;span class="osfi-txt--bold">bold&lt;/span>".
-        - not checked by default
-    - changes all strong tags to b tags. (The above check takes precedence.)
-        - Example: replaces the string "&lt;strong>bold&lt;/strong>" with "&lt;b>bold&lt;/b>".
-        - not checked by default
-
 - Replace/remove/format &lt;br> tags:
     - splits up blocks of text that are separated from each other by br within a single &lt;p> tag, by moving each block into its own &lt;p> tag.
         - Example: replaces
@@ -154,6 +133,38 @@ with
     - changes all &lt;br> to &lt;br />.
         - checked by default
 
+- Fix formatting around the period (.), comma (,), colon (:), and semicolon (;) punctuation symbols:
+    - removes em and strong that consist only of spaces/newlines and . , : ;.
+        - Example: replaces the string "&lt;em>, &lt;/em>" with ", ".
+        - checked by default
+    - replaces common spacing and duplication misformatting for punctuation:
+        - " ." and ".." with "."
+        - " ," and ",," with ","
+        - " ;" and ";;" with ";"
+        - ": :" and "::" with ":"
+        - checked by default
+
+- Replace em/strong with other tags for italics/bold. These checks take precedence in the given order. For example, if both "change em tags to cite tags on lines that have links" and "change all em tags to i tags" are checked, then the first check will take precedence. So on lines that have links, em tags will be changed to cite tags, and on other lines without links, em tags will be changed to i tags.
+    - changes em tags to cite tags on lines that have links. If a line contains the "a" tag, then all em tags on the same line are changed to cite tags.
+        - Example 1: the line "&lt;p>&lt;a>link&lt;/a>&lt;em>cite&lt;/em>&lt;/p>" is changed to "&lt;p>&lt;a>link&lt;/a>&lt;cite>cite&lt;/cite>&lt;/p>".
+        - Example 2: the line "&lt;p>&lt;em>non-cite&lt;/em>&lt;/p>" is left unchanged.
+        - checked by default
+    - changes all em tags to cite tags.
+        - Example: replaces the string "&lt;em>italics&lt;/em>" with "&lt;cite>italics&lt;/cite>".
+        - not checked by default
+    - changes all em tags to span class="osfi-txt--italic" tags. (The above two checks take precedence.)
+        - Example: replaces the string "&lt;em>italics&lt;/em>" with "&lt;span class="osfi-txt--italic">italics&lt;/span>".
+        - not checked by default
+    - changes all em tags to i tags. (The above three checks take precedence.)
+        - Example: replaces the string "&lt;em>italics&lt;/em>" with "&lt;i>italics&lt;/i>".
+        - not checked by default
+    - changes all strong tags to span class="osfi-txt--bold" tags.
+        - Example: replaces the string "&lt;strong>bold&lt;/strong>" with "&lt;span class="osfi-txt--bold">bold&lt;/span>".
+        - not checked by default
+    - changes all strong tags to b tags. (The above check takes precedence.)
+        - Example: replaces the string "&lt;strong>bold&lt;/strong>" with "&lt;b>bold&lt;/b>".
+        - not checked by default
+
 - Add/fix/remove tag attributes:
     - replaces Dreamweaver-generated center and right alignment (looks like align="center" or align="right") with their respective WET classes.
         - Example: replaces the string "&lt;li align="center">center align&lt;/li>" with "&lt;li class="align-center">center align&lt;/li>".
@@ -177,14 +188,6 @@ with
         - Example 2: replaces the string "&lt;td width="97" rowspan="1" colspan = "1">table 1,2&lt;/td>" with "&lt;td rowspan="1" colspan = "1">table 1,2&lt;/td>".
         - checked by default
         - this should be unchecked if the input document is already WET formatted, as the attributes may have been manually inserted.
-
-- Fix spacing issues surrounding punctuation:
-    - replaces common punctuation/spacing misformattings:
-        - " ." and ".." with "."
-        - " ," and ",," with ","
-        - " ;" and ";;" with ";"
-        - ": :" and "::" with ":"
-        - checked by default
 
 - Translate structure for French documents:
     - translates internal links to French by searching for /Eng/ and replacing with /Fra/, and translates the English WET footnote structure created by the earlier footnote check to French.

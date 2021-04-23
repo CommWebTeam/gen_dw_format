@@ -4,10 +4,16 @@ function format_file() {
 	let content_str = document.getElementById("html_file").files[0];
 	file_reader_content.onload = function(event) {
 		let html_doc_str = event.target.result.replaceAll("\r\n", "\n");
+		/*
+		Footnote format
+		*/
 		// fix footnotes
 		if (document.getElementById("footnotes").checked) {
 			html_doc_str = fix_footnotes(html_doc_str);
 		}
+		/*
+		Remove dw links
+		*/
 		// remove empty links
 		if (document.getElementById("dw_empty_a").checked) {
 			html_doc_str = rm_empty_links(html_doc_str);
@@ -28,6 +34,9 @@ function format_file() {
 		if (document.getElementById("logiterms").checked) {
 			html_doc_str = rm_logiterms(html_doc_str);
 		}
+		/*
+		Fix spacing
+		*/
 		// make space hexcode consistent
 		if (document.getElementById("space_format").checked) {
 			html_doc_str = replace_invisible_nbsp(html_doc_str);
@@ -52,6 +61,9 @@ function format_file() {
 		if (document.getElementById("space_before_close").checked) {
 			html_doc_str = rm_space_before_close(html_doc_str);
 		}
+		/*
+		Fix Word values
+		*/
 		// replace quote entities
 		if (document.getElementById("quote_values").checked) {
 			html_doc_str = replace_quote_entities(html_doc_str);
@@ -72,6 +84,9 @@ function format_file() {
 		if (document.getElementById("emdash").checked) {
 			html_doc_str = replace_dashes(html_doc_str);
 		}
+		/*
+		Join consecutive tags
+		*/
 		// join consecutive em/strong
 		if (document.getElementById("consecutive_em").checked) {
 			html_doc_str = join_em_strong(html_doc_str);
@@ -88,6 +103,39 @@ function format_file() {
 		if (document.getElementById("consecutive_ol").checked) {
 			html_doc_str = join_ol(html_doc_str);
 		}
+		/*
+		Remove/fix br
+		*/
+		// split single p separated by br into multiple p
+		if (document.getElementById("split_p_br").checked) {
+			html_doc_str = split_p_by_br(html_doc_str);
+		}
+		// split single p separated by br into multiple p, if character before br is punctuation
+		if (document.getElementById("split_p_br_punct").checked) {
+			html_doc_str = split_p_by_punct_br(html_doc_str);
+		}
+		// remove start or end br for p, li, th, td
+		if (document.getElementById("rm_empty_br").checked) {
+			html_doc_str = rm_empty_br(html_doc_str);
+		}
+		// change <br> to <br />
+		if (document.getElementById("fix_br").checked) {
+			html_doc_str = fix_br(html_doc_str);
+		}
+		/*
+		Fix punctuation
+		*/
+		// remove foramtting around . , : ;
+		if (document.getElementById("rm_punct_format").checked) {
+			html_doc_str = rm_punctuation_format(html_doc_str);
+		}
+		// fix spacing/duplicates for . , : ;
+		if (document.getElementById("fix_punct").checked) {
+			html_doc_str = fix_punctuation(html_doc_str);
+		}
+		/*
+		Set italic/bold
+		*/
 		// change italics to cite if the line has a link
 		if (document.getElementById("cite_link").checked) {
 			html_doc_str = change_link_em_to_cite(html_doc_str);
@@ -112,22 +160,9 @@ function format_file() {
 		if (document.getElementById("default_b").checked) {
 			html_doc_str = default_tag(html_doc_str, "strong", "b");
 		}
-		// split single p separated by br into multiple p
-		if (document.getElementById("split_p_br").checked) {
-			html_doc_str = split_p_by_br(html_doc_str);
-		}
-		// split single p separated by br into multiple p, if character before br is punctuation
-		if (document.getElementById("split_p_br_punct").checked) {
-			html_doc_str = split_p_by_punct_br(html_doc_str);
-		}
-		// remove start or end br for p, li, th, td
-		if (document.getElementById("rm_empty_br").checked) {
-			html_doc_str = rm_empty_br(html_doc_str);
-		}
-		// change <br> to <br />
-		if (document.getElementById("fix_br").checked) {
-			html_doc_str = fix_br(html_doc_str);
-		}
+		/*
+		Remove/fix tag attributes
+		*/
 		// fix align-center and align-right
 		if (document.getElementById("align").checked) {
 			html_doc_str = fix_align(html_doc_str);
@@ -144,14 +179,13 @@ function format_file() {
 		if (document.getElementById("ol_ul_tag").checked) {
 			html_doc_str = rm_ol_ul_attributes(html_doc_str, "p");
 		}
-		// fix punctuation
-		if (document.getElementById("fix_punct").checked) {
-			html_doc_str = fix_punctuation(html_doc_str);
-		}
 		// remove attributes from table tags
 		if (document.getElementById("table_tag").checked) {
 			html_doc_str = rm_table_attributes(html_doc_str, "table");
 		}
+		/*
+		Translate to French
+		*/
 		// translate links and footnotes to French
 		if (document.getElementById("translate").checked) {
 			html_doc_str = translate_to_fr(html_doc_str);
@@ -164,6 +198,9 @@ function format_file() {
 		if (document.getElementById("nbsp_pct").checked) {
 			html_doc_str = format_fr_space(html_doc_str);
 		}
+		/*
+		Fix fake tags
+		*/
 		// fix script tags
 		if (document.getElementById("fake_script_tag").checked) {
 			html_doc_str = fix_fake_scripts(html_doc_str);
@@ -178,8 +215,11 @@ function format_file() {
 }
 
 /* helpers */
-
 // I sometimes split regex statements up into multiple calls for clarity, but a lot of these checks can be done in one or two regex statements.
+
+/*
+Footnote format
+*/
 
 // fix footnotes using functions from footnote_helpers.js
 function fix_footnotes(html_str) {
@@ -192,6 +232,10 @@ function fix_footnotes(html_str) {
 	edited_html_str = add_consecutive_commas(edited_html_str, "fnb");
 	return edited_html_str;
 }
+
+/*
+Remove dw links
+*/
 
 // remove empty links
 function rm_empty_links(html_str) {
@@ -217,6 +261,10 @@ function rm_bookmark_links(html_str) {
 function rm_logiterms(html_str) {
 	return html_str.replaceAll(/<a name="lt_[a-zA-z0-9]+">(.*?)<\/a>/g, "$1");
 }
+
+/*
+Fix spacing
+*/
 
 // replace invisible nbsp
 function replace_invisible_nbsp(html_line) {
@@ -268,6 +316,10 @@ function rm_space_before_close(html_str) {
 	return edited_html_str;
 }
 
+/*
+Fix Word values
+*/
+
 // replace straight quote entities
 function replace_quote_entities(html_str) {
 	let edited_html_str = html_str.replaceAll("&apos;", "'");
@@ -317,6 +369,10 @@ function replace_dashes(html_str) {
 	return html_str.replaceAll("–", "-");
 }
 
+/*
+Join consecutive tags
+*/
+
 // join consecutive fonts
 function join_em_strong(html_str) {
 	let edited_html_str = html_str.replaceAll(/<\/em><em>/g, "");
@@ -344,35 +400,9 @@ function join_ol(html_str) {
 	return html_str.replaceAll(/<\/ol>( |\n)*<ol[^>]*>/g, "");
 }
 
-// helper: change italics to citations if there is a link on the line
-function change_link_em_to_cite_helper(html_line) {
-	let edited_html_line = html_line;
-	if (edited_html_line.includes("<a ") || edited_html_line.includes("<a>")) {
-        edited_html_line = edited_html_line.replaceAll("<em>", "<cite>").replaceAll("<em ", "<cite ");
-        edited_html_line = edited_html_line.replaceAll("</em>", "</cite>");
-    }
-	return edited_html_line;
-}
-
-// change italics to citations on each line if there is a link on that line
-function change_link_em_to_cite(html_str) {
-	let html_arr = html_str.split("\n");
-	html_arr = html_arr.map(change_link_em_to_cite_helper);
-	return html_arr.join("\n");
-}
-
-// change instances of one tag to another - old_tag and new_tag can have attributes
-function default_tag(html_str, old_tag, new_tag) {
-	let old_tag_open = "<" + old_tag + ">";
-	let new_tag_open = "<" + new_tag + ">";
-	// remove attributes from old and new tags for closing tag
-	let old_tag_close = old_tag.trim().replace(/^([a-zA-Z0-9]+).*/g, "</$1>");
-	let new_tag_close = new_tag.trim().replace(/^([a-zA-Z0-9]+).*/g, "</$1>");
-	// replace tags
-	let edited_html_str = html_str.replaceAll(old_tag_open, new_tag_open);
-	edited_html_str = edited_html_str.replaceAll(old_tag_close, new_tag_close);
-	return edited_html_str;
-}
+/*
+Remove/fix br
+*/
 
 // splits a p tag divided by br into individual p tags
 function split_p_by_br(html_str) {
@@ -418,6 +448,68 @@ function rm_empty_br(html_str) {
 function fix_br(html_str) {
 	return html_str.replaceAll("<br>", "<br />").replaceAll("<br/>", "<br />");
 }
+
+/*
+Fix punctuation
+*/
+
+// remove em/strong with only punctuation
+function rm_punctuation_format(html_str) {
+	let edited_html_str = html_str.replaceAll(/<em>([.,:; ]*)<\/em>/g, "$1");
+	edited_html_str = edited_html_str.replaceAll(/<strong>([.,:; ]*)<\/strong>/g, "$1");
+	return edited_html_str;
+}
+
+// fix common punctuation/spacing mistakes
+function fix_punctuation(html_str) {
+	let edited_html_str = html_str.replaceAll(/ +\./g, ".");
+	edited_html_str = edited_html_str.replaceAll(/ +,/g, ",");
+	edited_html_str = edited_html_str.replaceAll(/ +;/g, ";");
+	edited_html_str = edited_html_str.replaceAll(/\.\.+/g, ".");
+	edited_html_str = edited_html_str.replaceAll(/,,+/g, ",");
+	edited_html_str = edited_html_str.replaceAll(/;;+/g, ";");
+	edited_html_str = edited_html_str.replaceAll(/: *:/g, ":");
+	edited_html_str = edited_html_str.replaceAll(/::+/g, ":");
+	return edited_html_str;
+}
+
+/*
+Set italic/bold
+*/
+
+// helper: change italics to citations if there is a link on the line
+function change_link_em_to_cite_helper(html_line) {
+	let edited_html_line = html_line;
+	if (edited_html_line.includes("<a ") || edited_html_line.includes("<a>")) {
+        edited_html_line = edited_html_line.replaceAll("<em>", "<cite>").replaceAll("<em ", "<cite ");
+        edited_html_line = edited_html_line.replaceAll("</em>", "</cite>");
+    }
+	return edited_html_line;
+}
+
+// change italics to citations on each line if there is a link on that line
+function change_link_em_to_cite(html_str) {
+	let html_arr = html_str.split("\n");
+	html_arr = html_arr.map(change_link_em_to_cite_helper);
+	return html_arr.join("\n");
+}
+
+// change instances of one tag to another - old_tag and new_tag can have attributes
+function default_tag(html_str, old_tag, new_tag) {
+	let old_tag_open = "<" + old_tag + ">";
+	let new_tag_open = "<" + new_tag + ">";
+	// remove attributes from old and new tags for closing tag
+	let old_tag_close = old_tag.trim().replace(/^([a-zA-Z0-9]+).*/g, "</$1>");
+	let new_tag_close = new_tag.trim().replace(/^([a-zA-Z0-9]+).*/g, "</$1>");
+	// replace tags
+	let edited_html_str = html_str.replaceAll(old_tag_open, new_tag_open);
+	edited_html_str = edited_html_str.replaceAll(old_tag_close, new_tag_close);
+	return edited_html_str;
+}
+
+/*
+Remove/fix tag attributes
+*/
 
 // fix alignment classes
 function fix_align(html_str) {
@@ -467,19 +559,6 @@ function rm_ol_ul_attributes(html_str) {
 	return html_str.replaceAll(/<ol [^>]*>/g,  "<ol>").replaceAll(/<ul [^>]*>/g,  "<ul>");
 }
 
-// fix common punctuation/spacing mistakes
-function fix_punctuation(html_str) {
-	let edited_html_str = html_str.replaceAll(/ +\./g, ".");
-	edited_html_str = edited_html_str.replaceAll(/ +,/g, ",");
-	edited_html_str = edited_html_str.replaceAll(/ +;/g, ";");
-	edited_html_str = edited_html_str.replaceAll(/\.\.+/g, ".");
-	edited_html_str = edited_html_str.replaceAll(/,,+/g, ",");
-	edited_html_str = edited_html_str.replaceAll(/;;+/g, ";");
-	edited_html_str = edited_html_str.replaceAll(/: *:/g, ":");
-	edited_html_str = edited_html_str.replaceAll(/::+/g, ":");
-	return edited_html_str;
-}
-
 // remove attributes from table tags
 function rm_table_attributes(html_str) {
 	// remove attributes from table, th, and tr tags 
@@ -495,6 +574,10 @@ function rm_table_attributes(html_str) {
 	edited_html_str = edited_html_str.replaceAll(/COLSPAN([ 0-9]+)<td/g,  '<td colspan="$1"');
 	return edited_html_str;
 }
+
+/*
+Translate to French
+*/
 
 // translate internal links and footnotes to French
 function translate_to_fr(html_str) {
@@ -519,6 +602,10 @@ function format_fr_space(html_str) {
 	edited_html_str = edited_html_str.replaceAll(/([a-zA-Z0-9]) *\$/g, "$1&nbsp;$$");
 	return edited_html_str;
 }
+
+/*
+Fix fake tags
+*/
 
 // fix fake script tags
 function fix_fake_scripts(html_str) {

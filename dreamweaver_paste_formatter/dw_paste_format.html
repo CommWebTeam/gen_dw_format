@@ -84,6 +84,28 @@
   <label for="consecutive_ol">**Join consecutive ol tags**</label>
   <br />
   <br />
+  <b>Replace/remove/format &lt;br> tags:</b> <br />
+  <input type="checkbox" id="split_p_br" name="split_p_br">
+  <label for="split_p_br">Split paragraphs separated by br into multiple &lt;p> tags</label>
+  <br />
+  <input type="checkbox" id="split_p_br_punct" name="split_p_br_punct" checked>
+  <label for="split_p_br_punct">Split paragraphs separated by br into multiple &lt;p> tags if the first paragraph ends in punctuation</label>
+  <br />
+  <input type="checkbox" id="rm_empty_br" name="rm_empty_br" checked>
+  <label for="rm_empty_br">Remove br at the start or end of p, li, th, td, and header tags</label>
+  <br />
+  <input type="checkbox" id="fix_br" name="fix_br" checked>
+  <label for="fix_br">Change all &lt;br> to &lt;br /></label>
+  <br />
+  <br />
+  <b>Remove formatting around punctuation:</b> <br />
+  <input type="checkbox" id="rm_punct_format" name="rm_punct_format" checked>
+  <label for="rm_punct_format">Remove em and strong that only consist of spacing and . , ; :</label>
+  <br />
+  <input type="checkbox" id="fix_punct" name="fix_punct" checked>
+  <label for="fix_punct">Remove incorrect spacing before punctuation, and duplicate punctuation, for  . , ; :</label>
+  <br />
+  <br />
   <b>Replace em/strong with other tags for italics/bold:</b> <br />
   <input type="checkbox" id="cite_link" name="cite_link" checked>
   <label for="cite_link">Change em to cite on lines that have links</label>
@@ -104,20 +126,6 @@
   <label for="default_b">Change all strong to b by default</label>
   <br />
   <br />
-  <b>Replace/remove/format &lt;br> tags:</b> <br />
-  <input type="checkbox" id="split_p_br" name="split_p_br">
-  <label for="split_p_br">Split paragraphs separated by br into multiple &lt;p> tags</label>
-  <br />
-  <input type="checkbox" id="split_p_br_punct" name="split_p_br_punct" checked>
-  <label for="split_p_br_punct">Split paragraphs separated by br into multiple &lt;p> tags if the first paragraph ends in punctuation</label>
-  <br />
-  <input type="checkbox" id="rm_empty_br" name="rm_empty_br" checked>
-  <label for="rm_empty_br">Remove br at the start or end of p, li, th, td, and header tags</label>
-  <br />
-  <input type="checkbox" id="fix_br" name="fix_br" checked>
-  <label for="fix_br">Change all &lt;br> to &lt;br /></label>
-  <br />
-  <br />
   <b>Add/fix/remove tag attributes:</b> <br />
   <input type="checkbox" id="align" name="align" checked>
   <label for="align">*Change center and right alignment to WET class</label>
@@ -133,11 +141,6 @@
   <br />
   <input type="checkbox" id="table_tag" name="table_tag" checked>
   <label for="table_tag">**Remove attributes from table tags (table, th, tr, td) - excludes colspan/rowspan for td**</label>
-  <br />
-  <br />
-  <b>Fix spacing issues surrounding punctuation:</b> <br />
-  <input type="checkbox" id="fix_punct" name="fix_punct" checked>
-  <label for="fix_punct">Remove incorrect spacing before punctuation/duplicate punctuation for  . , ; :</label>
   <br />
   <br />
   <b>Translate structure for French documents:</b> <br />
