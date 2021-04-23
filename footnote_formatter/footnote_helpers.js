@@ -96,22 +96,18 @@ Generate and format WET footnotes
 function replace_footnote_str(html_str, init_id, top_regex_str, bot_regex_str, bot_regex_sub, duplicate_footnotes) {
     // find indices of matches
     const top_regex = new RegExp(top_regex_str, "g");
-    const top_matches = html_str.match(top_regex);
+    const top_matches = match_with_empty(html_str, top_regex);
     // print number of matches for debugging
-    console.log("Number of top footnotes found:");
-    if (top_matches === null) {
-      console.log(0);
+    console.log("Number of top footnotes found: " + top_matches.length);
+    if (top_matches.length === 0) {
       return html_str;
     }
-    console.log(top_matches.length);
     const bot_regex = new RegExp(bot_regex_str, "g");
-    const bot_matches = html_str.match(bot_regex);
-    console.log("Number of bottom footnotes found:");
-    if (bot_matches === null) {
-      console.log(0);
+    const bot_matches = match_with_empty(html_str, bot_regex);
+    console.log("Number of bottom footnotes found: " + bot_matches.length);
+    if (bot_matches.length === 0) {
       return html_str;
     }
-    console.log(bot_matches.length);
     // loop through smaller number of footnotes and number them with counter
     let output_str = html_str;
     const num_footnotes = Math.min(top_matches.length, bot_matches.length);
