@@ -28,7 +28,7 @@ The current formatting checks are as follows (the user can select which to apply
         - checked by default
 
 - Clean up spacing for coding style. These don't affect the document's structural correctness for WET, but it's helpful to keep your document tidy for visual clarity, string searching, and other coding purposes.
-    - makes all space hexcodes consistent by converting invisible non-breaking spaces (where it just looks like a regular space in the editor) into regular spaces.
+    - makes all space hexcodes consistent by converting invisible non-breaking spaces (where it just looks like a regular space in the editor), tabs, and so on into regular spaces.
         - checked by default
     - replaces multiple spaces with a single space for neatness. You should apply source formatting in Dreamweaver to fix indentation if you include this check.
         - checked by default
