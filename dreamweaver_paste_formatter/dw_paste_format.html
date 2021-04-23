@@ -160,12 +160,13 @@
 <button onclick="format_file()">Download formatted file</button>
 <br />
 <br />
-<p>This tool performs some quick formatting on Dreamweaver documents pasted from Word. <strong>Before using the tool, make sure the document:
+<p>This tool performs some quick formatting on Dreamweaver documents pasted from Word. <strong>Before using the tool, make sure that:</strong>
   <ol>
-    <li></li>
-    <li>has proper indentation (in Dreamweaver, Edit -> Code -> Apply Source Formatting)</li>
-    <li>double quotes (e.g. "x") instead of single quotes (e.g. 'x') for tag attributes</li>
-  </ol>, and that .</strong></p>
+    <li>you have accepted all tracked changes and removed all comments in the Word document.</li>
+    <li>the pasted HTML document has proper indentation (in Dreamweaver, Edit -> Code -> Apply Source Formatting).</li>
+    <li>the pasted HTML document uses double quotes (e.g. "x") instead of single quotes (e.g. 'x') for tag attributes.</li>
+  </ol>
+</p>
 <p>A few of these checks assume Dreamweaver formatting when searching for values, and may not be useful if the document has already been partially converted to WET formatting.
   <ul>
     <li>The checks that explicitly search for strings that Dreamweaver formatting generates (e.g. links beginning in _Ref) have been marked with *. These have no effect if the document has already been manually formatted.</li>
