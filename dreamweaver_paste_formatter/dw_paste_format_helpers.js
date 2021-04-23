@@ -311,14 +311,17 @@ function replace_dashes(html_str) {
 
 // join consecutive fonts
 function join_em_strong(html_str) {
-	let edited_html_str = html_str.replaceAll(/<\/em>(( |\n)*)<em>/g, "$1");
-	edited_html_str = edited_html_str.replaceAll(/<\/strong>(( |\n)*)<strong>/g, "$1");
+	let edited_html_str = html_str.replaceAll(/<\/em><em>/g, "");
+	edited_html_str = edited_html_str.replaceAll(/<\/strong><strong>/g, "");
+	edited_html_str = edited_html_str.replaceAll(/<\/em>(( |\n)*)<em>/g, " ");
+	edited_html_str = edited_html_str.replaceAll(/<\/strong>(( |\n)*)<strong>/g, " ");
 	return edited_html_str;
 }
 
 // join consecutive fonts over punctuation
 function join_em_strong_punct(html_str) {
-	let edited_html_str = html_str.replaceAll(/<\/em>(([^a-zA-Z0-9]|\n)*)<em>/g, "$1");
+	let edited_html_str = join_em_strong(html_str);
+	edited_html_str = edited_html_str.replaceAll(/<\/em>(([^a-zA-Z0-9]|\n)*)<em>/g, "$1");
 	edited_html_str = edited_html_str.replaceAll(/<\/strong>(([^a-zA-Z0-9]|\n)*)<strong>/g, "$1");
 	return edited_html_str;
 }
