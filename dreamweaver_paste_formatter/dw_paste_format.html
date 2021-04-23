@@ -50,7 +50,7 @@
   <label for="space_before_close">Remove spaces before closing p, li, th, td, and header tags</label>
   <br />
   <br />
-  <b>Replace word-formatted characters/html entities:</b> <br />
+  <b>Replace Word-formatted characters/html entities:</b> <br />
   <input type="checkbox" id="quote_values" name="quote_values" checked>
   <label for="quote_values">Replace straight quote HTML entities with their values</label>
   <br />
@@ -160,7 +160,12 @@
 <button onclick="format_file()">Download formatted file</button>
 <br />
 <br />
-<p>This tool performs some quick formatting on Dreamweaver documents pasted from word. <strong>It assumes proper indentation (in Dreamweaver, Edit -> Code -> Apply Source Formatting), and that ALL tag attributes use double quotes (e.g. "x") instead of single quotes (e.g. 'x').</strong></p>
+<p>This tool performs some quick formatting on Dreamweaver documents pasted from Word. <strong>Before using the tool, make sure the document:
+  <ol>
+    <li></li>
+    <li>has proper indentation (in Dreamweaver, Edit -> Code -> Apply Source Formatting)</li>
+    <li>double quotes (e.g. "x") instead of single quotes (e.g. 'x') for tag attributes</li>
+  </ol>, and that .</strong></p>
 <p>A few of these checks assume Dreamweaver formatting when searching for values, and may not be useful if the document has already been partially converted to WET formatting.
   <ul>
     <li>The checks that explicitly search for strings that Dreamweaver formatting generates (e.g. links beginning in _Ref) have been marked with *. These have no effect if the document has already been manually formatted.</li>

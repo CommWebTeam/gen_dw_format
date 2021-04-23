@@ -181,13 +181,12 @@ function format_file() {
 function fix_footnotes(html_str) {
 	// set regex statements that find footnotes using Dreamweaver's formatting
 	const footnote_top_regex = '<a href="#_ftn[0-9]+" name="_ftnref[0-9]+" title="">(.*?)</a>';
-	const footnote_bot_regex = `<div id="ftn[0-9]+">(<br>)* *
-* *(
- *<ul> *
- *<li>)*(<p>)*<a href="#_ftnref[0-9]+" name="_ftn[0-9]+" title=""> *</a>((\n*.)*?)(</p> *
-)* *(</li> *
- *</ul> *
- *)* *</div>`;
+	const footnote_bot_regex = `<div id="ftn[0-9]+">(?:<br>)*\s*(?:
+\s*<ul>\s*
+\s*<li>)*(?:<p>)*<a href="#_ftnref[0-9]+" name="_ftn[0-9]+" title=""> *</a>([\s\S]*?)(?:</p>\s*
+)*\s*(?:</li>\s*
+\s*</ul>\s*
+\s*)*\s*</div>`;
 	// use wet footnote formatting functions
 	let edited_html_str = replace_footnote_str(html_str, footnote_top_regex, footnote_bot_regex, 4, "");
 	edited_html_str = add_footnote_div(edited_html_str);
