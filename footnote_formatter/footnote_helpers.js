@@ -1,3 +1,7 @@
+// initial values for top/bot footnote regex
+document.getElementById("top_footnote").value = '<sup id="fnb[0-9]+-ref"> *<a class="footnote-link" href="#fnb[0-9]+"> *<span class="wb-invisible">Footnote </span>[0-9]+</a>,*</sup>';
+document.getElementById("bot_footnote").value = '<dt>Footnote [0-9]+</dt>(?: |\n)*<dd id="fnb[0-9]+">(?: |\n)*((.|\n)*?)<p class="footnote-return"> *<a href="#fnb[0-9]+-ref"> *<span class="wb-invisible"> *Return to footnote *</span>[0-9]+(<span class="wb-invisible"> *referrer *</span>)*</a> *</p>( |\n)*</dd>';
+
 // set top footnote regex value
 function set_top_footnote_regex() {
   document.getElementById("top_warning").innerHTML = "";
