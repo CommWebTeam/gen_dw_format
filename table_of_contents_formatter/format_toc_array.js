@@ -20,8 +20,17 @@ function format_toc() {
 
 // cleans up the content of a toc entry's content string
 function clean_entry(curr_content, rm_page_nums) {
-    // remove other tags inside the entry
-    cleaned_content = curr_content.replaceAll(/<.*?>/g, "");
+    // remove formatting tags inside the entry
+    cleaned_content = curr_content.replaceAll(/<em( [^>]*)*>/g, "");
+    cleaned_content = curr_content.replaceAll(/<i( [^>]*)*>/g, "");
+    cleaned_content = curr_content.replaceAll(/<cite( [^>]*)*>/g, "");
+    cleaned_content = curr_content.replaceAll(/<strong( [^>]*)*>/g, "");
+    cleaned_content = curr_content.replaceAll(/<b( [^>]*)*>/g, "");
+    cleaned_content = curr_content.replaceAll("</em>", "");
+    cleaned_content = curr_content.replaceAll("</i>", "");
+    cleaned_content = curr_content.replaceAll("</cite>", "");
+    cleaned_content = curr_content.replaceAll("</strong>", "");
+    cleaned_content = curr_content.replaceAll("</b>", "");
     // remove page numbers if option is selected
     if (rm_page_nums) {
         cleaned_content = cleaned_content.replaceAll(/(\.)+\. *[0-9]+ *$/g, "");
