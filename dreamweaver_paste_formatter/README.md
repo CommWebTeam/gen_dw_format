@@ -217,15 +217,15 @@ This is not intended to be an in-depth formatting tool and only covers some basi
 
 ### Superscripts and subscripts
 
-For the second last check, the tool looks for the following strings in the html document:
+For the second last check, the tool looks for the following strings, which indicate fake tags for superscripts/subscripts:
 - &amp;lt;sup&amp;gt;, which displays as &lt;sup&gt;
 - &amp;lt;sub&amp;gt;, which displays as &lt;sub&gt;
 
-and converts them to tags (so that we have a sup or sub tag in that location instead).
+and converts them to actual tags (so that we have a sup or sub tag at that location instead).
 
-This check is to be used in conjunction with some manual find-and-replace in the original Word document before pasting into Dreamweaver. The idea is that when pasting a Word document into Dreamweaver, it doesn't pay attention to superscripts and subscripts, so you have to manually insert them into Dreamweaver's generated html document. The easiest way to do this involves marking down where these superscripts and subscripts are in the Word document before pasting.
+This check is to be used in conjunction with some manual find-and-replace in the original Word document before pasting into Dreamweaver. The idea is that when pasting a Word document into Dreamweaver, we turn off including styles because of the unnecessary css bloats it adds (you can turn including styles on/off in the Dreamweaver preferences, but they are off by default). However, superscripts and subscripts count as styles to Dreamweaver, meaning they get copied over as regular text; you have to manually insert them into Dreamweaver's generated html document. The easiest way to do this involves marking down where these superscripts and subscripts are in the Word document before pasting.
 
-For this tool, you should mark superscripts and subscripts in the Word document with &lt;sup>, &lt;/sup>, &lt;sub>, and &lt;/sub>, as described below.
+For this tool, you should mark superscripts and subscripts in the Word document with &lt;sup>, &lt;/sup>, &lt;sub>, and &lt;/sub>, using the process described below.
 
 This tool looks for strings indicating subscript/superscript tags in the html document (where the angle brackets &lt;> have been converted to their html entities by Dreamweaver) and changes them to be actual tags. Afterwards, it joins consecutive sup and sub tags.
 
@@ -248,7 +248,7 @@ Afterwards, repeat these steps for subscripts.
 
 ### Mathml
 
-For the last check, the tool looks for the following strings:
+For the last check, the tool looks for the following fake tags:
 - &amp;lt;&ast;math.&ast;?&amp;gt;
 - &amp;lt;&ast;mi.&ast;?&amp;gt;
 - &amp;lt;&ast;mo.&ast;?&amp;gt;
