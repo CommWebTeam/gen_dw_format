@@ -53,7 +53,8 @@ Different Word documents produce very different content structures when pasted i
 
 This tool does two things:
 1. It formats the table containing the table of contents to fit WET standards. This includes adding in the surrounding div.
-2. It looks for tags/lines with the same values as the entries in the table of contents, and converts them to header tags containing IDs to be linked to by the table of contents.
+2. It removes bold and italics formatting in the table of contents entries.
+3. It looks for tags/lines with the same values as the entries in the table of contents, and converts them to header tags containing IDs to be linked to by the table of contents.
 
 Individual entries in a WET table of contents table use formatting similar to this example:
 
@@ -65,9 +66,9 @@ This entry should represent a header in the main document, which should then be 
 
 Notice how the table of contents entry contains the link "#toc_3.1", which links to this header with an ID of "toc_3.1".
 
-### Misformatting introduced in step 2
+### Misformatting introduced in step 3
 
-Step 2 is very likely to produce false positives because it replaces *all* tags and lines, except for &lt;li> and &lt;td> tags, that have the same value as each table of contents entry. For example, if there is a table of contents entry containing "3.1 Overview", then if there are multiple paragraphs later in the document that consist solely of "3.1 Overview" or "Overview", all of them will be replaced, even though only one of them can be the actual header.
+Step 3 is very likely to produce false positives because it replaces *all* tags and lines, except for &lt;li> and &lt;td> tags, that have the same value as each table of contents entry. For example, if there is a table of contents entry containing "3.1 Overview", then if there are multiple paragraphs later in the document that consist solely of "3.1 Overview" or "Overview", all of them will be replaced, even though only one of them can be the actual header.
 
 These false positives will have to be manually fixed afterward. Since the IDs will be duplicated as well, this will show up as an error in the HTML structure (IDs have to be unique), which should make them easier to locate in Dreamweaver.
 
@@ -111,7 +112,7 @@ List numberings are only checked for if the option to do so is selected. If the 
 
 Most of the usefulness in the tool comes from its attempt at guessing the hierarchy of the table of contents, which it does using list numberings at the start of each entry. List numberings must be formatted with numbers and periods. The hierarchy of the table of contents is used for two things:
 - in step 1 (described [earlier](#details)), to indent the table; and
-- in step 2, to decide the level of the header tag being linked to.
+- in step 3, to decide the level of the header tag being linked to.
 
 For indentation, each entry is compared to the previous entry to see whether it is higher or lower in the hierarchy; a sublist is created if it is higher, and the previous sublist is closed if it is lower.
 
@@ -122,7 +123,7 @@ For the header level, the tool checks how many times a period followed by a numb
 - "3.1.2." also has a level of 4 because the last period is not followed by a number. It uses a header tag of h4.
 - "3.1.2.1" has a level of 5. It uses a header tag of h5.
 
-Any initial list numberings are set to be optional in step 2's regex statement that searches for tags/lines consisting of entries. So if a table of contents entry consists of "Overview", both of the following tags would match:
+Any initial list numberings are set to be optional in step 3's regex statement that searches for tags/lines consisting of entries. So if a table of contents entry consists of "Overview", both of the following tags would match:
 - &lt;p>3.1 Overview&lt;/p>
 - &lt;p>Overview&lt;/p>
 
@@ -153,11 +154,11 @@ and you wanted Definitions to be indented one level more than Introductions, the
 - 1 Introduction
 - 1.1 Definitions
 
-If the option to remove manual list numbering is checked, then list numberings will be excluded from table of contents entry text, as well as the headers that replace tags/lines in step 2. So after generating the table of contents links and indentation with the manual list numberings, the table of contents entries would still be formatted as so:
+If the option to remove manual list numbering is checked, then list numberings will be excluded from table of contents entry text, as well as the headers that replace tags/lines in step 3. So after generating the table of contents links and indentation with the manual list numberings, the table of contents entries would still be formatted as so:
 - Introduction
 - Definitions
 
-Note that the list numberings will still be included as optional parts of the tag/line search regex used in step 2. 
+Note that the list numberings will still be included as optional parts of the tag/line search regex used in step 3. 
 
 This option is ignored if the option to use list numberings isn't also selected.
 
