@@ -7,207 +7,177 @@ The current formatting checks are as follows (the user can select which to apply
 
 - Format Dreamweaver footnotes:
     - replaces the formatting for Dreamweaver-generated footnotes with WET footnotes. This uses helper functions from the [footnote_formatter tool](https://commwebteam.github.io/gen_dw_format/footnote_formatter/). It assumes explicit Dreamweaver formatting for footnote strings; the footnote formatter tool should be used if this is not the case.
-        - checked by default
         - The WET footnote structure is English by default; use the checks under "Translate structure for French documents" to convert it to French.
 
 - Remove Dreamweaver-generated links:
     - removes empty links, or those that consist only of spaces, since they can't be easily accessed.
-        - Example: the string "&lt;a href="google.com">&lt;/a>" is removed.
-        - checked by default
+        - Example: the string <span style="color:red">&lt;a href="google.com">&lt;/a>"</span> is removed.
     - removes the referential links that Dreamweaver generates (which don't properly function).
-        - Example: the string "&lt;a href="#_Ref123">Reference link 1&lt;/a>" has its link removed, so it is replaced with "Reference link 1".
-        - checked by default
+        - Example: the string <span style="color:red">&lt;a href="#_Ref123">Reference link 1&lt;/a></span> has its link removed, so it is replaced with  <span style="color:green">Reference link 1</span>.
     - removes the table of contents links that Dreamweaver generates (which don't properly function).
-        - Example: the string "&lt;a href="#_Toc12a">Toc link 1&lt;/a>" has its link removed, so it is replaced with "Toc link 1".
-        - checked by default
+        - Example: the string <span style="color:red">&lt;a href="#_Toc12a">Toc link 1&lt;/a></span> has its link removed, so it is replaced with  <span style="color:green">Toc link 1</span>.
     - removes the bookmark links that Dreamweaver generates (which don't properly function).
-        - Example: the string "&lt;a href="#_bookmark1">Bookmark 1&lt;/a>" has its link removed, so it is replaced with "Bookmark 1".
-        - checked by default
+        - Example: the string <span style="color:red">&lt;a href="#_bookmark1">Bookmark 1&lt;/a></span> has its link removed, so it is replaced with  <span style="color:green">Bookmark 1</span>.
     - removes the French logiterms that Dreamweaver generates (which don't properly function).
-        - Example: the string "&lt;a name="lt_12">Logiterm 1&lt;/a>" has its link removed, so it is replaced with "Logiterm 1".
-        - checked by default
+        - Example: the string <span style="color:red">&lt;a name="lt_12">Logiterm 1&lt;/a></span> has its link removed, so it is replaced with  <span style="color:green">Logiterm 1</span>.
 
 - Clean up spacing for coding style. These don't affect the document's structural correctness for WET, but it's helpful to keep your document tidy for visual clarity, string searching, and other coding purposes.
     - makes all space hexcodes consistent by converting invisible non-breaking spaces (where it just looks like a regular space in the editor), tabs, and so on into regular spaces.
-        - checked by default
     - replaces multiple spaces with a single space for neatness. You should apply source formatting in Dreamweaver to fix indentation if you include this check.
-        - checked by default
     - removes spaces at the end of tags.
-        - Example: the string "&lt;p >Extra   spacing&lt;/p    >" is replaced with "&lt;p>Extra spacing&lt;/p>".
-        - checked by default
+        - Example: replaces the string <span style="color:red">&lt;p >Extra   spacing&lt;/p    ></span> with <span style="color:green">&lt;p>Extra spacing&lt;/p></span>.
     - removes empty attribute-less tags, and replaces all attribute-less tags that consist solely of spaces or nbsp; with a single regular space. This excludes br and td tags.
-        Example: the string "&lt;a> &lt;/a>" has its empty tag removed, so it is replaced with a single space " ".
-        - checked by default
+        Example: replaces the string <span style="color:red">&lt;a> &lt;/a></span> has its empty tag removed, so it is replaced with a single space <span style="color:green"> </span>.
     - removes extra spaces after opening p, li, th, td, and header (h1, h2 etc.) tags for neatness.
-        - Example: the string "&lt;li> list item 1&lt;/li>" is replaced with "&lt;li>list item 1&lt;/li>".
-        - checked by default
+        - Example: replaces the string <span style="color:red">&lt;li> list item 1&lt;/li></span> with <span style="color:green">&lt;li>list item 1&lt;/li></span>.
     - removes extra spaces before closing p, li, th, td, and header (h1, h2 etc.) tags for neatness.
-        - Example: the string "&lt;li>list item 1 &lt;/li>" is replaced with "&lt;li>list item 1&lt;/li>".
-        - checked by default
+        - Example: replaces the string <span style="color:red">&lt;li>list item 1 &lt;/li></span> with <span style="color:green">&lt;li>list item 1&lt;/li></span>.
 
 - Replace word-formatted characters/html entities:
     - replaces the HTML entities for straight quotes apos, quot, #39, and #34 with their actual values.
-        - Example: replaces *&amp;quot; &amp;apos;quotes&amp;apos; &amp;quot;* with *" 'quotes' "*.
-        - checked by default
+        - Example: replaces <span style="color:red">&amp;quot; &amp;apos;quotes&amp;apos; &amp;quot;</span> with <span style="color:green">" 'quotes' "</span>.
     - replaces fancy (slanted) quotes with regular quotes.
-        - Example: replaces *‘a’ “b”* with *'a' "b"*.
-        - not checked by default
+        - Example: replaces <span style="color:red">‘a’ “b”</span> with <span style="color:green">'a' "b"</span>.
+        - Unchecked by default.
     - replaces the HTML entities for fancy quotes rsquo, lsquo, rdquo, ldquo, #8216, #8217, #8220, and #8221 with regular quotes.
-        - Example: replaces *&amp;ldquo; &amp;lsquo;Fancy quotes&amp;rsquo; &amp;rdquo;* with *" 'Fancy quotes' "*.
-        - not checked by default
+        - Example: replaces <span style="color:red">&amp;ldquo; &amp;lsquo;Fancy quotes&amp;rsquo; &amp;rdquo;</span> with <span style="color:green">" 'Fancy quotes' "</span>.
+        - Unchecked by default.
     - replaces the HTML entities for fancy quotes rsquo, lsquo, rdquo, ldquo, #8216, #8217, #8220, and #8221 with their actual values.
-        - Example: replaces *&amp;ldquo; &amp;lsquo;Fancy quotes&amp;rsquo; &amp;rdquo;* with *“ ‘Fancy quotes’ ”*.
-        - not checked by default
+        - Example: replaces <span style="color:red">&amp;ldquo; &amp;lsquo;Fancy quotes&amp;rsquo; &amp;rdquo;</span> with <span style="color:green">“ ‘Fancy quotes’ ”</span>.
+        - Unchecked by default.
     - replaces Word's em dashes with regular dashes.
-        - Example: replaces the string "–" with "-".
-        - checked by default
+        - Example: replaces the string <span style="color:red">–</span> with <span style="color:green">-</span>.
 
 - Join consecutive tags of the same type:
     - joins consecutive em tags and consecutive strong tags, with only spaces/newlines between them, into a single tag.
-        - Example 1: replaces the string "&lt;em>italics 1&lt;/em> &lt;em>italics 2&lt;/em>" with "&lt;em>italics 1 italics 2&lt;/em>".
-        - Example 2: replaces the string "&lt;strong>bold 1&lt;/strong>&lt;strong>bold 2&lt;/strong>" with "&lt;strong>bold 1bold 2&lt;/strong>".
-        - checked by default
+        - Example 1: replaces the string <span style="color:red">&lt;em>italics 1&lt;/em> &lt;em>italics 2&lt;/em></span> with <span style="color:green">&lt;em>italics 1 italics 2&lt;/em></span>.
+        - Example 2: replaces the string <span style="color:red">&lt;strong>bold 1&lt;/strong>&lt;strong>bold 2&lt;/strong></span> with <span style="color:green">&lt;strong>bold 1bold 2&lt;/strong></span>.
     - joins consecutive em tags and consecutive strong tags, with only non-alphanumeric characters between them, into a single tag.
-        - implements the examples from the above check
-        - Example 3: replaces the string "&lt;em>italics 1&lt;/em>, &lt;em>italics 2&lt;/em>" with "&lt;em>italics 1, italics 2&lt;/em>".
-        - not checked by default
+        - Implements the examples from the above check.
+        - Example 3: replaces the string <span style="color:red">&lt;em>italics 1&lt;/em>, &lt;em>italics 2&lt;/em></span> with <span style="color:green">&lt;em>italics 1, italics 2&lt;/em></span>.
+        - Unchecked by default.
     - joins consecutive ul tags into a single list.
         - Example: replaces
-    *&lt;ul test="x">
+     <span style="color:red">&lt;ul test="x">
     &lt;li>list item 1&lt;/li>
     &lt;li>list item 2&lt;/li>
     &lt;/ul>
     &lt;ul test="x">
     &lt;li>list item 3&lt;/li>
-    &lt;/ul>*
+    &lt;/ul></span>
 with
-    *&lt;ul test="x">
+     <span style="color:green">&lt;ul test="x">
     &lt;li>list item 1&lt;/li>
     &lt;li>list item 2&lt;/li>
     &lt;li>list item 3&lt;/li>
-    &lt;/ul>*.
-        - checked by default
+    &lt;/ul></span>.
     - joins consecutive ol tags into a single list.
         - Example: replaces
-    *&lt;ol test="x">
+     <span style="color:red">&lt;ol test="x">
     &lt;li>list item 1&lt;/li>
     &lt;li>list item 2&lt;/li>
     &lt;/ol>
     &lt;ol test="x">
     &lt;li>list item 3&lt;/li>
-    &lt;/ol>*
+    &lt;/ol></span>
 with
-    *&lt;ol test="x">
+     <span style="color:green">&lt;ol test="x">
     &lt;li>list item 1&lt;/li>
     &lt;li>list item 2&lt;/li>
     &lt;li>list item 3&lt;/li>
-    &lt;/ol>*.
-        - checked by default
-        - this should be unchecked if the input document is already WET formatted, as the ol lists may have been purposefully split up due to differing numbering systems (e.g. if the first ol list is lower-alpha while the second is lower-roman).
+    &lt;/ol></span>.
+        - This should be unchecked if the input document is already WET formatted, as the ol lists may have been purposefully split up due to differing numbering systems (e.g. if the first ol list is lower-alpha while the second is lower-roman).
 
 - Replace/remove/format &lt;br> tags:
     - splits up blocks of text that are separated from each other by br within a single &lt;p> tag, by moving each block into its own &lt;p> tag.
         - Example: replaces
-    *&lt;p>break &lt;br>
-    following text&lt;/p>*
+    <span style="color:red">&lt;ol test="x">&lt;p>break &lt;br>
+    following text&lt;/p></span>
 with
-    *&lt;p>break&lt;/p>
-    &lt;p>following text&lt;/p>*.
-        - not checked by default
+    <span style="color:green">&lt;ol test="x">&lt;p>break&lt;/p>
+    &lt;p>following text&lt;/p></span>.
+        - Unchecked by default.
     - splits up blocks of text that are separated from each other by br within a single &lt;p> tag, by moving each block into its own &lt;p> tag, if the chunk before the br ends in one of the following punctuation symbols: . , ; : ! ? ) " ’ ”
-        - does not implement the example for the above check, but does replace
-    *&lt;p>break punctuation. &lt;br>
-    following text&lt;/p>*
+        - Does not implement the example for the above check, but does replace
+    <span style="color:red">&lt;ol test="x">&lt;p>break punctuation. &lt;br>
+    following text&lt;/p></span>
 with
-    *&lt;p>break punctuation.&lt;/p>
-    &lt;p>following text&lt;/p>*.
-        - checked by default
+    <span style="color:green">&lt;ol test="x">&lt;p>break punctuation.&lt;/p>
+    &lt;p>following text&lt;/p></span>.
     - removes br tags at the start or end of p, li, td, th, and header (h1, h2 etc.) tags.
         - Example: replaces
-    *&lt;p> &lt;br>
+    <span style="color:red">&lt;ol test="x">&lt;p> &lt;br>
     empty br
-    &lt;br>&lt;/p>*
+    &lt;br>&lt;/p></span>
 with
-    *&lt;p>empty br&lt;/p>*.
-        - checked by default
+    <span style="color:green">&lt;ol test="x">&lt;p>empty br&lt;/p></span>.
     - changes all &lt;br> to &lt;br />.
-        - checked by default
 
 - Fix formatting around the period (.), comma (,), colon (:), and semicolon (;) punctuation symbols:
-    - removes em and strong that consist only of spaces/newlines and . , : ;.
-        - Example: replaces the string "&lt;em>, &lt;/em>" with ", ".
-        - checked by default
+    - removes em and strong that consist only of spaces/newlines and the above punctuation symbols.
+        - Example: replaces the string <span style="color:red">"&lt;em>, &lt;/em>"</span> with <span style="color:green">", "</span>.
     - replaces common spacing and duplication misformatting for punctuation:
         - " ." and ".." with "."
         - " ," and ",," with ","
         - " ;" and ";;" with ";"
         - ": :" and "::" with ":"
-        - checked by default
 
 - Replace em/strong with other tags for italics/bold. These checks take precedence in the given order. For example, if both "change em tags to cite tags on lines that have links" and "change all em tags to i tags" are checked, then the first check will take precedence. So on lines that have links, em tags will be changed to cite tags, and on other lines without links, em tags will be changed to i tags.
     - changes em tags to cite tags on lines that have links. If a line contains the "a" tag, then all em tags on the same line are changed to cite tags.
-        - Example 1: the line "&lt;p>&lt;a>link&lt;/a>&lt;em>cite&lt;/em>&lt;/p>" is changed to "&lt;p>&lt;a>link&lt;/a>&lt;cite>cite&lt;/cite>&lt;/p>".
-        - Example 2: the line "&lt;p>&lt;em>non-cite&lt;/em>&lt;/p>" is left unchanged.
-        - checked by default
+        - Example 1: the line <span style="color:red">&lt;p>&lt;a>link&lt;/a>&lt;em>cite&lt;/em>&lt;/p></span> is changed to <span style="color:green">&lt;p>&lt;a>link&lt;/a>&lt;cite>cite&lt;/cite>&lt;/p></span>.
+        - Example 2: the line <span style="color:red">&lt;p>&lt;em>non-cite&lt;/em>&lt;/p></span> is left unchanged.
     - changes all em tags to cite tags.
-        - Example: replaces the string "&lt;em>italics&lt;/em>" with "&lt;cite>italics&lt;/cite>".
-        - not checked by default
-    - changes all em tags to span class="osfi-txt--italic" tags. (The above two checks take precedence.)
-        - Example: replaces the string "&lt;em>italics&lt;/em>" with "&lt;span class="osfi-txt--italic">italics&lt;/span>".
-        - not checked by default
-    - changes all em tags to i tags. (The above three checks take precedence.)
-        - Example: replaces the string "&lt;em>italics&lt;/em>" with "&lt;i>italics&lt;/i>".
-        - not checked by default
+        - Example: replaces the string <span style="color:red">&lt;em>italics&lt;/em></span> with <span style="color:green">&lt;cite>italics&lt;/cite></span>.
+        - Unchecked by default.
+    - changes all em tags to span class="osfi-txt--italic" tags.
+        - Example: replaces the string <span style="color:red">&lt;em>italics&lt;/em></span> with <span style="color:green">&lt;span class="osfi-txt--italic">italics&lt;/span>"</span>.
+        - Unchecked by default.
+    - changes all em tags to i tags.
+        - Example: replaces the string <span style="color:red">&lt;em>italics&lt;/em></span> with <span style="color:green">&lt;i>italics&lt;/i></span>.
+        - Unchecked by default.
     - changes all strong tags to span class="osfi-txt--bold" tags.
-        - Example: replaces the string "&lt;strong>bold&lt;/strong>" with "&lt;span class="osfi-txt--bold">bold&lt;/span>".
-        - not checked by default
-    - changes all strong tags to b tags. (The above check takes precedence.)
-        - Example: replaces the string "&lt;strong>bold&lt;/strong>" with "&lt;b>bold&lt;/b>".
-        - not checked by default
+        - Example: replaces the string <span style="color:red">&lt;strong>bold&lt;/strong></span> with <span style="color:green">&lt;span class="osfi-txt--bold">bold&lt;/span>"</span>.
+        - Unchecked by default.
+    - changes all strong tags to b tags.
+        - Example: replaces the string <span style="color:red">&lt;strong>bold&lt;/strong></span> with <span style="color:green">&lt;b>bold&lt;/b></span>.
+        - Unchecked by default.
 
 - Add/fix/remove tag attributes:
     - replaces Dreamweaver-generated center and right alignment (looks like align="center" or align="right") with their respective WET classes.
-        - Example: replaces the string "&lt;li align="center">center align&lt;/li>" with "&lt;li class="align-center">center align&lt;/li>".
-        - checked by default
-    - ensures that internal links to the OSFI website are relative by removing the OSFI main page from the URL, and adds rel=external to external links. This ignores links that have keywords indicating footnotes, table of contents, already existing internal links, or email addresses.
-        - Example 1: replaces the string "&lt;a href="osfi-bsif.gc.ca/Eng/test">internal link 1&lt;/a>" with "&lt;a href="/Eng/test">internal link 1&lt;/a>".
-        - Example 2: replaces the string "&lt;a href="https://www.google.ca/">external link&lt;/a>" with "&lt;a rel="external" href="https://www.google.ca/">external link&lt;/a>".
-        - Example 3: the string "&lt;a href="_ftn">not external link&lt;/a>" is left unchanged because the keyword "_ftn" indicates footnote.
-        - checked by default
-        - this should be unchecked if the input is already WET formatted, because links that have already been converted to referential links will now appear as external.
+        - Example: replaces the string <span style="color:red">&lt;li align="center">center align&lt;/li></span> with <span style="color:green">&lt;li class="align-center">center align&lt;/li></span>.
+    - ensures that internal links to the OSFI website are relative by removing the OSFI main page from the URL, and adds rel="external" to other links. This ignores links that have keywords indicating footnotes ("_ftn" and "fnb"), table of contents ("_Toc" and "toc_"), or email addresses ("mailto" and "@"). It also ignores already existing internal links (links that begin with "/Eng/" or "/Fra/").
+        - Example 1: replaces the string <span style="color:red">&lt;a href="osfi-bsif.gc.ca/Eng/test">internal link 1&lt;/a></span> with <span style="color:green">&lt;a href="/Eng/test">internal link 1&lt;/a></span>.
+        - Example 2: replaces the string <span style="color:red">&lt;a href="https://www.google.ca/">external link&lt;/a></span> with <span style="color:green">&lt;a rel="external" href="https://www.google.ca/">external link&lt;/a></span>.
+        - Example 3: the string <span style="color:red">&lt;a href="_ftn">not external link&lt;/a></span> is left unchanged because the string "_ftn" indicates footnote.
+        - Example 4: the string <span style="color:red">&lt;a href="/Eng/test">internal link 1&lt;/a></span> is left unchanged because it is already an internal link.
     - removes attributes from p (paragraph) tags.
-        - Example: replaces the string "&lt;p test="x">p attribute&lt;/p>" with "&lt;p>p attribute&lt;/p>".
-        - checked by default
-        - this should be unchecked if the input document is already WET formatted, as the attributes may have been manually inserted.
+        - Example: replaces the string <span style="color:red">&lt;p test="x">p attribute&lt;/p></span> with <span style="color:green">&lt;p>p attribute&lt;/p></span>.
+        - This should be unchecked if the input document is already WET formatted, as the attributes may have been manually inserted.
     - removes attributes from ol and ul tags.
-        - Example: replaces the string "&lt;ol test="x">" with "&lt;ol>".
-        - checked by default
-        - this should be unchecked if the input document is already WET formatted, as the attributes may have been manually inserted.
+        - Example: replaces the string <span style="color:red">&lt;ol test="x"></span> with <span style="color:green">&lt;ol></span>.
+        - This should be unchecked if the input document is already WET formatted, as the attributes may have been manually inserted.
     - removes attributes from table, th, and tr tags, and removes attributes from td tags except for colspan and rowspan.
-        - Example 1: replaces the string "&lt;table border="1">" with "&lt;table>".
-        - Example 2: replaces the string "&lt;td width="97" rowspan="1" colspan = "1">table 1,2&lt;/td>" with "&lt;td rowspan="1" colspan = "1">table 1,2&lt;/td>".
-        - checked by default
-        - this should be unchecked if the input document is already WET formatted, as the attributes may have been manually inserted.
+        - Example 1: replaces the string <span style="color:red">&lt;table border="1"></span> with <span style="color:green">&lt;table></span>.
+        - Example 2: replaces the string <span style="color:red">&lt;td width="97" rowspan="1" colspan = "1">table 1,2&lt;/td></span> with <span style="color:green">&lt;td rowspan="1" colspan = "1">table 1,2&lt;/td></span>.
+        - This should be unchecked if the input document is already WET formatted, as the attributes may have been manually inserted.
 
 - Translate structure for French documents:
     - translates internal links to French by searching for /Eng/ and replacing with /Fra/, and translates the English WET footnote structure created by the earlier footnote check to French.
-        - Example 1: replaces the string "&lt;a href="/Eng/test">internal link 1&lt;/a>" with ""&lt;a href="/Fra/test">internal link 1&lt;/a>".
-        - Example 2: replaces the string "Return to footnote" with "Retour à la référence de la note de bas de page".
-        - not checked by default
+        - Example 1: replaces the string <span style="color:red">&lt;a href="/Eng/test">internal link 1&lt;/a></span> with <span style="color:green">&lt;a href="/Fra/test">internal link 1&lt;/a></span>.
+        - Example 2: replaces the string <span style="color:red">Return to footnote</span> with <span style="color:green">Retour à la référence de la note de bas de page</span>.
+        - Only checked by default for French documents.
     - replaces 1er with 1&lt;sup>er&lt;/sup>, and other French list numberings formatted as #e with #&lt;sup>e&lt;/sup>.
-        - Example: replaces the string "1er 2e" with "1&lt;sup>er&lt;/sup> 2&lt;sup>e&lt;/sup>".
-        - not checked by default
+        - Example: replaces the string <span style="color:red">1er 2e</span> with <span style="color:green">1&lt;sup>er&lt;/sup> 2&lt;sup>e&lt;/sup></span>.
+        - Only checked by default for French documents.
     - ensures that "%" and "$" symbols have an &amp;nbsp; in front of them (for French spacing around those punctuation symbols).
-        - Example: replaces the string "dollar $ percent%" with "dollar&nbsp;$ percent&nbsp;%".
-        - not checked by default
+        - Example: replaces the string <span style="color:red">dollar $ percent%</span> with <span style="color:green">dollar&nbsp;$ percent&nbsp;%</span>.
+        - Only checked by default for French documents.
 
 - Convert manually inserted fake tags to actual tags (see below for details):
     - changes strings indicating superscript and subscript tags in the original Word document to be actual tags, and joins these tags together.
-        - Example 1: replaces the string "Regular&amp;lt;sup&amp;gt;s&amp;lt;/sup&amp;gt;&amp;lt;sup&amp;gt;u&amp;lt;/sup&amp;gt;&amp;lt;sup&amp;gt;p&amp;lt;/sup&amp;gt;&amp;lt;sup&amp;gt;e&amp;lt;/sup&amp;gt;&amp;lt;sup&amp;gt;r&amp;lt;/sup&amp;gt;&amp;lt;sup&amp;gt;s&amp;lt;/sup&amp;gt;&amp;lt;sup&amp;gt;c&amp;lt;/sup&amp;gt;&amp;lt;sup&amp;gt;r&amp;lt;/sup&amp;gt;&amp;lt;sup&amp;gt;i&amp;lt;/sup&amp;gt;&amp;lt;sup&amp;gt;p&amp;lt;/sup&amp;gt;&amp;lt;sup&amp;gt;t&amp;lt;/sup&amp;gt;" with "Regular&lt;sup>superscript&lt;/sup>".
-        - Example 2: replaces the string "Regular&amp;lt;sub&amp;gt;s&amp;lt;/sub&amp;gt;&amp;lt;sub&amp;gt;u&amp;lt;/sub&amp;gt;&amp;lt;sub&amp;gt;b&amp;lt;/sub&amp;gt;&amp;lt;sub&amp;gt;s&amp;lt;/sub&amp;gt;&amp;lt;sub&amp;gt;c&amp;lt;/sub&amp;gt;&amp;lt;sub&amp;gt;r&amp;lt;/sub&amp;gt;&amp;lt;sub&amp;gt;i&amp;lt;/sub&amp;gt;&amp;lt;sub&amp;gt;p&amp;lt;/sub&amp;gt;&amp;lt;sub&amp;gt;t&amp;lt;/sub&amp;gt;" with "Regular&lt;sub>subscript&lt;/sub>".
-        - checked by default
+        - Example 1: replaces the string <span style="color:red">Regular&amp;lt;sup&amp;gt;s&amp;lt;/sup&amp;gt;&amp;lt;sup&amp;gt;u&amp;lt;/sup&amp;gt;&amp;lt;sup&amp;gt;p&amp;lt;/sup&amp;gt;&amp;lt;sup&amp;gt;e&amp;lt;/sup&amp;gt;&amp;lt;sup&amp;gt;r&amp;lt;/sup&amp;gt;&amp;lt;sup&amp;gt;s&amp;lt;/sup&amp;gt;&amp;lt;sup&amp;gt;c&amp;lt;/sup&amp;gt;&amp;lt;sup&amp;gt;r&amp;lt;/sup&amp;gt;&amp;lt;sup&amp;gt;i&amp;lt;/sup&amp;gt;&amp;lt;sup&amp;gt;p&amp;lt;/sup&amp;gt;&amp;lt;sup&amp;gt;t&amp;lt;/sup&amp;gt;</span> with <span style="color:green">Regular&lt;sup>superscript&lt;/sup></span>.
+        - Example 2: replaces the string <span style="color:red">Regular&amp;lt;sub&amp;gt;s&amp;lt;/sub&amp;gt;&amp;lt;sub&amp;gt;u&amp;lt;/sub&amp;gt;&amp;lt;sub&amp;gt;b&amp;lt;/sub&amp;gt;&amp;lt;sub&amp;gt;s&amp;lt;/sub&amp;gt;&amp;lt;sub&amp;gt;c&amp;lt;/sub&amp;gt;&amp;lt;sub&amp;gt;r&amp;lt;/sub&amp;gt;&amp;lt;sub&amp;gt;i&amp;lt;/sub&amp;gt;&amp;lt;sub&amp;gt;p&amp;lt;/sub&amp;gt;&amp;lt;sub&amp;gt;t&amp;lt;/sub&amp;gt;</span> with <span style="color:green">Regular&lt;sub>subscript&lt;/sub></span>.
     - changes strings indicating math tags in the original Word document to be actual tags.
-        - checked by default
 
 I sometimes split regex statements up into multiple calls for clarity, but a lot of these checks can be done in one or two regex statements.
 
@@ -264,7 +234,8 @@ The steps to add a check that follows the tool's current formatting/organization
 
 1. In dw_paste_format.html: Add the new check into the form where the other checks are located. Different groups of checks are separated by two &lt;br /> instead of one; put the check in whichever group you think makes the most sense.
 2. In dw_paste_format_helpers.js:
+    - in set_default_checks(), set when it should and shouldn't be a default check, based on how safe/useful it is, for English Word pastes, French Word pastes, English WET-formatted documents, and French WET-formatted documents.
     - In format_file(), create an if statement for the new check, positioned at the same place as where you put it in the HTML document. For the sake of consistency, put the logic for the check in a helper function even if it's only one line.
-    - Create the helper function below format_file(), positioned at the same place as where you put it in the HTML document.
+    - Create the helper function for the logic below format_file(), positioned at the same place as where you put it in the HTML document.
 3. In README.md (this file): Add a description of the new check in the first section, positioned at the same place as where you put it in the HTML document.
 4. In sample_page.html: Add some text to test the new check with.
