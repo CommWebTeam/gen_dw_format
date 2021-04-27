@@ -147,7 +147,7 @@ function get_toc_table_prev_indent(table_str, init_id, toc_struc, rm_page_nums) 
                 // clean up content
                 curr_content = clean_entry(curr_content, rm_page_nums);
                 // assume empty list numbering
-                toc_values.push({list_numbering: "", link_id: inid_id + toc_count, indent_level: curr_indent, content: curr_content});
+                toc_values.push({list_numbering: "", link_id: init_id + toc_count, indent_level: curr_indent, content: curr_content});
             }
             // if it opens or closes the list item of a sublist, then skip it (sublists are covered by the first two cases)
             else if (curr_line.includes("<li") || curr_line === "</li>") {
