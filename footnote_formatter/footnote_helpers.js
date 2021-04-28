@@ -51,14 +51,36 @@ function add_footnotes() {
 	let html_file = document.getElementById("html_file").files[0];
 	file_reader.onload = function(event) {
 		let html_str = event.target.result.replaceAll("\r\n", "\n");
-    let edited_str = replace_footnote_str(html_str, document.getElementById("init_id").value, document.getElementById("top_footnote").value, document.getElementById("bot_footnote").value, document.getElementById("regex_sub").value, document.getElementById("dup_footnotes").value);
+    // get line numbers of input line range
+    let html_arr = html_str.split("\n");
+    let first_line = document.getElementById("footnote_start").value;
+    let last_line = document.getElementById("footnote_end").value;
+    if (first_line.trim() === "") {
+      first_line = 0;
+    }
+    else {
+      first_line = parseInt(first_line);
+    }
+    if (last_line.trim() === "") {
+      last_line = html_arr.length;
+    }
+    else {
+      last_line = parseInt(last_line) + 1;
+    }
+    // get original lines of input line range
+    let lines_to_edit = html_arr.slice(first_line, last_line).join("\n");
+    // edit lines of input line range
+    let edited_str = lines_to_edit;
+    edited_str = replace_footnote_str(edited_str, document.getElementById("init_id").value, document.getElementById("top_footnote").value, document.getElementById("bot_footnote").value, document.getElementById("regex_sub").value, document.getElementById("dup_footnotes").value);
     edited_str = add_footnote_div(edited_str, document.getElementById("init_id").value);
     edited_str = add_consecutive_commas(edited_str, document.getElementById("init_id").value);
     if (document.getElementById("lang").value === 'f') {
       edited_str = translate_footnotes(edited_str);
     }
-
-		download(edited_str, "footnotes.html", "text/html");
+    // replace original document lines with edited lines
+    html_str = html_str.replace(lines_to_edit, edited_str);
+    // download edited document
+		download(html_str, "footnotes.html", "text/html");
 	}
 	file_reader.readAsText(html_file);
 }
