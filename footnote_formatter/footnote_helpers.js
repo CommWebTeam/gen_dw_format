@@ -207,13 +207,13 @@ function replace_footnote_str(html_str, init_id, top_regex_str, bot_regex_str, b
 
 // creates WET div around bottom footnotes
 function add_footnote_div(html_str, init_id) {
-  let output_str = html_str.replace(/<div>([ \n]*)<dt>Footnote 1<\/dt>/,
+  let output_str = html_str.replace(/<div>( |\n)*<dt>Footnote 1<\/dt>/,
   `<div class="wet-boew-footnotes" role="note">
   <section>
     <h3 class="wb-invisible" id="` + init_id + `">Footnotes</h3>
     <dl>
     <dt>Footnote 1</dt>`);
-  output_str = output_str.replace(/<\/dd>([ \n]*)<\/div>/, `</dd>
+  output_str = output_str.replace(/<\/dd>( |\n)*<\/div>/, `</dd>
     </dl>
   </section>
 </div>`);

@@ -6,32 +6,79 @@
 </head>
 
 <body>
-  <p>English footnote<sup id="fnb1-ref"><a class="footnote-link" href="#fnb1"><span class="wb-invisible">Footnote </span>1</a></sup></p>
-<p>English footnote<sup id="fnb1-ref"><a class="footnote-link" href="#fnb1"><span class="wb-invisible">Footnote </span>1</a></sup><sup id="fnb20-ref"><a class="footnote-link" href="#fnb20"><span class="wb-invisible">Footnote </span>20</a></sup></p>
-<p>French footnote<sup id="fnb2-ref"><a class="footnote-link" href="#fnb2"><span class="wb-invisible">Note de bas de page </span>2</a></sup><sup id="fnb12345-ref"><a class="footnote-link" href="#fnb12345"><span class="wb-invisible">Note de bas de page </span>12345</a></sup></p>
-<p>Break <br/>
-  text</p>
-<p>Math tag
-  <math>
-    <mi>variable</mi>
-    <mo>operator</mo>
-  </math>
-  close math</p>
-  <div>
+<p>Initial (English) footnote<sup id="fnb1-ref"><a class="footnote-link" href="#fnb1"><span class="wb-invisible">Footnote </span>1</a></sup></p>
+<!-- English top WET footnotes -->
+<p>Text<sup id="fnb11-ref"><a class="footnote-link" href="#fnb1"><span class="wb-invisible">Footnote </span>1</a></sup><sup id="fnb20-ref"><a class="footnote-link" href="#fnb20"><span class="wb-invisible">Footnote </span>20</a></sup></p>
+<p>Filler text</p>
+<p>Text 2<sup id="fnb111-ref"><a class="footnote-link" href="#fnb1"><span class="wb-invisible">Footnote </span>3</a></sup> text after footnote</p>
+<p>Filler text</p>
+<!-- French WET top footnotes -->
+<p>Text<sup id="fnb2-ref"><a class="footnote-link" href="#fnb2"><span class="wb-invisible">Note de bas de page </span>2</a></sup><sup id="fnb12345-ref"><a class="footnote-link" href="#fnb12345"><span class="wb-invisible">Note de bas de page </span>12345</a></sup></p>
+<p>Filler text</p>
+<h1>Text 2<sup id="fnb223423-ref"><a class="footnote-link" href="#fnb122312"><span class="wb-invisible">Note de bas de page </span>2123123</a></sup></h1>
+<!-- Dreamweaver top footnotes -->
+<ol>
+  <li><a href="#_ftn1" name="_ftnref1" title=""><strong> </strong></a></li>
+  <li><a href="#_ftn23421" name="_ftnref2341" title=""></a></li>
+</ol>
+<p>Filler text</p>
+<!-- Dreamweaver bottom footnotes -->
+<div id="ftn5">
+  <p><a href="#_ftnref5" name="_ftn5" title=""> </a>    Dreamweaver bottom footnote A $1</p>
+</div>
+<div id="ftn6"> <a href="#_ftnref6" name="_ftn6" title=""> </a>    Dreamweaver bottom footnote B
+  <p>More text</p>
+</div>
+<!-- French WET bottom footnotes -->
+<div class="wet-boew-footnotes" role="note">
+  <section>
+    <h2 class="wb-invisible" id="fnb">Notes de bas de page</h2>
+    <dl>
+      <dt>Note de bas de page 12312341234</dt>
+      <dd id="fnb19">
+        <p>French bottom text a</p>
+        <p class="footnote-return"><a href="#fnb19-ref"><span class="wb-invisible">Retour à la référence de la note de bas de page </span>19</a></p>
+      </dd>
+      <dt>Note de bas de page 1</dt>
+      <dd id="fnb20">
+        <p>French <b>bottom</b> text b</p>
+        <p class="footnote-return"><a href="#fnb20-ref"><span class="wb-invisible">Retour à la référence de la note de bas de page </span>20</a></p>
+      </dd>
+      <dt>Note de bas de page 2</dt>
+      <dd id="fnb21">
+        <p></p>
+        <p class="footnote-return"><a href="#fnb21-ref"><span class="wb-invisible">Retour à la référence de la note de bas de page</span>21<span class="wb-invisible"> referrer </span></a></p>
+      </dd>
+    </dl>
+  </section>
+</div>
+<!-- English bottom WET footnotes -->
+<div>
   <dt>Footnote 19</dt>
-  <dd id="fnb19">
-  <p>aaa</p>
-  <p class="footnote-return"><a href="#fnb19-ref"><span class="wb-invisible">Return to footnote </span>19</a></p>
+  <dd id="fnb191">
+    <p>English bottom text
+    <ol>
+      <li>x</li>
+    </ol>
+    a
+    </p>
+    <p class="footnote-return"><a href="#fnb19-ref"><span class="wb-invisible">Return to footnote </span>19</a></p>
   </dd>
-   <dt>Footnote 20</dt>
-  <dd id="fnb20">
-  <p>bbb.</p>
-  <p class="footnote-return"><a href="#fnb20-ref"><span class="wb-invisible">Return to footnote </span>20</a></p>
+  <dt>Footnote 20</dt>
+  <dd id="fnb201">
+    <p>English bottom text
+    <ol>
+      <li>x</li>
+      <li>y</li>
+    </ol>
+    b
+    </p>
+    <p class="footnote-return"><a href="#fnb20-ref"><span class="wb-invisible">Return to footnote </span>20</a></p>
   </dd>
-   <dt>Footnote 21</dt>
-  <dd id="fnb21">
-  <p>cc<b>c</b></p>
-  <p class="footnote-return"><a href="#fnb21-ref"><span class="wb-invisible">Return to footnote </span>21</a></p>
+  <dt>Footnote 21</dt>
+  <dd id="fnb211">
+    <p>English bottom text c</p>
+    <p class="footnote-return"><a href="#fnb21-ref"><span class="wb-invisible">Return to footnote </span>21<span class="wb-invisible"> referrer </span></a></p>
   </dd>
 </div>
 </body>

@@ -15,9 +15,11 @@ This tool aims to use the input regex statements to find footnotes in the docume
 
 This tool assumes by default that all footnotes in the input html document should be put into a single module. If this is not the case, e.g. if individual tables should have their footnotes in their own modules, then you can choose the starting and ending lines of the document (beginning at index 0, meaning the first line of the document is on line 0) to run the tool on. For example, if a table is from lines 60 to 100 and the following three paragraphs, each of which is one line, describe the table footnotes, then you can enter 60 as the starting line and 103 as the ending line.
 
+When formatting footnotes for a Dreamweaver paste, I recommend **formatting inner footnote subsections first** before formatting outer footnote subsections - for example, formatting the footnotes for a single table before formatting the footnotes for the overall document - to minimize confusion when the tool uses regex statements to find and fix the div formatting that Dreamweaver generates around the bottom footnote text.
+
 ## Footnote ID
 
-This is the initial string that begins all footnote links, by default "fnb". For example, "fnb" would label the first top footnote marker as follows:
+This is the initial string that begins all footnote links, by default "fnb". For example, "fnb" would label the first English top footnote marker as follows:
 
 &lt;sup id="fnb1-ref">&lt;a class="footnote-link" href="#fnb1">&lt;span class="wb-invisible">Footnote &lt;/span>1&lt;/a>&lt;/sup>
 
@@ -49,3 +51,18 @@ For example, with the following input:
 - The 4th footnote marker in the main body would point to the 3rd footnote text in the bottom module.
 - The 5th footnote marker in the main body would point to the 3rd footnote text in the bottom module.
 - The 10th footnote marker in the main body would point to the 1st footnote text in the bottom module.
+
+# Implementation details
+
+The tool formats footnotes using the following steps:
+
+1. **add_footnotes()** - Extract the lines to check for footnotes on (this is the entire document if the line inputs aren't included).
+2. **replace_footnote_str()** - Count the number of matches for both the top footnote regex and the bottom footnote regex. Use the smaller value of the two for the number of footnotes; this means that, for example, if there are 20 top footnotes but only 15 bottom footnotes, only the first 15 top footnotes are used.
+3.  **replace_footnote_str()** - Loop through the list of strings that match the bottom footnote regex, and reformat them to follow WET syntax.
+     - To number them, use the internal counter of the loop (from 1 to the number of footnotes).
+4.  **replace_footnote_str()** - Loop through the list of strings that match the top footnote regex, and reformat them to follow WET syntax.
+    - **get_footnote_nums()** - Number them using the internal counter, starting at 1, and incrementing on values that are not duplicate top footnotes.
+5. **add_footnote_div()** - To fix the incorrect bottom footnote div formatting that Dreamweaver uses, find a div statement whose first item is &lt;dt>Footnote 1&lt;/dt> (indicating the first WET-formatted bottom footnote), and replace it with the opening WET bottom footnote module syntax. Then, find the closing div whose last item is &lt;/dd> (indicating a closing WET-formatted bottom footnote), and replace it with the closing WET bottom footnote module syntax.
+6. **add_consecutive_commas()** - Add commas between consecutive top footnotes.
+7. **translate_footnotes()** - If the document language is French, translate footnote structure strings to their French equivalents.
+8. **add_footnotes()** - Replace the original lines in the document with the edited lines.
