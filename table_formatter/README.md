@@ -97,6 +97,8 @@ The process to add an action is as follows:
 
 Helper functions for each action are placed at the bottom of table_format_helpers.js.
 
+Feel free to add more sections if an action does not neatly belong in one of the following categories.
+
 #### Actions applied by cell
 
 Most of the actions are to edit individual cells, so they are in the **Functions for actions to be applied on the cell of a table in the table array** section.
@@ -108,8 +110,18 @@ Each of these action functions should take in the following as input:
 
 These action functions should return the table array given in the first input, but with the cell value changed.
 
-#### Other actions
+Each of these functions is called using the **apply_on_cells()** function, which loops through each cell of each table to apply the action function on, and calls the action function on the cell.
 
-The helper functions for actions that are not applied by cell may be formatted differently. 
+#### Actions for setting thead/tbody/tfoot
 
-For example, the action for **appending the preceding paragraph above a table to its caption** is implemented differently from the other actions because it uses code from outside the tables. It does not use the table array used for other actions.
+These actions are in the **Function for actions to be applied on thead/tbody/tfoot row index for a table in the table array** section. They just set the locations of the opening and closing thead/tbody/tfoot tags relative to the table rows using the **set_t_inds()** function. Since doing this only needs two row indices, one for the row of the opening tag and one for the row of the closing tag, set_t_inds() does not require as many arguments as apply_on_cells().
+
+#### Actions involving tags immediately outside of the table
+
+These actions are in the **Functions that involve tags outside of the table** section. They require both the original html document and the table array. As such, in format_table(), the table array edits are implemented twice: once into the original html document before running these functions so that the html document is up to date, and once after running them to implement their changes.
+
+For consistency, I have tried to format these action functions as so:
+- They take in the html document as the 1st input, the table array as the 2nd input, and the list of tables to edit as the 3rd/4th inputs.
+- They apply their edits to the table itself only through the table array.
+- They apply their edits to tags outside of the table through the html document.
+- They return an array of two items, the 1st being the edited html document and the 2nd being the table array.

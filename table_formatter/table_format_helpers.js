@@ -1,7 +1,7 @@
 const extra_span_cell = "<td><span placeholder/></td>";
 const table_placeholder = "<TABLEPLACEHOLDER/>";
-const at_placeholder = "<ATPLACEHOLDER>";
-const caption_placeholder = "<CAPTIONPLACEHOLDER>";
+const curr_table_placeholder = "<CURRTABLEPLACEHOLDER/>";
+const at_placeholder = "<ATPLACEHOLDER/>";
 
 // show row/column index inputs if not all rows/columns are selected
 function toggle_inds(dim) {
@@ -89,15 +89,22 @@ function format_table() {
 		if (document.getElementById("insert_tfoot").checked) {
 			html_table_arr = set_t_inds(html_table_arr, table_list_type, table_list, row_list, row_forward_dir, "tfoot");
 		}
-		// convert table array to output
+		// implement edited table array into html document
 		html_doc_str = table_arr_to_doc(html_doc_str, html_table_arr);
-		// working directly on document instead of table array, append preceding tags to table captions
+		// working on both the html document and the table array, add surrounding tags to table
+		let edited_doc_and_table = [html_doc_str, html_table_arr];
 		if (document.getElementById("set_caption_para").checked) {
-			html_doc_str = set_prev_caption(html_doc_str, "p", table_list_type, table_list);
+			edited_doc_and_table = set_prev_caption(html_doc_str, html_table_arr, table_list_type, table_list, "p")
+			html_doc_str = edited_doc_and_table[0];
+			html_table_arr = edited_doc_and_table[1];
 		}
 		if (document.getElementById("set_caption_header").checked) {
-			html_doc_str = set_prev_caption(html_doc_str, "h[0-9]+", table_list_type, table_list);
+			edited_doc_and_table = set_prev_caption(html_doc_str, html_table_arr, table_list_type, table_list, "h[0-9]+")
+			html_doc_str = edited_doc_and_table[0];
+			html_table_arr = edited_doc_and_table[1];
 		}
+		// reimplement edited table array into html document
+		html_doc_str = table_arr_to_doc(html_doc_str, html_table_arr);
 		// decide output file name - this tool may need to be run multiple times, so append version number to name
 		let input_file_path = document.getElementById("html_file").value;
 		let input_file_name = input_file_path.split('\\').pop().split('/').pop();
@@ -400,7 +407,7 @@ function to_header_row(table_arr, row, col) {
 // sets cell value as caption
 function set_caption(table_arr, row, col) {
 	let curr_caption = table_arr.caption;
-	// append caption if none exists
+	// create caption if none exists
 	if (curr_caption === "") {
 		curr_caption = "<caption></caption>";
 	}
@@ -530,62 +537,57 @@ function set_t_inds(table_arr, table_list_type, table_list, row_inds, forward_di
 
 /*
 =================================
-Function to handle the action of setting the preceding paragraph before a table as its caption
+Functions that involve tags outside of the table
 =================================
 */
 
-// sets tag preceding table as caption if it is only separated by br
-function set_prev_caption(html_doc_str, prev_tag_name, table_list_type, table_list) {
+// sets input tag preceding table as caption if it is only separated by br
+function set_prev_caption(html_doc_str, html_table_arr, table_list_type, table_list, prev_tag_name) {
 	// temporarily replace table tags with placeholders to mark whether table has been visited yet
 	let edited_html_doc_str = html_doc_str.replaceAll("<table", table_placeholder);
-	// temporarily replace caption tags with placeholders to mark whether caption has been visited yet
-	edited_html_doc_str = edited_html_doc_str.replaceAll("<caption", caption_placeholder);
-	// temporarily replace @ with a placeholder to use it to mark caption tags
+	// temporarily replace @s with placeholders, and add @s after closing tags to only match the last caption-content tag before the table
 	edited_html_doc_str = edited_html_doc_str.replaceAll("@", at_placeholder);
-	const prev_open_tag = "<" + prev_tag_name + "([^>]*)>";
-	const prev_close_tag = "</" + prev_tag_name + ">";
-	edited_html_doc_str = edited_html_doc_str.replaceAll(new RegExp("(" + prev_close_tag + ")", "g"), "@$1");
-	// regex to find caption-content tag before a table placeholder
-	const prev_tag = new RegExp(prev_open_tag + "(([^@]|\n)*)@" + prev_close_tag + "( |\n|(<br[^>]*>))*" + table_placeholder, "g");
-	// regex to get full document up to the </table that closes the current table
-	const close_curr_table = new RegExp("^(.|\n)*?" + table_placeholder + "(.|\n)*?</table>", "g");
-	// regex to find the full tag of the current table
-	const table_tag = new RegExp("(" + table_placeholder + "[^>]*>)", "g");
-	// regex to find current caption
-	const curr_caption = new RegExp(caption_placeholder + "([^>]*)>((.|\n)*?)<\/caption>", "g");
+	const closing_tag = "(</" + prev_tag_name + ">)";
+	edited_html_doc_str = edited_html_doc_str.replaceAll(new RegExp(closing_tag, "g"), "$1@");
+	// regex to find caption-content tag before the current table placeholder
+	const prev_tag = new RegExp("<" + prev_tag_name + "([^>]*)>" + "(([^@]|\n)*)" + closing_tag + "@" + "( |\n|(<br[^>]*>))*" + curr_table_placeholder, "g");
 	// loop through tables to apply function to
 	let i = 0;
 	while (edited_html_doc_str.includes(table_placeholder)) {
-		// get document up to </table> that closes current table
-		let orig_doc_part = match_with_empty(edited_html_doc_str, close_curr_table)[0];
-		let curr_doc_part = orig_doc_part;
+		// mark current table
+		edited_html_doc_str = edited_html_doc_str.replace(table_placeholder, curr_table_placeholder);
+		// check if table is to have function applied to it
 		if ((table_list_type === "all") ||
 		(table_list_type === "exclude" && !table_list.includes(i)) ||
 		(table_list_type === "include" && table_list.includes(i))) {
-			// check to see if there is a caption-content tag before current table
-			let prev_tag_match = match_with_empty(curr_doc_part, prev_tag);
+			// check if there is a caption-content tag before current table
+			let prev_tag_match = match_with_empty(edited_html_doc_str, prev_tag);
+			console.log(prev_tag_match)
 			if (prev_tag_match.length > 0) {
-				// if there is, append its contents to caption, and set caption to non-placeholder to avoid matching later
+				// if so, edit current table in the table array
+				let curr_table = html_table_arr[i];
+				let curr_caption = curr_table.caption;
+				// create caption if none exists
+				if (curr_caption === "") {
+					curr_caption = "<caption></caption>";
+				}
+				// append caption-content tag's attributes and contents to caption
 				let prev_tag_attr = prev_tag_match[0].replace(prev_tag, "$1");
 				let prev_tag_contents = prev_tag_match[0].replace(prev_tag, "$2");
-				if (!curr_doc_part.includes(caption_placeholder)) {
-					// create empty caption if no caption exists yet
-					curr_doc_part = curr_doc_part.replace(table_tag, "$1\n" + caption_placeholder + "></caption>");
-				}
-				curr_doc_part = curr_doc_part.replace(curr_caption,  "<caption$1 " + prev_tag_attr + ">$2" + prev_tag_contents + "</caption>");
-				// remove original caption tag
-				curr_doc_part = curr_doc_part.replace(prev_tag, table_placeholder);
+				curr_caption = curr_caption.replace("<caption", "<caption " + prev_tag_attr);
+				curr_caption = curr_caption.replace("</caption>", prev_tag_contents + "</caption>");
+				curr_table.caption = curr_caption;
+				html_table_arr[i] = curr_table;
+				// remove original caption tag and revert table placeholder to table tag
+				edited_html_doc_str = edited_html_doc_str.replace(prev_tag, curr_table_placeholder);
 			}
 		}
-		// remove caption and table placeholders up to this point in the document
-		curr_doc_part = curr_doc_part.replaceAll(caption_placeholder, "<caption");
-		curr_doc_part = curr_doc_part.replaceAll(table_placeholder, "<table");
-		// replace original document content up to current table
-		edited_html_doc_str = edited_html_doc_str.replace(orig_doc_part, curr_doc_part);
+		// revert current table placeholder to table tag and skip to next table
+		edited_html_doc_str = edited_html_doc_str.replace(curr_table_placeholder, "<table");
 		i++;
 	}
-	// add @ back in
+	// add @s back in
 	edited_html_doc_str = edited_html_doc_str.replaceAll("@", "");
 	edited_html_doc_str = edited_html_doc_str.replaceAll(at_placeholder, "@");
-	return edited_html_doc_str;
+	return [edited_html_doc_str, html_table_arr];
 }
