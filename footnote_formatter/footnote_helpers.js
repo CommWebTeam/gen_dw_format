@@ -20,7 +20,7 @@ function set_top_footnote_regex() {
     document.getElementById("top_footnote").value = '<a href="#_ftn[0-9]+" name="_ftnref[0-9]+" title="">(.*?)</a>';
   }
   else if (footnote_format === "oca") {
-    document.getElementById("top_footnote").value = '\\([0-9]+\\)';
+    document.getElementById("top_footnote").value = '(<sup>)*\\([0-9]+\\)(</sup>)*';
     document.getElementById("top_warning").innerHTML = "Please double-check for false positives.";
   }
 }
@@ -41,6 +41,10 @@ function set_bot_footnote_regex() {
     document.getElementById("bot_footnote").value = '<div id="ftn[0-9]+">(?:.|\n)*?<a href="#_ftnref[0-9]+" name="_ftn[0-9]+" title=""> *</a>((.|\n)*?)((<[^>]*>)|\ |\n)*</div>';
     document.getElementById("regex_sub").value = 1;
     document.getElementById("bot_warning").innerHTML = "Minor formatting errors may be introduced if the Dreamweaver paste is malformed enough.";
+  }
+  else if (footnote_format === "oca") {
+    document.getElementById("bot_footnote").value = '<p> *\\([0-9]+\\) *(.*?)</p>';
+    document.getElementById("regex_sub").value = 1;
   }
 }
 

@@ -33,6 +33,20 @@ I have included the option to set these regex statements to some common footnote
 
 The "group containing content" input for the bottom footnote regex is to indicate which group - subexpression in () - contains the footnote text; the tool will access this with $ to create the bottom module. All provided bottom footnote formats use group 1 (meaning the footnote text is accessed with $1).
 
+### Extra steps
+
+Note that WET footnotes and Dreamweaver footnotes are the two primary use cases, and you may have to manually format the results afterwards for other cases. For example, for the OCA table regex statements provided, you will have to additionally do the following:
+
+1. Add a WET div module around the bottom footnotes, which currently has no div around it at all.
+2. Move the WET div module into the tfoot of the table.
+3. Change the link text to reflect that these are table footnotes:
+    - The top footnotes should have <span style="color:green">&lt;span class="wb-invisible">Table Footnote &lt;/span></span> instead of <span style="color:red">&lt;span class="wb-invisible">Footnote &lt;/span></span>.
+    - The bottom footnotes should have <span style="color:green">&lt;span class="wb-invisible">Return to table footnote &lt;/span></span> instead of <span style="color:red">&lt;span class="wb-invisible">Return to footnote &lt;/span></span>.
+
+(I have chosen not to code the above steps because I don't think the OCA table case is actually very common.)
+
+### Debugging
+
 You can view the number of top and bottom footnotes found by the regex statements in the console (ctrl+shift+i). These should be the same unless you have duplicate top footnotes (see below). If the number of top and bottom footnotes don't match up after considering duplicates, then you should fix the regex statements to catch all the required markers/footnote text.
 
 ## Duplicate top footnotes
