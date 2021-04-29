@@ -6,31 +6,45 @@
 </head>
 
 <body>
-<!-- Not comprehensive. Currently does not have cases for fix_footnotes. -->
-<p>Strange    spacing</p>
-<p >Extra   spacing</p    >
-<p>Blank tags: <b></b><i> </i><a> &nbsp; </a></p>
-<p>Nested blank tags: <b><i><i> </i></i></b></p>
+<!-- Not comprehensive. Currently does not have cases for fix_footnotes (use the sample page for footnote_formatter instead). -->
+<!-- dreamweaver links -->
 <p>Empty links<a> </a>1<a href="google.com"></a>2</p>
-<p>&rdquo;&rsquo;Fancy&lsquo; quotes‘’“   ”&ldquo; '" &ldquo; &lsquo;Fancy quotes&rsquo; &rdquo; ‘a’ “b”</p>
-<p>Fancy quote numbers &#8216; &#8217; &#8220; &#8221;</p>
+<p> <a href="#_Ref123">Reference link 1</a><a name="_Ref3">Reference link 2</a> </p>
+<p><a href="#_Toc12a">Toc link 1</a><a name="_Tocx">Toc link 2</a></p>
+<p><a name="lt_12">Logiterm 1</a><a name="lt_1ne1928w12u">Logiterm 2</a></p>
+<p><a href="#_bookmark1">Bookmark 1</a> <a name="_bookmark23847234">Bookmark 2</a></p>
+<!-- spacing -->
+<p>Different entity    spacing</p>
+<p>Extra   spacing</p>
+<p >Extra tag spacing</p   >
+<p>Blank tags: <b></b><i> </i><a> &nbsp; </a></p>
+<ol></ol>
+<p>Nested blank tags: <b><i><i> </i></i></b></p>
+<p> Spacing after opening and before closing tag </p>
+<ol>
+  <li> Spacing after opening tag</li>
+</ol>
+<table>
+  <th>Spacing before closing tag </th>
+  <td>     Multiple spacing before and after       </td>
+</table>
+<h3> Spacing before and after </h3>
+<!-- word-formatted values -->
 <p>Regular quotes &apos; &quot; &#34; &#39;</p>
+<p>'" &ldquo; &lsquo;Fancy quotes&rsquo; &rdquo; ‘a’ “b”</p>
+<p>Fancy quote numbers &#8216; &#8217; &#8220; &#8221;</p>
 <p>emdashes – -–</p>
-<p><em>non-cite</em></p>
-<p><a>link</a><em>cite</em></p>
-<p><a href="x">link</a><em>cite 2</em></p>
-<p><em>italics</em></p>
-<p><strong>bold</strong></p>
+<!-- join consecutive tags -->
 <p><em>italics 1</em> <em>italics 2</em><em>italics 3</em><strong>bold 1</strong><strong>bold 2</strong> <strong>bold 3</strong> <em>italics 4</em></p>
 <p><em>em punctuation</em>,.:?" <em>em punctuation 2</em>text<em>em punctuation 3</em></p>
+<p><strong>strong punctuation</strong>,.:?" <strong>strong punctuation 2</strong>text<strong>strong punctuation 3</strong></p>
 <p><em>em own line</em>---
-  <em>em new line 1</em>
+  <em>em new line after punctuation</em>
 
 <em>em new line 2</em><strong>strong own line</strong>
 <strong>strong new line 1</strong>,
 .
-<strong>strong new line 2</strong></p>
-<p><strong>strong punctuation</strong>,.:?" <strong>strong punctuation 2</strong>text<strong>strong punctuation 3</strong></p>
+<strong>strong new line after punctuation</strong></p>
 <ol test="x">
   <li>list item 1 </li>
   <li>list item 2</li>
@@ -45,76 +59,55 @@
 <ul test="x">
   <li>list item 3</li>
 </ul>
-<p> <a href="#_Ref123">Reference link 1</a><a name="_Ref3">Reference link 2</a> </p>
-<p><a href="#_Toc12a">Toc link 1</a><a name="_Tocx">Toc link 2</a></p>
-<p><a name="lt_12">Logiterm 1</a><a name="lt_1ne1928w12u">Logiterm 2</a></p>
-<p><a href="#_bookmark1">Bookmark 1</a> <a name="_bookmark23847234">Bookmark 2</a></p>
-<p><a href="osfi-bsif.gc.ca/Eng/test">internal link 1</a><a href="www.osfi-bsif.gc.ca/eng/test">internal link 2</a><a href="https://www.osfi-bsif.gc.ca/Fra/test">internal link 3</a><a href="http://www.osfi-bsif.gc.ca">internal link 4</a></p>
-<p><a href="https://www.google.ca/">external link</a><a href="_ftn">not external link</a></p>
-<ol>
-	<li align="center">   center align</li>
-	<li align="right">right align       </li>
-</ol>
-<p test="x">p attribute</p>
-<table border="1">
-  <tr test="test">
-    <th width="97"> table 1,1</th>
-    <td width="97" rowspan="1" colspan = "1">table 1,2</td>
-    <td> table 1,3</td>
-    <td></td>
-  </tr>
-  <tr>
-    <th colspan = "1" width="97" rowspan="1"><br/>
-      table 2,1 
-    </th>
-    <td rowspan="1">table 2,2
-      <br/></td>
-    <td colspan="1">table 2,3 </td>
-  </tr>
-</table>
-<p>Regular&lt;sup&gt;s&lt;/sup&gt;&lt;sup&gt;u&lt;/sup&gt;&lt;sup&gt;p&lt;/sup&gt;&lt;sup&gt;e&lt;/sup&gt;&lt;sup&gt;r&lt;/sup&gt;&lt;sup&gt;s&lt;/sup&gt;&lt;sup&gt;c&lt;/sup&gt;&lt;sup&gt;r&lt;/sup&gt;&lt;sup&gt;i&lt;/sup&gt;&lt;sup&gt;p&lt;/sup&gt;&lt;sup&gt;t&lt;/sup&gt;  Regular&lt;sub&gt;s&lt;/sub&gt;&lt;sub&gt;u&lt;/sub&gt;&lt;sub&gt;b&lt;/sub&gt;&lt;sub&gt;s&lt;/sub&gt;&lt;sub&gt;c&lt;/sub&gt;&lt;sub&gt;r&lt;/sub&gt;&lt;sub&gt;i&lt;/sub&gt;&lt;sub&gt;p&lt;/sub&gt;&lt;sub&gt;t&lt;/sub&gt;<br>
-  break</p>
-  <p>translate to french: /Eng/ /eng/ /Fra/ /fra/ Return to footnote Return to table 3 footnote Footnotes Footnote</p>
-  <ol></ol>
-  <p>add superscripts: 1er 2e 999e</p>
-  <p> spacing issue </p>
-  <p>break <br>
-    following text</p>
-  <p>break2<br/>
+<!-- format br -->
+<p>break <br>
+  following text</p>
+<p>break2<br/>
 break3<br>
 following text</p>
 <p>break punctuation. <br>
-  following text</p>
+following text</p>
 <p>break2 punctuation;     <br>
 (break3 punctuation)<br>
 break4 punctuation?<br />
 break5 punctuation!<br/>
 break6 punctuation:<br>
 break7 punctuation"<br>
-break8 punctuation,</p>
-<p>Punctuation only:<em>. ,</em><strong>:;</strong></p>
+break8 punctuation,<br>
+end break</p>
+<p><br>
+  empty br 1</p>
+  <p>empty br 2
+    <br></p>
+<p> <br>
+  empty br 3
+  <br>
+</p>
+  <ol>
+    <li test="x"><br/>
+    empty br 4
+  <br></li>
+  <li>
+    <br />
+    empty br 5</li>
+  </ol>
+  <table>
+    <td>empty br 6<br></td>
+    <th>empty br 7 <br />
+    </th>
+  </table>
+  <h2> <br>
+    empty br 8
+    <br />   </h2>
+  <h3> empty br 9
+    <br />   </h3>
 <ol>
-  <li>Don't remove br <br>
-  Don't remove br 2 <br/>
+  <li>Not removed br <br>
+  Not removed br 2 <br/>
 x</li>
 </ol>
-<p> <br>
-empty br
-<br></p>
-<ol>
-  <li test="x"><br/>
-  empty br 2
-<br></li>
-<li test="x"><br />
-  empty br 2
-<br></li>
-</ol>
-<h2> <br>
-  empty br
-  <br />   </h2>
-  <h4>space after header    </h4>
-  <h4>   space before header    </h4>
-<p>percent % dollar $ percent% dollar$ %1%1% $1$1$</p>
+<!-- punctuation formatting -->
+<p>Punctuation only:<em>. ,</em><strong>:;</strong></p>
 <p>Punctuation issues:
   <ol>
     <li>   .. . a.....</li>
@@ -123,6 +116,46 @@ empty br
     <li>:    :</li>
   </ol>
 </p>
+<!-- em/strong tags -->
+<p><em>non-cite</em></p>
+<p><a>link 1</a><em>cite 1</em></p>
+<p><a href="x">link 2</a><em>cite 2</em></p>
+<p><em>italics</em></p>
+<p><strong>bold</strong></p>
+<!-- tag attributes -->
+<ol>
+	<li align="center">   center align</li>
+	<li align="right">right align       </li>
+</ol>
+<p><a href="osfi-bsif.gc.ca/Eng/test">internal link 1</a><a href="www.osfi-bsif.gc.ca/eng/test">internal link 2</a><a href="https://www.osfi-bsif.gc.ca/Fra/test">internal link 3</a><a href="http://www.osfi-bsif.gc.ca">internal link 4</a></p>
+<p><a href="https://www.google.ca/">external link</a><a href="_ftn">not external link</a></p>
+<p test="x">p attribute</p>
+<ol attr="attr">
+  <li>ol attribute</li>
+</ol>
+<ul attr="attr" attr2 = "attr2">
+  <li>ul attribute</li>
+</ul>
+<table border="1">
+  <tr test ="test">
+    <th width="97"> table 1,1</th>
+    <td width="97" rowspan="1" colspan = "1">table 1,2</td>
+    <td> table 1,3</td>
+    <td></td>
+  </tr>
+  <tr>
+    <th colspan = "10" width="97" rowspan="2">table 2,1 </th>
+    <td rowspan="1">table 2,2</td>
+    <td colspan="1">table 2,3 </td>
+  </tr>
+</table>
+<!-- translate to fr -->
+<p>translate to french: /Eng/ /eng/ /Fra/ /fra/ Return to footnote Return to table 3 footnote Footnotes Footnote</p>
+<p>translate to french, different order: Footnote /Eng/ Footnotes /eng/ Return to table 3 footnote Return to footnote /Fra/ /fra/ </p>
+  <p>add superscripts: 1er 2e 999e</p>
+  <p>add spaces: percent % dollar $ percent% dollar$ %1%1% $1$1$</p>
+  <!-- fake tags -->
+<p>Regular&lt;sup&gt;s&lt;/sup&gt;&lt;sup&gt;u&lt;/sup&gt;&lt;sup&gt;p&lt;/sup&gt;&lt;sup&gt;e&lt;/sup&gt;&lt;sup&gt;r&lt;/sup&gt;&lt;sup&gt;s&lt;/sup&gt;&lt;sup&gt;c&lt;/sup&gt;&lt;sup&gt;r&lt;/sup&gt;&lt;sup&gt;i&lt;/sup&gt;&lt;sup&gt;p&lt;/sup&gt;&lt;sup&gt;t&lt;/sup&gt;  Regular&lt;sub&gt;s&lt;/sub&gt;&lt;sub&gt;u&lt;/sub&gt;&lt;sub&gt;b&lt;/sub&gt;&lt;sub&gt;s&lt;/sub&gt;&lt;sub&gt;c&lt;/sub&gt;&lt;sub&gt;r&lt;/sub&gt;&lt;sub&gt;i&lt;/sub&gt;&lt;sub&gt;p&lt;/sub&gt;&lt;sub&gt;t&lt;/sub&gt;</p>
 &lt;math &gt;&lt;mfenced  separators=&quot;|&quot;&gt;&lt;mrow&gt;&lt;mi&gt;eq&lt;/mi&gt;&lt;/mrow&gt;&lt;/mfenced&gt;&lt;mo&gt;=&lt;/mo&gt;&lt;mi&gt;x&lt;/mi&gt;&lt;mo&gt;+&lt;/mo&gt;&lt;mi&gt;y&lt;/mi&gt;&lt;mrow&gt;&lt;munderover&gt;&lt;mo  stretchy=&quot;false&quot;&gt;∑&lt;/mo&gt;&lt;mrow&gt;&lt;mn&gt;3&lt;/mn&gt;&lt;/mrow&gt;&lt;mrow&gt;&lt;mn&gt;1&lt;/mn&gt;&lt;/mrow&gt;&lt;/munderover&gt;&lt;mrow&gt;&lt;mn&gt;2&lt;/mn&gt;&lt;/mrow&gt;&lt;/mrow&gt;&lt;/math&gt;
 </body>
 </html>

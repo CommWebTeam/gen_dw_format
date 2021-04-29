@@ -22,9 +22,9 @@ function set_default_checks() {
 		document.getElementById("consecutive_em_punct").checked = false;
 		document.getElementById("consecutive_ul").checked = true;
 		document.getElementById("consecutive_ol").checked = true;
+		document.getElementById("rm_empty_br").checked = true;
 		document.getElementById("split_p_br").checked = false;
 		document.getElementById("split_p_br_punct").checked = true;
-		document.getElementById("rm_empty_br").checked = true;
 		document.getElementById("fix_br").checked = true;
 		document.getElementById("rm_punct_format").checked = true;
 		document.getElementById("fix_punct").checked = true;
@@ -67,9 +67,9 @@ function set_default_checks() {
 		document.getElementById("consecutive_em_punct").checked = false;
 		document.getElementById("consecutive_ul").checked = true;
 		document.getElementById("consecutive_ol").checked = true;
+		document.getElementById("rm_empty_br").checked = true;
 		document.getElementById("split_p_br").checked = false;
 		document.getElementById("split_p_br_punct").checked = true;
-		document.getElementById("rm_empty_br").checked = true;
 		document.getElementById("fix_br").checked = true;
 		document.getElementById("rm_punct_format").checked = true;
 		document.getElementById("fix_punct").checked = true;
@@ -112,9 +112,9 @@ function set_default_checks() {
 		document.getElementById("consecutive_em_punct").checked = false;
 		document.getElementById("consecutive_ul").checked = true;
 		document.getElementById("consecutive_ol").checked = false;
+		document.getElementById("rm_empty_br").checked = true;
 		document.getElementById("split_p_br").checked = false;
 		document.getElementById("split_p_br_punct").checked = true;
-		document.getElementById("rm_empty_br").checked = true;
 		document.getElementById("fix_br").checked = true;
 		document.getElementById("rm_punct_format").checked = true;
 		document.getElementById("fix_punct").checked = true;
@@ -157,9 +157,9 @@ function set_default_checks() {
 		document.getElementById("consecutive_em_punct").checked = false;
 		document.getElementById("consecutive_ul").checked = true;
 		document.getElementById("consecutive_ol").checked = false;
+		document.getElementById("rm_empty_br").checked = true;
 		document.getElementById("split_p_br").checked = false;
 		document.getElementById("split_p_br_punct").checked = true;
-		document.getElementById("rm_empty_br").checked = true;
 		document.getElementById("fix_br").checked = true;
 		document.getElementById("rm_punct_format").checked = true;
 		document.getElementById("fix_punct").checked = true;
@@ -202,9 +202,9 @@ function set_default_checks() {
 		document.getElementById("consecutive_em_punct").checked = false;
 		document.getElementById("consecutive_ul").checked = false;
 		document.getElementById("consecutive_ol").checked = false;
+		document.getElementById("rm_empty_br").checked = false;
 		document.getElementById("split_p_br").checked = false;
 		document.getElementById("split_p_br_punct").checked = false;
-		document.getElementById("rm_empty_br").checked = false;
 		document.getElementById("fix_br").checked = false;
 		document.getElementById("rm_punct_format").checked = false;
 		document.getElementById("fix_punct").checked = false;
@@ -335,6 +335,10 @@ function format_file() {
 		/*
 		Remove/fix br
 		*/
+		// remove start or end br for p, li, th, td
+		if (document.getElementById("rm_empty_br").checked) {
+			html_doc_str = rm_empty_br(html_doc_str);
+		}
 		// split single p separated by br into multiple p
 		if (document.getElementById("split_p_br").checked) {
 			html_doc_str = split_p_by_br(html_doc_str);
@@ -342,10 +346,6 @@ function format_file() {
 		// split single p separated by br into multiple p, if character before br is punctuation
 		if (document.getElementById("split_p_br_punct").checked) {
 			html_doc_str = split_p_by_punct_br(html_doc_str);
-		}
-		// remove start or end br for p, li, th, td
-		if (document.getElementById("rm_empty_br").checked) {
-			html_doc_str = rm_empty_br(html_doc_str);
 		}
 		// change <br> to <br />
 		if (document.getElementById("fix_br").checked) {
@@ -633,6 +633,23 @@ function join_ol(html_str) {
 Remove/fix br
 */
 
+// removes br at the start or end of p, li, th, or td tags
+function rm_empty_br(html_str) {
+	// remove br next to opening tags
+	let edited_html_str = html_str.replaceAll(/(<p( [^>]*)*>)( |\n)*<br[ \/]*>( |\n)*/g, "$1");
+	edited_html_str = edited_html_str.replaceAll(/(<li( [^>]*)*>)( |\n)*<br[ \/]*>( |\n)*/g, "$1");
+	edited_html_str = edited_html_str.replaceAll(/(<th( [^>]*)*>)( |\n)*<br[ \/]*>( |\n)*/g, "$1");
+	edited_html_str = edited_html_str.replaceAll(/(<td( [^>]*)*>)( |\n)*<br[ \/]*>( |\n)*/g, "$1");
+	edited_html_str = edited_html_str.replaceAll(/(<h[0-9]+( [^>]*)*>)( |\n)*<br[ \/]*>( |\n)*/g, "$1");
+	// remove br next to closing tags
+	edited_html_str = edited_html_str.replaceAll(/( |\n)*<br[ \/]*>( |\n)*<\/p>/g, "</p>");
+	edited_html_str = edited_html_str.replaceAll(/( |\n)*<br[ \/]*>( |\n)*<\/li>/g, "</li>");
+	edited_html_str = edited_html_str.replaceAll(/( |\n)*<br[ \/]*>( |\n)*<\/th>/g, "</th>");
+	edited_html_str = edited_html_str.replaceAll(/( |\n)*<br[ \/]*>( |\n)*<\/td>/g, "</td>");
+	edited_html_str = edited_html_str.replaceAll(/( |\n)*<br[ \/]*>( |\n)*<\/h([0-9]+)>/g, "</h$3>");
+	return edited_html_str;
+}
+
 // splits a p tag divided by br into individual p tags
 function split_p_by_br(html_str) {
 	let edited_html_str = html_str;
@@ -653,23 +670,6 @@ function split_p_by_punct_br(html_str) {
 	while (p_punct_br_regex.test(edited_html_str)) {
 		edited_html_str = edited_html_str.replaceAll(p_punct_br_regex, "$1</p>\n<p>");
 	}
-	return edited_html_str;
-}
-
-// removes br at the start or end of p, li, th, or td tags
-function rm_empty_br(html_str) {
-	// remove br next to opening tags
-	let edited_html_str = html_str.replaceAll(/(<p( [^>]*)*>) *<br[ \/]*>( |\n)*/g, "$1");
-	edited_html_str = edited_html_str.replaceAll(/(<li( [^>]*)*>) *<br[ \/]*>( |\n)*/g, "$1");
-	edited_html_str = edited_html_str.replaceAll(/(<th( [^>]*)*>) *<br[ \/]*>( |\n)*/g, "$1");
-	edited_html_str = edited_html_str.replaceAll(/(<td( [^>]*)*>) *<br[ \/]*>( |\n)*/g, "$1");
-	edited_html_str = edited_html_str.replaceAll(/(<h[0-9]+( [^>]*)*>) *<br[ \/]*>( |\n)*/g, "$1");
-	// remove br next to closing tags
-	edited_html_str = edited_html_str.replaceAll(/( |\n)*<br[ \/]*> *<\/p>/g, "</p>");
-	edited_html_str = edited_html_str.replaceAll(/( |\n)*<br[ \/]*> *<\/li>/g, "</li>");
-	edited_html_str = edited_html_str.replaceAll(/( |\n)*<br[ \/]*> *<\/th>/g, "</th>");
-	edited_html_str = edited_html_str.replaceAll(/( |\n)*<br[ \/]*> *<\/td>/g, "</td>");
-	edited_html_str = edited_html_str.replaceAll(/( |\n)*<br[ \/]*> *<\/h([0-9]+)>/g, "</h$2>");
 	return edited_html_str;
 }
 
