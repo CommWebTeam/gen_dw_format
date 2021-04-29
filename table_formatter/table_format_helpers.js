@@ -93,6 +93,11 @@ function format_table() {
 		html_doc_str = table_arr_to_doc(html_doc_str, html_table_arr);
 		// working on both the html document and the table array, add surrounding tags to table
 		let edited_doc_and_table = [html_doc_str, html_table_arr];
+		if (document.getElementById("rm_div").checked) {
+			edited_doc_and_table = rm_div(html_doc_str, html_table_arr, table_list_type, table_list, "p")
+			html_doc_str = edited_doc_and_table[0];
+			html_table_arr = edited_doc_and_table[1];
+		}
 		if (document.getElementById("set_caption_para").checked) {
 			edited_doc_and_table = set_prev_caption(html_doc_str, html_table_arr, table_list_type, table_list, "p")
 			html_doc_str = edited_doc_and_table[0];
@@ -541,6 +546,25 @@ Functions that involve tags outside of the table
 =================================
 */
 
+function rm_div(html_doc_str, html_table_arr, table_list_type, table_list) {
+	// temporarily replace table tags with placeholders to mark whether table has been visited yet
+	let edited_html_doc_str = html_doc_str.replaceAll("<table", table_placeholder);
+	// loop over tables to apply function to
+	for (let i = 0; i < html_table_arr.length; i++) {
+		if ((table_list_type === "all") ||
+		  (table_list_type === "exclude" && !table_list.includes(i)) ||
+		  (table_list_type === "include" && table_list.includes(i))) {
+			// remove divs surrounding tables
+			const div_table_regex = new RegExp("<div[^>]*>( |\n|(<br[^>]*>))*" + table_placeholder + "((.|\n)*)" + "</table>( |\n|(<br[^>]*>))*</div>");
+			edited_html_doc_str = edited_html_doc_str.replace(div_table_regex, "<table$3</table>");
+		} else {
+			// if table shouldn't have function applied to it, revert table placeholder to tag to skip this table
+			edited_html_doc_str = edited_html_doc_str.replace(table_placeholder, "<table");
+		}
+	}
+	return [edited_html_doc_str, html_table_arr];
+}
+
 // sets input tag preceding table as caption if it is only separated by br
 function set_prev_caption(html_doc_str, html_table_arr, table_list_type, table_list, prev_tag_name) {
 	// temporarily replace table tags with placeholders to mark whether table has been visited yet
@@ -562,7 +586,6 @@ function set_prev_caption(html_doc_str, html_table_arr, table_list_type, table_l
 		(table_list_type === "include" && table_list.includes(i))) {
 			// check if there is a caption-content tag before current table
 			let prev_tag_match = match_with_empty(edited_html_doc_str, prev_tag);
-			console.log(prev_tag_match)
 			if (prev_tag_match.length > 0) {
 				// if so, edit current table in the table array
 				let curr_table = html_table_arr[i];

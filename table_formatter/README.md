@@ -28,9 +28,11 @@ The inputs are as follows:
         - append the cell contents to the caption, then remove the cell by changing it to &lt;td class="background-light">&lt;/td>.
         - remove specific tags from the cell (e.g. "&lt;p>" tags).
         - convert the cell to a specific class (e.g. "osfi-txt--bold" or "align-left").
-    - actions that apply on other parts of the table. So far, the following actions have been implemented:
+    - actions to set or change the location of thead/tbody/tfoot in terms of index:
         - insert an opening thead, tbody, or tfoot tag at the first row index provided above, and the corresponding closing tag at the second row index provided above. For example, inserting the opening thead at row index 0 means placing it before all tr tags (rows). Only the first two row indices given are used. Since thead/tbody/tfoot are only used to group rows, the column indices given above are ignored.
-        - append the paragraph or header preceding a table, either immediately above a table or separated by &lt;br>, to the table's caption. This action ignores cells completely and only uses the table inputs above, as it is only applied once per table, so the row/column inputs are ignored.
+    - actions that check for and edit tags outside of the tables. These actions are only applied once per table and ignore individual cells completely; as such, they only use the table inputs above, ignoring the row/column inputs.
+        - remove a div surrounding a table, either immediately surrounding the table or separated by &lt;br>.
+        - append the paragraph or header preceding a table, either immediately above a table or separated by &lt;br>, to the table's caption.
 
 ### Running the tool multiple times
 
@@ -79,6 +81,7 @@ New captions are inserted immediately after the opening &lt;table> tag where app
 This tool makes some assumptions about the HTML document's formatting when reading the tables into an array. Some major assumptions are as follows (this is NOT a comprehensive list):
 - the document structure is valid HTML and XML.
 - there are no nested tables.
+- all tables are rectangular after factoring in colspan and rowspan.
 - each table has at most one caption.
 - the only tags in a table that aren't contained within cells (td or th tags) are tr, caption, thead, tbody, and tfoot tags.
 - there are at most one of each of the thead, tbody, and tfoot tags per table.
