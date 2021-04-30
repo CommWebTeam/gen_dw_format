@@ -30,12 +30,13 @@ The inputs are as follows:
         - convert the cell to a specific class (e.g. "osfi-txt--bold" or "align-left").
     - actions to set or change the location of thead/tbody/tfoot in terms of index:
         - insert an opening thead, tbody, or tfoot tag at the first row index provided above, and the corresponding closing tag at the second row index provided above. For example, inserting the opening thead at row index 0 means placing it before all tr tags (rows). Only the first two row indices given are used. Since thead/tbody/tfoot are only used to group rows, the column indices given above are ignored.
-    - actions that check for and edit tags outside of the tables. These actions are only applied once per table and ignore individual cells completely; as such, they only use the table inputs above, ignoring the row/column inputs.
+    - actions that check for and edit tags outside of the tables. These actions are only applied once per table and do not pay attention to cell index; as such, they only use the table inputs above, ignoring the row/column inputs.
         - remove the div surrounding a table, either immediately surrounding the table or separated by &lt;br>.
         - append the paragraph or header preceding a table, either immediately above the table or separated by &lt;br>, to the table's caption.
         - prepend the div following a table, either immediately below the table or separated by &lt;br>, to the table's tfoot.
         - put the WET footnotes immediately following a table into a WET div module, and then run the above action.
         - format an OCA table, and the paragraphs for OCA footnotes immediately following the table, into WET footnotes, and then run the above action.
+            - Note that for the last two checks, the WET structure is in English. To translate it to French, you can use the [general Dreamweaver formatting tool](https://commwebteam.github.io/gen_dw_format/dreamweaver_paste_formatter/dw_paste_format.html).
 
 ### Running the tool multiple times
 
@@ -128,6 +129,6 @@ These actions are in the **Functions that involve tags outside of the table** se
 
 For consistency, I have tried to format these action functions as so:
 - They take in the html document as the 1st input, the table array as the 2nd input, and the list of tables to edit as the 3rd/4th inputs.
-- They apply their edits to the table itself only through the table array.
+- They apply their edits to the table itself only through the table array, not the html document.
 - They apply their edits to tags outside of the table through the html document.
 - They return an array of two items, the 1st being the edited html document and the 2nd being the table array.

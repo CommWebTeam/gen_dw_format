@@ -113,6 +113,16 @@ function format_table() {
 			html_doc_str = edited_doc_and_table[0];
 			html_table_arr = edited_doc_and_table[1];
 		}
+		if (document.getElementById("set_tfoot_footnotes").checked) {
+			edited_doc_and_table = wet_footnotes_to_footer(html_doc_str, html_table_arr, table_list_type, table_list);
+			html_doc_str = edited_doc_and_table[0];
+			html_table_arr = edited_doc_and_table[1];
+		}
+		if (document.getElementById("create_oca_footnotes").checked) {
+			edited_doc_and_table = oca_footnotes_to_footer(html_doc_str, html_table_arr, table_list_type, table_list);
+			html_doc_str = edited_doc_and_table[0];
+			html_table_arr = edited_doc_and_table[1];
+		}
 		// reimplement edited table array into html document
 		html_doc_str = table_arr_to_doc(html_doc_str, html_table_arr);
 		// decide output file name - this tool may need to be run multiple times, so append version number to name
@@ -578,7 +588,7 @@ function rm_div(html_doc_str, html_table_arr, table_list_type, table_list) {
 function set_prev_caption(html_doc_str, html_table_arr, table_list_type, table_list, prev_tag_name) {
 	// temporarily replace table tags with placeholders to mark whether table has been visited yet
 	let edited_html_doc_str = html_doc_str.replaceAll("<table", table_placeholder);
-	// temporarily replace @s with placeholders, and add @s after closing caption-content tags, to only match the last caption-content tag before the table
+	// temporarily replace @s with placeholders, and add @s after closing caption-content tags, to prevent matching multiple caption-content tags at once
 	edited_html_doc_str = edited_html_doc_str.replaceAll("@", at_placeholder);
 	const closing_tag = "(</" + prev_tag_name + ">)";
 	edited_html_doc_str = edited_html_doc_str.replaceAll(new RegExp(closing_tag, "g"), "$1@");
@@ -664,4 +674,99 @@ function div_to_footer(html_doc_str, html_table_arr, table_list_type, table_list
 		i++;
 	}
 	return [edited_html_doc_str, html_table_arr];
+}
+
+function wet_footnotes_to_footer(html_doc_str, html_table_arr, table_list_type, table_list) {
+	// temporarily replace closing table tags with placeholders to mark whether table has been visited yet
+	let edited_html_doc_str = html_doc_str.replaceAll("</table>", table_placeholder);
+	// regex to find footnotes after the current closing table placeholder
+	const wet_footnote_regex = new RegExp(curr_table_placeholder + "((( |\n|(<br[^>]*>))*(<dt>(.|\n)*?</dd>))+)", "g");
+	// loop through tables to apply function to
+	let i = 0;
+	while (edited_html_doc_str.includes(table_placeholder)) {
+		// mark current table
+		edited_html_doc_str = edited_html_doc_str.replace(table_placeholder, curr_table_placeholder);
+		// check if table is to have function applied to it
+		if ((table_list_type === "all") ||
+		(table_list_type === "exclude" && !table_list.includes(i)) ||
+		(table_list_type === "include" && table_list.includes(i))) {
+			// add a wet div around wet footnotes that follow the table
+			edited_html_doc_str = edited_html_doc_str.replace(wet_footnote_regex, curr_table_placeholder + `<div class="wet-boew-footnotes" role="note">
+			<section>
+				<h3 class="wb-invisible" id="fnb-tbl` + i + `">Footnotes</h3>
+				<dl>$1</dl>
+				</section>
+			</div>`);
+		}
+		// revert current table placeholder to table tag and skip to next table
+		edited_html_doc_str = edited_html_doc_str.replace(curr_table_placeholder, "</table>");
+		i++;
+	}
+	// move wet footnote module into table tfoot
+	return div_to_footer(edited_html_doc_str, html_table_arr, table_list_type, table_list);
+}
+
+function oca_footnotes_to_footer(html_doc_str, html_table_arr, table_list_type, table_list) {
+	// since this function edits the tables from within the html document, implement the table array edits so far into the html document
+	let edited_html_doc_str = table_arr_to_doc(html_doc_str, html_table_arr);
+	// temporarily replace closing table tags with placeholders to mark whether table has been visited yet
+	edited_html_doc_str = html_doc_str.replaceAll("</table>", table_placeholder);
+	// regex to find a single oca footnote paragraph
+	const oca_footnote_para_regex = /<p[^>]*> *\(([0-9]+)\)(.*?)<\/p>/g;
+	// regex to find oca footnote paragraphs after the current table
+	const oca_footnotes_regex = new RegExp(curr_table_placeholder + "( |\n|(<br[^>]*>))*((?:<p[^>]*> *\\([0-9]+\\).*?<\/p>(?: |\n)*)+)", "g");
+	// loop through tables to apply function to
+	let i = 0;
+	while (edited_html_doc_str.includes(table_placeholder)) {
+		// mark current table
+		edited_html_doc_str = edited_html_doc_str.replace(table_placeholder, curr_table_placeholder);
+		// check if table is to have function applied to it
+		if ((table_list_type === "all") ||
+		(table_list_type === "exclude" && !table_list.includes(i)) ||
+		(table_list_type === "include" && table_list.includes(i))) {
+			// check if there are oca footnotes after the current table
+			let oca_footnote_match = match_with_empty(edited_html_doc_str, oca_footnotes_regex);
+			if (oca_footnote_match.length > 0) {
+				let curr_table = html_table_arr[i];
+				let footnote_id = "fnb-tbl" + (i + 1) + "-";
+				// if there are, get bottom footnotes
+				let oca_footnotes = match_with_empty(oca_footnote_match[0], oca_footnote_para_regex);
+				// loop through oca bot footnotes and convert them to WET
+				for (let j = 0; j < oca_footnotes.length; j++) {
+					// format bot footnotes using footnote formatter function
+					let footnote_ind = oca_footnotes[j].replace(oca_footnote_para_regex, "$1");
+					let footnote_content = oca_footnotes[j].replace(oca_footnote_para_regex, "$2");
+					oca_footnotes[j] = get_bot_footnote(footnote_id, footnote_ind, footnote_content);
+					// replace marker in caption with WET top footnote
+					let oca_top_footnote = new RegExp("(<sup>)*\\(" + footnote_ind + "\\)(</sup>)*", "g");
+					let curr_dup = "";
+					if (oca_top_footnote.test(curr_table.caption)) {
+						curr_table.caption = curr_table.caption.replaceAll(oca_top_footnote, get_top_footnote(footnote_id, footnote_ind, curr_dup));
+						curr_dup = curr_dup + "#";
+					}
+					// loop through all cells in the current table and replace markers for current bot footnote with WET top footnote
+					for (let k = 0; k < curr_table.rows.length; k++) {
+						let curr_row = curr_table.rows[k];
+						for (let m = 0; m < curr_row.cells.length; m++) {
+							let curr_cell = curr_row.cells[m];
+							if (oca_top_footnote.test(curr_cell)) {
+								curr_cell = curr_cell.replaceAll(oca_top_footnote, get_top_footnote(footnote_id, footnote_ind, curr_dup));
+								curr_dup = curr_dup + "#";
+							}
+							curr_row.cells[m] = curr_cell;
+						}
+						curr_table.rows[k] = curr_row;
+					}
+				}
+				html_table_arr[i] = curr_table;
+				// change oca bot footnotes to WET bot footnotes in the html document
+				edited_html_doc_str = edited_html_doc_str.replace(oca_footnotes_regex, curr_table_placeholder + "\n" + oca_footnotes.join("\n"));
+			}
+		}
+		// revert current table placeholder to table tag and skip to next table
+		edited_html_doc_str = edited_html_doc_str.replace(curr_table_placeholder, "</table>");
+		i++;
+	}
+	// add bottom footnotes to wet module and move them into tfoot
+	return wet_footnotes_to_footer(edited_html_doc_str, html_table_arr, table_list_type, table_list);
 }

@@ -174,6 +174,20 @@ Generate and format WET footnotes
 =================================
 */
 
+// formats top WET footnote
+function get_top_footnote(init_id, footnote_ind, dup_id) {
+  return '<sup id="' + init_id + footnote_ind + dup_id + '-ref"><a class="footnote-link" href="#' + init_id + footnote_ind + '"><span class="wb-invisible">Footnote </span>' + footnote_ind + '</a></sup>';
+}
+
+// formats bottom WET footnote
+function get_bot_footnote(init_id, ind, bot_footnote_content) {
+  return '<dt>Footnote ' + ind + '</dt>\n' +
+  '<dd id="' + init_id + ind + '">\n' +
+  bot_footnote_content + '\n' +
+  '<p class="footnote-return"><a href="#' + init_id + ind + '-ref"><span class="wb-invisible">Return to footnote </span>' + ind + '</a></p>\n' +
+  '</dd>';
+}
+
 // searches html for footnote regex statements and replaces them
 function replace_footnote_str(html_str, init_id, top_regex_str, bot_regex_str, bot_regex_sub, duplicate_footnotes) {
     // find indices of matches
@@ -202,18 +216,14 @@ function replace_footnote_str(html_str, init_id, top_regex_str, bot_regex_str, b
         if (!bot_footnote_content.includes("<p>")) {
           bot_footnote_content = "<p>" + bot_footnote_content + "</p>";
         }
-        let bot_footnote = '<dt>Footnote ' + ind + '</dt>\n' +
-          '<dd id="' + init_id + ind + '">\n' +
-          bot_footnote_content + '\n' +
-          '<p class="footnote-return"><a href="#' + init_id + ind + '-ref"><span class="wb-invisible">Return to footnote </span>' + ind + '</a></p>\n' +
-          '</dd>';
+        let bot_footnote = get_bot_footnote(init_id, ind, bot_footnote_content);
         output_str = output_str.replace(bot_footnote_str, bot_footnote);
     }
     // replace top footnotes - check for duplicate footnotes
     let footnote_nums_dup = get_footnote_nums(num_footnotes, duplicate_footnotes);
     for (i = 0; i < num_footnotes; i++) {
         let footnote_ind = footnote_nums_dup[i];
-        let top_footnote = '<sup id="' + init_id + footnote_ind + '-ref"><a class="footnote-link" href="#' + init_id + footnote_ind + '"><span class="wb-invisible">Footnote </span>' + footnote_ind + '</a></sup>';
+        let top_footnote = get_top_footnote(init_id, footnote_ind, "");
         output_str = output_str.replace(top_matches[i], top_footnote);
     }
     return output_str;

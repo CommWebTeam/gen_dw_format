@@ -10,37 +10,39 @@
 <p>Placeholder paragraph</p>
 <p>Pre-table text table 1</p>
 <table style="width:400px">
-  <caption>Test caption:(1) <br/>
-  text</caption>
+  <caption>
+  Test caption:(1) <br/>
+  text
+  </caption>
   <thead class="x">
-  <tr>
-    <th><p>1a</p></th>
-    <td><p span="x">1b</p></td>
-    <th>1c</th>
-  </tr>
+    <tr>
+      <th><p>1a(1)</p></th>
+      <td><p span="x">1b</p></td>
+      <th>1c</th>
+    </tr>
   </thead>
   <tbody>
-  <tr>
-    <th scope="x">2a<sup>(2)</sup></th>
-    <td class="osfi-txt--italic" colspan="2" rowspan="2">2b</td>
-  </tr>
-  <tr>
-    <th><strong>3a</strong></th>
-    <td rowspan="3">3b</td>
-  </tr>
-  <tr>
-    <td>4a</td>
-    <td>4b</td>
-    <td rowspan="3">4c</td>
-  </tr>
+    <tr>
+      <th scope="x">2a<sup>(2)</sup></th>
+      <td class="osfi-txt--italic" colspan="2" rowspan="2">2b</td>
+    </tr>
+    <tr>
+      <th><strong>3a</strong></th>
+      <td rowspan="3">3b</td>
+    </tr>
+    <tr>
+      <td>4a</td>
+      <td>4b</td>
+      <td rowspan="3">4c</td>
+    </tr>
   </tbody>
   <tfoot>
-  <tr>
-    <td colspan="2">5a</td>
-    <td colspan="2">5b</td>
-    <td colspan="2" rowspan="3">5c</td>
-    <td colspan="1" rowspan="3">5d</td>
-  </tr>
+    <tr>
+      <td colspan="2">5a</td>
+      <td colspan="2">5b</td>
+      <td colspan="2" rowspan="3">5c</td>
+      <td colspan="1" rowspan="3">5d</td>
+    </tr>
   </tfoot>
 </table>
 <p>(1) footnote 1</p>
@@ -66,22 +68,22 @@
 <h3 test="x">Pre-table text table 3</h3>
 <br/>
 <div>
-<table style="width:600px">
-  <tr>
-    <th>1a t3</th>
-    <td class="align-center">1b t3</td>
-    <td>1c t3</td>
-  </tr>
-  <tfoot>
-  <tr>
-    <th>2a t3</th>
-    <td colspan="2" rowspan="2">2b t3</td>
-  </tr>
-</tfoot>
-</table>
+  <table style="width:600px">
+    <tr>
+      <th>1a t3</th>
+      <td class="align-center">1b t3</td>
+      <td>1c t3</td>
+    </tr>
+    <tfoot>
+      <tr>
+        <th>2a t3</th>
+        <td colspan="2" rowspan="2">2b t3</td>
+      </tr>
+    </tfoot>
+  </table>
 </div>
-<div x="x">test</div>
-<div>
+<div x="followup">test</div>
+<div x="attr">
   <table style="width:600px">
     <tr>
       <th>1a t3 copy</th>
@@ -93,7 +95,144 @@
       <td colspan="2" rowspan="2">2b t3 copy</td>
     </tr>
   </table>
-  <div x="x">test</div>
-  </div>
+  <div x="followup 2">test</div>
+</div>
+<p>placeholder</p>
+<table style="width:600px">
+  <tr>
+    <th>1a t3 copy 2</th>
+    <td class="align-center">1b t3 copy 2</td>
+    <td>1c t3 copy2</td>
+  </tr>
+  <tr>
+    <th>2a t3 copy 2</th>
+    <td colspan="2" rowspan="2">2b t3 copy 2</td>
+  </tr>
+</table>
+<dt>Note de bas de page 12312341234</dt>
+<dd id="fnb19">
+  <p>French bottom text a</p>
+  <p class="footnote-return"><a href="#fnb19-ref"><span class="wb-invisible">Retour à la référence de la note de bas de page </span>19</a></p>
+</dd>
+<dt>Footnote 21</dt>
+<dd id="fnb211">
+  <p>English bottom text c</p>
+  <p class="footnote-return"><a href="#fnb21-ref"><span class="wb-invisible">Return to footnote </span>21<span class="wb-invisible"> referrer </span></a></p>
+</dd>
+
+<!-- copy of the above tables -->
+<h3 test="x">Placeholder header@</h3>
+<p>Placeholder paragraph</p>
+<p>Pre-table text table 1</p>
+<table style="width:400px">
+  <caption>
+  Test caption:(1) <br/>
+  text
+  </caption>
+  <thead class="x">
+    <tr>
+      <th><p>1a</p></th>
+      <td><p span="x">1b</p></td>
+      <th>1c</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th scope="x">2a<sup>(2)</sup></th>
+      <td class="osfi-txt--italic" colspan="2" rowspan="2">2b</td>
+    </tr>
+    <tr>
+      <th><strong>3a</strong></th>
+      <td rowspan="3">3b</td>
+    </tr>
+    <tr>
+      <td>4a</td>
+      <td>4b</td>
+      <td rowspan="3">4c</td>
+    </tr>
+  </tbody>
+  <tfoot>
+    <tr>
+      <td colspan="2">5a</td>
+      <td colspan="2">5b</td>
+      <td colspan="2" rowspan="3">5c</td>
+      <td colspan="1" rowspan="3">5d</td>
+    </tr>
+  </tfoot>
+</table>
+<p>(1) footnote 1</p>
+<p>(2) footnote 2</p>
+<h3 test="x">Pre-table text table 2</h3>
+<br/>
+<table>
+  <tr>
+    <th>1a t2</th>
+    <td class="osfi-txt--italic">1b t2</td>
+    <td>1c t2</td>
+  </tr>
+  <tr>
+    <th>2a t2</th>
+    <td colspan="2" rowspan="2">2b t2</td>
+  </tr>
+  <tr>
+    <th>3a t2</th>
+    <td>3b t2</td>
+  </tr>
+</table>
+<p>placeholder</p>
+<h3 test="x">Pre-table text table 3</h3>
+<br/>
+<div>
+  <table style="width:600px">
+    <tr>
+      <th>1a t3</th>
+      <td class="align-center">1b t3</td>
+      <td>1c t3</td>
+    </tr>
+    <tfoot>
+      <tr>
+        <th>2a t3</th>
+        <td colspan="2" rowspan="2">2b t3</td>
+      </tr>
+    </tfoot>
+  </table>
+</div>
+<div x="followup">test</div>
+<div x="attr">
+  <table style="width:600px">
+    <tr>
+      <th>1a t3 copy</th>
+      <td class="align-center">1b t3 copy</td>
+      <td>1c t3 copy</td>
+    </tr>
+    <tr>
+      <th>2a t3 copy</th>
+      <td colspan="2" rowspan="2">2b t3 copy</td>
+    </tr>
+  </table>
+  <div x="followup 2">test</div>
+</div>
+<p>placeholder</p>
+<table style="width:600px">
+  <tr>
+    <th>1a t3 copy 2</th>
+    <td class="align-center">1b t3 copy 2</td>
+    <td>1c t3 copy2</td>
+  </tr>
+  <tr>
+    <th>2a t3 copy 2</th>
+    <td colspan="2" rowspan="2">2b t3 copy 2</td>
+  </tr>
+</table>
+<dt>Note de bas de page 12312341234</dt>
+<dd id="fnb191">
+  <p>French bottom text a</p>
+  <p class="footnote-return"><a href="#fnb19-ref"><span class="wb-invisible">Retour à la référence de la note de bas de page </span>19</a></p>
+</dd>
+<dt>Footnote 21</dt>
+<dd id="fnb2111">
+  <p>English bottom text c</p>
+  <p class="footnote-return"><a href="#fnb21-ref"><span class="wb-invisible">Return to footnote </span>21<span class="wb-invisible"> referrer </span></a></p>
+</dd>
 </body>
 </html>
