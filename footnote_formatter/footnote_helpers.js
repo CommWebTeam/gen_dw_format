@@ -1,9 +1,19 @@
+// regex strings for common footnote formattings
+const en_wet_top = '<sup id="fnb[0-9]+-ref"> *<a class="footnote-link" href="#fnb[0-9]+"> *<span class="wb-invisible">Footnote </span>[0-9]+</a>,*</sup>';
+const en_wet_bot = '<dt>Footnote [0-9]+</dt>(?: |\n)*<dd id="fnb[0-9]+">(?: |\n)*((.|\n)*?)<p class="footnote-return"> *<a href="#fnb[0-9]+-ref"> *<span class="wb-invisible"> *Return to footnote *</span>[0-9]+(<span class="wb-invisible"> *referrer *</span>)*</a> *</p>( |\n)*</dd>';
+const fr_wet_top = '<sup id="fnb[0-9]+-ref"> *<a class="footnote-link" href="#fnb[0-9]+"> *<span class="wb-invisible">Note de bas de page </span>[0-9]+</a>,*</sup>';
+const fr_wet_bot = '<dt>Note de bas de page [0-9]+</dt>(?: |\n)*<dd id="fnb[0-9]+">(?: |\n)*((.|\n)*?)<p class="footnote-return"> *<a href="#fnb[0-9]+-ref"> *<span class="wb-invisible"> *Retour à la référence de la note de bas de page *</span>[0-9]+(<span class="wb-invisible"> *referrer *</span>)*</a> *</p>( |\n)*</dd>';
+const dw_top = '<a href="#_ftn[0-9]+" name="_ftnref[0-9]+" title="">(.*?)</a>';
+const dw_bot = '<div id="ftn[0-9]+">(?:.|\n)*?<a href="#_ftnref[0-9]+" name="_ftn[0-9]+" title=""> *</a>((.|\n)*?)((<[^>]*>)|\ |\n)*?</div>';
+const oca_top = '(<sup>)*\\([0-9]+\\)(</sup>)*';
+const oca_bot = '<p> *\\([0-9]+\\) *(.*?)</p>';
+
 // initial values for top/bot footnote regex
 if (document.getElementById("top_footnote") !== null) {
-  document.getElementById("top_footnote").value = '<sup id="fnb[0-9]+-ref"> *<a class="footnote-link" href="#fnb[0-9]+"> *<span class="wb-invisible">Footnote </span>[0-9]+</a>,*</sup>';
+  document.getElementById("top_footnote").value = en_wet_top;
 }
 if (document.getElementById("bot_footnote") !== null) {
-  document.getElementById("bot_footnote").value = '<dt>Footnote [0-9]+</dt>(?: |\n)*<dd id="fnb[0-9]+">(?: |\n)*((.|\n)*?)<p class="footnote-return"> *<a href="#fnb[0-9]+-ref"> *<span class="wb-invisible"> *Return to footnote *</span>[0-9]+(<span class="wb-invisible"> *referrer *</span>)*</a> *</p>( |\n)*</dd>';
+  document.getElementById("bot_footnote").value = en_wet_bot;
 }
 
 // set top footnote regex value
@@ -11,16 +21,16 @@ function set_top_footnote_regex() {
   document.getElementById("top_warning").innerHTML = "";
 	let footnote_format = document.getElementById("top_footnote_format").value;
   if (footnote_format === "en_wet") {
-    document.getElementById("top_footnote").value = '<sup id="fnb[0-9]+-ref"> *<a class="footnote-link" href="#fnb[0-9]+"> *<span class="wb-invisible">Footnote </span>[0-9]+</a>,*</sup>';
+    document.getElementById("top_footnote").value = en_wet_top;
   }
   else if (footnote_format === "fr_wet") {
-    document.getElementById("top_footnote").value = '<sup id="fnb[0-9]+-ref"> *<a class="footnote-link" href="#fnb[0-9]+"> *<span class="wb-invisible">Note de bas de page </span>[0-9]+</a>,*</sup>';
+    document.getElementById("top_footnote").value = fr_wet_top;
   }
   else if (footnote_format === "dw") {
-    document.getElementById("top_footnote").value = '<a href="#_ftn[0-9]+" name="_ftnref[0-9]+" title="">(.*?)</a>';
+    document.getElementById("top_footnote").value = dw_top;
   }
   else if (footnote_format === "oca") {
-    document.getElementById("top_footnote").value = '(<sup>)*\\([0-9]+\\)(</sup>)*';
+    document.getElementById("top_footnote").value = oca_top;
     document.getElementById("top_warning").innerHTML = "Please double-check for false positives.";
   }
 }
@@ -30,20 +40,20 @@ function set_bot_footnote_regex() {
   document.getElementById("bot_warning").innerHTML = "";
 	let footnote_format = document.getElementById("bot_footnote_format").value;
   if (footnote_format === "en_wet") {
-    document.getElementById("bot_footnote").value = '<dt>Footnote [0-9]+</dt>(?: |\n)*<dd id="fnb[0-9]+">(?: |\n)*((.|\n)*?)<p class="footnote-return"> *<a href="#fnb[0-9]+-ref"> *<span class="wb-invisible"> *Return to footnote *</span>[0-9]+(<span class="wb-invisible"> *referrer *</span>)*</a> *</p>( |\n)*</dd>';
+    document.getElementById("bot_footnote").value = en_wet_bot;
     document.getElementById("regex_sub").value = 1;
   }
   else if (footnote_format === "fr_wet") {
-    document.getElementById("bot_footnote").value = '<dt>Note de bas de page [0-9]+</dt>(?: |\n)*<dd id="fnb[0-9]+">(?: |\n)*((.|\n)*?)<p class="footnote-return"> *<a href="#fnb[0-9]+-ref"> *<span class="wb-invisible"> *Retour à la référence de la note de bas de page *</span>[0-9]+(<span class="wb-invisible"> *referrer *</span>)*</a> *</p>( |\n)*</dd>';
+    document.getElementById("bot_footnote").value = fr_wet_bot;
     document.getElementById("regex_sub").value = 1;
   }
   else if (footnote_format === "dw") {
-    document.getElementById("bot_footnote").value = '<div id="ftn[0-9]+">(?:.|\n)*?<a href="#_ftnref[0-9]+" name="_ftn[0-9]+" title=""> *</a>((.|\n)*?)((<[^>]*>)|\ |\n)*</div>';
+    document.getElementById("bot_footnote").value = dw_bot;
     document.getElementById("regex_sub").value = 1;
     document.getElementById("bot_warning").innerHTML = "Minor formatting errors may be introduced if the Dreamweaver paste is malformed enough.";
   }
   else if (footnote_format === "oca") {
-    document.getElementById("bot_footnote").value = '<p> *\\([0-9]+\\) *(.*?)</p>';
+    document.getElementById("bot_footnote").value = oca_bot;
     document.getElementById("regex_sub").value = 1;
   }
 }
