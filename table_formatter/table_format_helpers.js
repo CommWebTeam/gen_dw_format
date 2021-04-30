@@ -94,17 +94,22 @@ function format_table() {
 		// working on both the html document and the table array, add surrounding tags to table
 		let edited_doc_and_table = [html_doc_str, html_table_arr];
 		if (document.getElementById("rm_div").checked) {
-			edited_doc_and_table = rm_div(html_doc_str, html_table_arr, table_list_type, table_list, "p")
+			edited_doc_and_table = rm_div(html_doc_str, html_table_arr, table_list_type, table_list);
 			html_doc_str = edited_doc_and_table[0];
 			html_table_arr = edited_doc_and_table[1];
 		}
 		if (document.getElementById("set_caption_para").checked) {
-			edited_doc_and_table = set_prev_caption(html_doc_str, html_table_arr, table_list_type, table_list, "p")
+			edited_doc_and_table = set_prev_caption(html_doc_str, html_table_arr, table_list_type, table_list, "p");
 			html_doc_str = edited_doc_and_table[0];
 			html_table_arr = edited_doc_and_table[1];
 		}
 		if (document.getElementById("set_caption_header").checked) {
-			edited_doc_and_table = set_prev_caption(html_doc_str, html_table_arr, table_list_type, table_list, "h[0-9]+")
+			edited_doc_and_table = set_prev_caption(html_doc_str, html_table_arr, table_list_type, table_list, "h[0-9]+");
+			html_doc_str = edited_doc_and_table[0];
+			html_table_arr = edited_doc_and_table[1];
+		}
+		if (document.getElementById("set_tfoot_div").checked) {
+			edited_doc_and_table = div_to_footer(html_doc_str, html_table_arr, table_list_type, table_list);
 			html_doc_str = edited_doc_and_table[0];
 			html_table_arr = edited_doc_and_table[1];
 		}
@@ -549,18 +554,22 @@ Functions that involve tags outside of the table
 function rm_div(html_doc_str, html_table_arr, table_list_type, table_list) {
 	// temporarily replace table tags with placeholders to mark whether table has been visited yet
 	let edited_html_doc_str = html_doc_str.replaceAll("<table", table_placeholder);
-	// loop over tables to apply function to
-	for (let i = 0; i < html_table_arr.length; i++) {
+	// loop through tables to apply function to
+	let i = 0;
+	while (edited_html_doc_str.includes(table_placeholder)) {
+		// mark current table
+		edited_html_doc_str = edited_html_doc_str.replace(table_placeholder, curr_table_placeholder);
+		// check if table is to have function applied to it
 		if ((table_list_type === "all") ||
-		  (table_list_type === "exclude" && !table_list.includes(i)) ||
-		  (table_list_type === "include" && table_list.includes(i))) {
+		(table_list_type === "exclude" && !table_list.includes(i)) ||
+		(table_list_type === "include" && table_list.includes(i))) {
 			// remove divs surrounding tables
-			const div_table_regex = new RegExp("<div[^>]*>( |\n|(<br[^>]*>))*" + table_placeholder + "((.|\n)*)" + "</table>( |\n|(<br[^>]*>))*</div>");
-			edited_html_doc_str = edited_html_doc_str.replace(div_table_regex, "<table$3</table>");
-		} else {
-			// if table shouldn't have function applied to it, revert table placeholder to tag to skip this table
-			edited_html_doc_str = edited_html_doc_str.replace(table_placeholder, "<table");
+			const div_table_regex = new RegExp("<div[^>]*>( |\n|(<br[^>]*>))*" + curr_table_placeholder + "((.|\n)*?)" + "( |\n|(<br[^>]*>))*</div>");
+			edited_html_doc_str = edited_html_doc_str.replace(div_table_regex, curr_table_placeholder + "$3");
 		}
+		// revert current table placeholder to table tag and skip to next table
+		edited_html_doc_str = edited_html_doc_str.replace(curr_table_placeholder, "<table");
+		i++;
 	}
 	return [edited_html_doc_str, html_table_arr];
 }
@@ -569,7 +578,7 @@ function rm_div(html_doc_str, html_table_arr, table_list_type, table_list) {
 function set_prev_caption(html_doc_str, html_table_arr, table_list_type, table_list, prev_tag_name) {
 	// temporarily replace table tags with placeholders to mark whether table has been visited yet
 	let edited_html_doc_str = html_doc_str.replaceAll("<table", table_placeholder);
-	// temporarily replace @s with placeholders, and add @s after closing tags to only match the last caption-content tag before the table
+	// temporarily replace @s with placeholders, and add @s after closing caption-content tags, to only match the last caption-content tag before the table
 	edited_html_doc_str = edited_html_doc_str.replaceAll("@", at_placeholder);
 	const closing_tag = "(</" + prev_tag_name + ">)";
 	edited_html_doc_str = edited_html_doc_str.replaceAll(new RegExp(closing_tag, "g"), "$1@");
@@ -601,7 +610,7 @@ function set_prev_caption(html_doc_str, html_table_arr, table_list_type, table_l
 				curr_caption = curr_caption.replace("</caption>", prev_tag_contents + "</caption>");
 				curr_table.caption = curr_caption;
 				html_table_arr[i] = curr_table;
-				// remove original caption tag and revert table placeholder to table tag
+				// remove original caption-content tag
 				edited_html_doc_str = edited_html_doc_str.replace(prev_tag, curr_table_placeholder);
 			}
 		}
@@ -612,5 +621,47 @@ function set_prev_caption(html_doc_str, html_table_arr, table_list_type, table_l
 	// add @s back in
 	edited_html_doc_str = edited_html_doc_str.replaceAll("@", "");
 	edited_html_doc_str = edited_html_doc_str.replaceAll(at_placeholder, "@");
+	return [edited_html_doc_str, html_table_arr];
+}
+
+function div_to_footer(html_doc_str, html_table_arr, table_list_type, table_list) {
+	// temporarily replace closing table tags with placeholders to mark whether table has been visited yet
+	let edited_html_doc_str = html_doc_str.replaceAll("</table>", table_placeholder);
+	// regex to find div after the current closing table placeholder
+	const div_table_regex = new RegExp(curr_table_placeholder + "( |\n|(<br[^>]*>))*(<div(.|\n)*?</div>)", "g");
+	// loop through tables to apply function to
+	let i = 0;
+	while (edited_html_doc_str.includes(table_placeholder)) {
+		// mark current table
+		edited_html_doc_str = edited_html_doc_str.replace(table_placeholder, curr_table_placeholder);
+		// check if table is to have function applied to it
+		if ((table_list_type === "all") ||
+		(table_list_type === "exclude" && !table_list.includes(i)) ||
+		(table_list_type === "include" && table_list.includes(i))) {
+			// check if there is a div after the table
+			let div_table_match = match_with_empty(edited_html_doc_str, div_table_regex);
+			if (div_table_match.length > 0) {
+				// if so, edit current table in the table array
+				let curr_table = html_table_arr[i];
+				let curr_tfoot = curr_table.tfoot.attr;
+				// create tfoot if none exists
+				if (curr_tfoot === "") {
+					curr_tfoot = "<tfoot>";
+					curr_table.tfoot.open_tag_ind = curr_table.rows.length;
+					curr_table.tfoot.close_tag_ind = curr_table.rows.length;
+				}
+				// prepend div's contents to tfoot
+				let div_contents = div_table_match[0].replace(div_table_regex, "$3");
+				curr_tfoot = curr_tfoot.replace(/(<tfoot[^>]*>)/, "$1" + div_contents);
+				curr_table.tfoot.attr = curr_tfoot;
+				html_table_arr[i] = curr_table;
+				// remove the original div
+				edited_html_doc_str = edited_html_doc_str.replace(div_table_regex, curr_table_placeholder);
+			}
+		}
+		// revert current table placeholder to table tag and skip to next table
+		edited_html_doc_str = edited_html_doc_str.replace(curr_table_placeholder, "</table>");
+		i++;
+	}
 	return [edited_html_doc_str, html_table_arr];
 }

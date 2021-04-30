@@ -31,8 +31,11 @@ The inputs are as follows:
     - actions to set or change the location of thead/tbody/tfoot in terms of index:
         - insert an opening thead, tbody, or tfoot tag at the first row index provided above, and the corresponding closing tag at the second row index provided above. For example, inserting the opening thead at row index 0 means placing it before all tr tags (rows). Only the first two row indices given are used. Since thead/tbody/tfoot are only used to group rows, the column indices given above are ignored.
     - actions that check for and edit tags outside of the tables. These actions are only applied once per table and ignore individual cells completely; as such, they only use the table inputs above, ignoring the row/column inputs.
-        - remove a div surrounding a table, either immediately surrounding the table or separated by &lt;br>.
-        - append the paragraph or header preceding a table, either immediately above a table or separated by &lt;br>, to the table's caption.
+        - remove the div surrounding a table, either immediately surrounding the table or separated by &lt;br>.
+        - append the paragraph or header preceding a table, either immediately above the table or separated by &lt;br>, to the table's caption.
+        - prepend the div following a table, either immediately below the table or separated by &lt;br>, to the table's tfoot.
+        - put the WET footnotes immediately following a table into a WET div module, and then run the above action.
+        - format an OCA table, and the paragraphs for OCA footnotes immediately following the table, into WET footnotes, and then run the above action.
 
 ### Running the tool multiple times
 

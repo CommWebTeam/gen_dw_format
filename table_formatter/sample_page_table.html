@@ -10,7 +10,7 @@
 <p>Placeholder paragraph</p>
 <p>Pre-table text table 1</p>
 <table style="width:400px">
-  <caption>Test caption: <br/>
+  <caption>Test caption:(1) <br/>
   text</caption>
   <thead class="x">
   <tr>
@@ -21,7 +21,7 @@
   </thead>
   <tbody>
   <tr>
-    <th scope="x">2a</th>
+    <th scope="x">2a<sup>(2)</sup></th>
     <td class="osfi-txt--italic" colspan="2" rowspan="2">2b</td>
   </tr>
   <tr>
@@ -43,9 +43,11 @@
   </tr>
   </tfoot>
 </table>
+<p>(1) footnote 1</p>
+<p>(2) footnote 2</p>
 <h3 test="x">Pre-table text table 2</h3>
 <br/>
-<table style="width:400px">
+<table>
   <tr>
     <th>1a t2</th>
     <td class="osfi-txt--italic">1b t2</td>
@@ -64,17 +66,34 @@
 <h3 test="x">Pre-table text table 3</h3>
 <br/>
 <div>
-<table style="width:400px">
+<table style="width:600px">
   <tr>
     <th>1a t3</th>
     <td class="align-center">1b t3</td>
     <td>1c t3</td>
   </tr>
+  <tfoot>
   <tr>
     <th>2a t3</th>
     <td colspan="2" rowspan="2">2b t3</td>
   </tr>
+</tfoot>
 </table>
 </div>
+<div x="x">test</div>
+<div>
+  <table style="width:600px">
+    <tr>
+      <th>1a t3 copy</th>
+      <td class="align-center">1b t3 copy</td>
+      <td>1c t3 copy</td>
+    </tr>
+    <tr>
+      <th>2a t3 copy</th>
+      <td colspan="2" rowspan="2">2b t3 copy</td>
+    </tr>
+  </table>
+  <div x="x">test</div>
+  </div>
 </body>
 </html>
