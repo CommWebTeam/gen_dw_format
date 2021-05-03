@@ -1,12 +1,12 @@
 // regex strings for common footnote formattings
-const en_wet_top = '<sup id="fnb[0-9]+-ref"> *<a class="footnote-link" href="#fnb[0-9]+"> *<span class="wb-invisible">Footnote </span>[0-9]+</a>,*</sup>';
-const en_wet_bot = '<dt>Footnote [0-9]+</dt>(?: |\n)*<dd id="fnb[0-9]+">(?: |\n)*((.|\n)*?)<p class="footnote-return"> *<a href="#fnb[0-9]+-ref"> *<span class="wb-invisible"> *Return to footnote *</span>[0-9]+(<span class="wb-invisible"> *referrer *</span>)*</a> *</p>( |\n)*</dd>';
-const fr_wet_top = '<sup id="fnb[0-9]+-ref"> *<a class="footnote-link" href="#fnb[0-9]+"> *<span class="wb-invisible">Note de bas de page </span>[0-9]+</a>,*</sup>';
-const fr_wet_bot = '<dt>Note de bas de page [0-9]+</dt>(?: |\n)*<dd id="fnb[0-9]+">(?: |\n)*((.|\n)*?)<p class="footnote-return"> *<a href="#fnb[0-9]+-ref"> *<span class="wb-invisible"> *Retour à la référence de la note de bas de page *</span>[0-9]+(<span class="wb-invisible"> *referrer *</span>)*</a> *</p>( |\n)*</dd>';
-const dw_top = '<a href="#_ftn[0-9]+" name="_ftnref[0-9]+" title="">(.*?)</a>';
-const dw_bot = '<div id="ftn[0-9]+">(?:.|\n)*?<a href="#_ftnref[0-9]+" name="_ftn[0-9]+" title=""> *</a>((.|\n)*?)((<[^>]*>)|\ |\n)*?</div>';
-const oca_top = '(<sup>)*\\([0-9]+\\)(</sup>)*';
-const oca_bot = '<p> *\\([0-9]+\\) *(.*?)</p>';
+const en_wet_top = '<sup id="fnb[0-9\-a-z]+-ref"> *<a class="footnote-link" href="#fnb[0-9\-a-z]+"> *<span class="wb-invisible">Footnote </span>[0-9\-a-z]+</a>,*</sup>';
+const en_wet_bot = '<dt>Footnote [0-9\-a-z]+</dt>(?: |\n)*<dd id="fnb[0-9\-a-z]+">(?: |\n)*((.|\n)*?)<p class="footnote-return"> *<a href="#fnb[0-9\-a-z]+-ref"> *<span class="wb-invisible"> *Return to footnote *</span>[0-9\-a-z]+(<span class="wb-invisible"> *referrer *</span>)*</a> *</p>( |\n)*</dd>';
+const fr_wet_top = '<sup id="fnb[0-9\-a-z]+-ref"> *<a class="footnote-link" href="#fnb[0-9\-a-z]+"> *<span class="wb-invisible">Note de bas de page </span>[0-9\-a-z]+</a>,*</sup>';
+const fr_wet_bot = '<dt>Note de bas de page [0-9\-a-z]+</dt>(?: |\n)*<dd id="fnb[0-9\-a-z]+">(?: |\n)*((.|\n)*?)<p class="footnote-return"> *<a href="#fnb[0-9\-a-z]+-ref"> *<span class="wb-invisible"> *Retour à la référence de la note de bas de page *</span>[0-9\-a-z]+(<span class="wb-invisible"> *referrer *</span>)*</a> *</p>( |\n)*</dd>';
+const dw_top = '<a href="#_ftn[0-9\-a-z]+" name="_ftnref[0-9\-a-z]+" title="">(.*?)</a>';
+const dw_bot = '<div id="ftn[0-9\-a-z]+">(?:.|\n)*?<a href="#_ftnref[0-9\-a-z]+" name="_ftn[0-9\-a-z]+" title=""> *</a>((.|\n)*?)((<[^>]*>)|\ |\n)*?</div>';
+const oca_top = '(<sup>)*\\([0-9\-a-z]+\\)(</sup>)*';
+const oca_bot = '<p> *\\([0-9\-a-z]+\\) *(.*?)</p>';
 
 // initial values for top/bot footnote regex
 if (document.getElementById("top_footnote") !== null) {
@@ -107,64 +107,57 @@ deal with duplicate top footnotes
 =================================
 */
 
-// returns two arrays for indices and values of duplicate footnotes
-function get_dup_array(duplicate_footnotes) {
-  // record indices and values of duplicate footnotes
-  let dup_footnote_inds = [];
-  let dup_footnote_vals = [];
+// helper function to sort duplicate_footnote objects
+function sort_duplicate_footnotes(a, b) {
+  return a.top_location < b.top_location;
+}
+
+/* takes in a string formatted as i1, v1; i2, v2; ...
+returns an array of objects with two properties:
+1) the location of the duplicate top footnote relative to all top footnotes
+2) the bottom footnote location that the duplicate top footnote points to
+sorted by the first property
+*/
+function get_duplicate_arr(duplicate_footnote_str) {
+  // record top and bottom footnote locations of duplicate top footnotes in an array of objects
+  let duplicate_footnotes = [];
   // parse duplicate footnotes string into array of pairs of values
-  let dup_footnotes_arr = duplicate_footnotes.split(';');
-  const num_dup = dup_footnotes_arr.length;
-  for (let i = 0; i < num_dup; i++) {
-    // for each pair, get the index of the duplicate footnote and its value
-    let value_pair = dup_footnotes_arr[i].split(',');
-    let footnote_ind = parseInt(value_pair[0].trim());
-    dup_footnote_inds.push(footnote_ind);
-    let footnote_val = parseInt(value_pair[1].trim());
-    dup_footnote_vals.push(footnote_val);
+  let duplicate_footnotes_str_arr = duplicate_footnote_str.split(';');
+  for (let i = 0; i < duplicate_footnotes_str_arr.length; i++) {
+    // for each pair, get the location of the duplicate top footnote and its bottom footnote value
+    let value_pair = duplicate_footnotes_str_arr[i].split(',');
+    if (value_pair.length > 1) {
+      let top_location = parseInt(value_pair[0].trim());
+      let bot_location = parseInt(value_pair[1].trim());
+      duplicate_footnotes.push({top_location: top_location, bot_location: bot_location});
+    }
   }
-  // add start indices
-  dup_footnote_inds = [0].concat(dup_footnote_inds);
-  dup_footnote_vals = [0].concat(dup_footnote_vals);
-  return [dup_footnote_inds, dup_footnote_vals];
+  // sort the array by top footnote location
+  duplicate_footnotes.sort(sort_duplicate_footnotes);
+  return duplicate_footnotes;
 }
 
-// returns an array from start to end inputs
-function arr_range(start, end) {
-  let arr = [];
-  for (let j = start; j < end; j++) {
-    arr.push(j);
-  }
-  return arr;
-}
-
-// creates array for footnote number, including exceptions (duplicates)
-function get_footnote_nums(num_footnotes, duplicate_footnotes) {
-  // base case - no duplicate footnotes
-  if (duplicate_footnotes.trim() === "") {
-    return arr_range(1, num_footnotes + 1);
-  }
-  // get duplicate footnotes
-  let dup_array = get_dup_array(duplicate_footnotes);
-  let dup_footnote_inds = dup_array[0];
-  let dup_footnote_vals = dup_array[1];
-  // loop through each duplicate footnote index and get values until next duplicate
+// creates array for footnote number ids, including duplicates
+function get_top_footnote_ids(footnote_count, duplicate_footnotes) {
+  // array of footnote number ids to return
   let footnote_nums = [];
-  let curr_footnote_num = 1;
-  const num_dup = dup_footnote_inds.length;
-  for (let i = 0; i < num_dup; i++) {
-    // number of values between duplicates, excluding duplicates
-    let dup_diff = dup_footnote_inds[i + 1] - dup_footnote_inds[i] - 1;
-    // append range of values from current footnote counter to next duplicate, exclusive
-    footnote_nums = footnote_nums.concat(arr_range(curr_footnote_num, curr_footnote_num + dup_diff));
-    // append next duplicate
-    footnote_nums.push(dup_footnote_vals[i + 1]);
-    // increment footnote counter
-    curr_footnote_num += dup_diff;
+  // counter for current footnote id for non-duplicates
+  let footnote_id = 1;
+  // counter for current index in duplicate footnote array
+  let duplicate_arr_ind = 0;
+  // loop through number of top footnotes
+  for (let i = 1; i <= footnote_count; i++) {
+    // check if current top footnote is a duplicate and use its bot footnote location if so
+    if ((duplicate_footnotes.length > duplicate_arr_ind) && (i === duplicate_footnotes[duplicate_arr_ind].top_location)) {
+      footnote_nums.push(duplicate_footnotes[duplicate_arr_ind].bot_location);
+      duplicate_arr_ind++;
+    }
+    // otherwise, use counter for non-duplicates
+    else {
+      footnote_nums.push(footnote_id);
+      footnote_id++;
+    }
   }
-  // get values from last duplicate to end
-  const dup_to_end = num_footnotes - dup_footnote_inds[num_dup];
-  footnote_nums = footnote_nums.concat(arr_range(curr_footnote_num, curr_footnote_num + dup_to_end));
   return footnote_nums;
 }
 
@@ -175,8 +168,8 @@ Generate and format WET footnotes
 */
 
 // formats top WET footnote
-function get_top_footnote(init_id, footnote_ind, dup_id) {
-  return '<sup id="' + init_id + footnote_ind + dup_id + '-ref"><a class="footnote-link" href="#' + init_id + footnote_ind + '"><span class="wb-invisible">Footnote </span>' + footnote_ind + '</a></sup>';
+function get_top_footnote(init_id, footnote_ind, duplicate_id) {
+  return '<sup id="' + init_id + footnote_ind + duplicate_id + '-ref"><a class="footnote-link" href="#' + init_id + footnote_ind + '"><span class="wb-invisible">Footnote </span>' + footnote_ind + '</a></sup>';
 }
 
 // formats bottom WET footnote
@@ -189,7 +182,7 @@ function get_bot_footnote(init_id, ind, bot_footnote_content) {
 }
 
 // searches html for footnote regex statements and replaces them
-function replace_footnote_str(html_str, init_id, top_regex_str, bot_regex_str, bot_regex_sub, duplicate_footnotes) {
+function replace_footnote_str(html_str, init_id, top_regex_str, bot_regex_str, bot_regex_sub, duplicate_footnote_str) {
     // find indices of matches
     const top_regex = new RegExp(top_regex_str, "g");
     const top_matches = match_with_empty(html_str, top_regex);
@@ -204,15 +197,14 @@ function replace_footnote_str(html_str, init_id, top_regex_str, bot_regex_str, b
     if (bot_matches.length === 0) {
       return html_str;
     }
-    // loop through smaller number of footnotes and number them with counter
+    // loop through footnotes and number them with counter
     let output_str = html_str;
-    const num_footnotes = Math.min(top_matches.length, bot_matches.length);
     // replace bot footnotes first
-    for (let i = 0; i < num_footnotes; i++) {
+    for (let i = 0; i < bot_matches.length; i++) {
         let bot_footnote_str = bot_matches[i];
         let ind = i + 1;
         let bot_footnote_content = bot_footnote_str.replace(bot_regex, "$" + bot_regex_sub);
-        // add paragraph tags if needed
+        // add paragraph tag if needed
         if (!bot_footnote_content.includes("<p>")) {
           bot_footnote_content = "<p>" + bot_footnote_content + "</p>";
         }
@@ -220,10 +212,19 @@ function replace_footnote_str(html_str, init_id, top_regex_str, bot_regex_str, b
         output_str = output_str.replace(bot_footnote_str, bot_footnote);
     }
     // replace top footnotes - check for duplicate footnotes
-    let footnote_nums_dup = get_footnote_nums(num_footnotes, duplicate_footnotes);
-    for (i = 0; i < num_footnotes; i++) {
-        let footnote_ind = footnote_nums_dup[i];
-        let top_footnote = get_top_footnote(init_id, footnote_ind, "");
+    let duplicate_footnotes = get_duplicate_arr(duplicate_footnote_str);
+    let top_footnote_ids = get_top_footnote_ids(top_matches.length, duplicate_footnotes);
+    // keep track of top footnote ids used so far
+    let used_top_footnote_ids = [];
+    for (i = 0; i < top_matches.length; i++) {
+        let footnote_id = top_footnote_ids[i];
+        // use default footnote id if it doesn't exist yet
+        let top_footnote = get_top_footnote(init_id, footnote_id, "");
+        // if it does exist, append top footnote index to prevent duplicate ids
+        if (used_top_footnote_ids.includes(top_footnote)) {
+          top_footnote = get_top_footnote(init_id, footnote_id, "-" + i);
+        }
+        used_top_footnote_ids.push(top_footnote);
         output_str = output_str.replace(top_matches[i], top_footnote);
     }
     return output_str;
@@ -246,7 +247,7 @@ return output_str;
 
 // adds commas for consecutive top footnotes
 function add_consecutive_commas(html_str, init_id) {
-  const consecutive_footnote_regex = new RegExp('Footnote *<\/span>([0-9 ]+)<\/a> *<\/sup> *<sup id="' + init_id + '([0-9]+)-ref"> *<a class="footnote-link"', "g");
+  const consecutive_footnote_regex = new RegExp('Footnote *<\/span>([0-9 ]+)<\/a> *<\/sup> *<sup id="' + init_id + '([0-9\-a-z]+)-ref"> *<a class="footnote-link"', "g");
   let output_str = html_str.replaceAll(consecutive_footnote_regex, 'Footnote </span>$1</a>,</sup><sup id="' + init_id + '$2-ref"><a class="footnote-link"');
   return output_str;
 }

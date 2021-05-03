@@ -23,6 +23,8 @@ This is the initial string that begins all footnote links, by default "fnb". For
 
 &lt;sup id="fnb1-ref">&lt;a class="footnote-link" href="#fnb1">&lt;span class="wb-invisible">Footnote &lt;/span>1&lt;/a>&lt;/sup>
 
+I recommend constructing footnote ids out of numbers, letters, and regular dashes "-", as this is what is assumed by the tool's default regex statements.
+
 ## Top and bottom footnotes
 
 **Top footnotes** refers to the footnote markers in the main body of the text. **Bottom footnotes** refers to the module containing the text for the footnotes, which we put at the end of the document.
@@ -32,6 +34,10 @@ The default regex statements for these inputs are to find existing English WET f
 I have included the option to set these regex statements to some common footnote formats, including English/French WET footnotes and Dreamweaver-generated footnotes.
 
 The "group containing content" input for the bottom footnote regex is to indicate which group - subexpression in () - contains the footnote text; the tool will access this with $ to create the bottom module. All provided bottom footnote formats use group 1 (meaning the footnote text is accessed with $1).
+
+## Language
+
+Whether you want the WET footnote structure to be in English or French.
 
 ### Extra steps
 
@@ -55,9 +61,11 @@ You can include which top footnote markers should be duplicated - that is, when 
 
 These markers should be formatted in comma-separated pairs, with each pair separated by semicolons, like so:
 
-index,value;index,value;...
+top footnote location,bottom footnote location;top footnote location,bottom footnote location;...
 
-where the index is the footnote marker's position from the top, and the value is whichever bottom footnote it should point to.
+where
+- "top footnote location" is the top footnote's position from the beginning of the document relative to all the top footnotes, beginning at 1;
+- similarly, "bottom footnote location" is the bottom footnote's position from the beginning of the bottom footnote div, beginning at 1.
 
 For example, with the following input:
 
@@ -71,11 +79,11 @@ For example, with the following input:
 The tool formats footnotes using the following steps:
 
 1. **add_footnotes()** - Extract the lines to check for footnotes on (this is the entire document if the line inputs aren't included).
-2. **replace_footnote_str()** - Count the number of matches for both the top footnote regex and the bottom footnote regex. Use the smaller value of the two for the number of footnotes; this means that, for example, if there are 20 top footnotes but only 15 bottom footnotes, only the first 15 top footnotes are used.
+2. **replace_footnote_str()** - Count the number of matches for both the top footnote regex and the bottom footnote regex.
 3.  **replace_footnote_str()** - Loop through the list of strings that match the bottom footnote regex, and reformat them to follow WET syntax.
      - To number them, use the internal counter of the loop (from 1 to the number of footnotes).
 4.  **replace_footnote_str()** - Loop through the list of strings that match the top footnote regex, and reformat them to follow WET syntax.
-    - **get_footnote_nums()** - Number them using the internal counter, starting at 1, and incrementing on values that are not duplicate top footnotes.
+    - **get_footnote_nums()** - Number them using the list of duplicate top footnotes; for the rest of the footnotes, use the internal counter, starting at 1, and incrementing on values that are not duplicate top footnotes.
 5. **add_footnote_div()** - To fix the incorrect bottom footnote div formatting that Dreamweaver uses, find a div statement whose first item is &lt;dt>Footnote 1&lt;/dt> (indicating the first WET-formatted bottom footnote), and replace it with the opening WET bottom footnote module syntax. Then, find the closing div whose last item is &lt;/dd> (indicating a closing WET-formatted bottom footnote), and replace it with the closing WET bottom footnote module syntax.
 6. **add_consecutive_commas()** - Add commas between consecutive top footnotes.
 7. **translate_footnotes()** - If the document language is French, translate footnote structure strings to their French equivalents.

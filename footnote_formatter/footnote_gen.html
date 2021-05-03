@@ -55,11 +55,11 @@
   <div id="bot_warning"> </div>
   <br />
   <br />
-  Duplicate top footnotes (not heavily tested) - format as so (make sure they're in order of appearance from the top):<br />
-  index,value;index,value;...<br />
-  where the index is of the duplicate footnote location's position from the top, and the value is whichever bottom footnote it should point to instead.<br />
+  Duplicate top footnotes - format as so (make sure they're in order of appearance from the top): <br />
+  [top footnote location],[bottom footnote location];[top footnote location],[bottom footnote location];...<br />
+  where the top footnote marker points to the paired bottom footnote, instead of the bottom footnote at the same position from the beginning of the document. Indexing starts at 1. <br />
   e.g. 4,3;5,3;10,1<br />
-  So the 4th footnote found in the main body would point to the 3rd footnote in the bottom section and so on.<br />
+  So the 4th footnote found in the main body would point to the 3rd footnote in the bottom section and so on. <br />
   <textarea id="dup_footnotes" rows="10" cols="100"></textarea>
   <br />
   <br />
