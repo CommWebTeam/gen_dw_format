@@ -22,7 +22,7 @@ The current formatting checks are as follows (the user can select which to apply
         - Example: the string <span style="color:red">&lt;a name="lt_12">Logiterm 1&lt;/a></span> has its link removed, so it is replaced with  <span style="color:green">Logiterm 1</span>.
 
 - Clean up spacing for coding style. These don't affect the document's structural correctness for WET, but it's helpful to keep your document tidy for visual clarity, string searching, and other coding purposes.
-    - makes all space hexcodes consistent by converting invisible non-breaking spaces (where it just looks like a regular space in the editor), tabs, and so on into regular spaces.
+    - makes all space encoding consistent by converting invisible non-breaking spaces (where it just looks like a regular space in the editor), tabs, and so on into regular spaces.
     - replaces multiple spaces with a single space for neatness. You should apply source formatting in Dreamweaver to fix indentation if you include this check.
     - removes spaces at the end of tags.
         - Example: replaces the string <span style="color:red">&lt;p >Extra   spacing&lt;/p    ></span> with <span style="color:green">&lt;p>Extra spacing&lt;/p></span>.
@@ -103,7 +103,7 @@ The current formatting checks are as follows (the user can select which to apply
 
 - Add/fix/remove tag attributes:
     - replaces Dreamweaver-generated center and right alignment (looks like align="center" or align="right") with their respective WET classes.
-        - Example: replaces the string <span style="color:red">&lt;li align="center">center align&lt;/li></span> with <span style="color:green">&lt;li class="align-center">center align&lt;/li></span>.
+        - Example: replaces the string <span style="color:red">&lt;li align="center">center align&lt;/li></span> with <span style="color:green">&lt;li class="text-center">center align&lt;/li></span>.
     - ensures that internal links to the OSFI website are relative by removing the OSFI main page from the URL, and adds rel="external" to other links. This ignores links that have keywords indicating footnotes ("_ftn" and "fnb"), table of contents ("_Toc" and "toc_"), or email addresses ("mailto" and "@"). It also ignores already existing internal links (links that begin with "/Eng/" or "/Fra/").
         - Example 1: replaces the string <span style="color:red">&lt;a href="osfi-bsif.gc.ca/Eng/test">internal link 1&lt;/a></span> with <span style="color:green">&lt;a href="/Eng/test">internal link 1&lt;/a></span>.
         - Example 2: replaces the string <span style="color:red">&lt;a href="https://www.google.ca/">external link&lt;/a></span> with <span style="color:green">&lt;a rel="external" href="https://www.google.ca/">external link&lt;/a></span>.

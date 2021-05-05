@@ -72,7 +72,7 @@
   <br />
 </form>
 <button type="button" onclick="add_footnotes()">Download with WET footnotes</button>
-<p>This application uses a counter to increment the current footnote number, finds the top and bottom footnotes using the regex provided, and replaces them with WET-valid footnotes that have the counter value.</p>
+<p>This tool finds top and bottom footnotes using the regex provided, and replaces them with WET-valid footnotes that are numbered using an internal counter.</p>
 <p>You can also indicate duplicate top footnotes (when multiple top footnotes reference the same bottom footnote). If you don't have any duplicate references, then you can ignore this.</p>
 <p>Make sure all instances of the bottom footnotes come after the top footnotes in your html document, since the entire document is being treated as a single string.</p>
 <p>The number of top and bottom footnotes found using the regex statements should be the same unless you have duplicate footnotes. <strong>The number of bottom and top footnotes this tool finds is printed in the console.</strong></p>

@@ -35,10 +35,10 @@ Different Word documents produce very different content structures when pasted i
     - use existing list numberings from the document (explanation [#list-numbering](in this section)).
     - use manually inserted list numberings (differences from using existing list numberings explained [#manual-list-numbering](in this section)).
     - use existing indentation in the table. This is only helpful if the Dreamweaver table is formatted as a list, as described in the first input.
-5.  The list type for the output WET-formatted table of contents. For example, if &lt;ol list-numeric> is selected, then the WET table of contents might be formatted as so:
-    - &lt;ol class="list-numeric">
+5.  The list type for the output WET-formatted table of contents. For example, if &lt;ol lst-num> is selected, then the WET table of contents might be formatted as so:
+    - &lt;ol class="lst-num">
         - &lt;li>Entry 1
-        - &lt;ol class="list-numeric">
+        - &lt;ol class="lst-num">
             - &lt;li>Entry 2&lt;/li>
             - &lt;li>Entry 3&lt;/li>
         - &lt;/ol>&lt;/li>

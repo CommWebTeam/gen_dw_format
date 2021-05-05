@@ -392,7 +392,7 @@ function format_file() {
 		/*
 		Remove/fix tag attributes
 		*/
-		// fix align-center and align-right
+		// fix text-center and text-right
 		if (document.getElementById("align").checked) {
 			html_doc_str = fix_align(html_doc_str);
 		}
@@ -739,8 +739,8 @@ Remove/fix tag attributes
 
 // fix alignment classes
 function fix_align(html_str) {
-	let edited_html_str = html_str.replaceAll(/align *= *"center"/g, 'class="align-center"');
-	edited_html_str = edited_html_str.replaceAll(/align *= *"right"/g, 'class="align-right"');
+	let edited_html_str = html_str.replaceAll(/align *= *"center"/g, 'class="text-center"');
+	edited_html_str = edited_html_str.replaceAll(/align *= *"right"/g, 'class="text-right"');
 	return edited_html_str;
 }
 

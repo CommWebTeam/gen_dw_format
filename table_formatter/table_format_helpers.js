@@ -52,17 +52,17 @@ function format_table() {
 		if (document.getElementById("to_bold").checked) {
 			html_table_arr = apply_on_cells(html_table_arr, table_list_type, table_list, row_list_type, row_list, row_forward_dir, col_list_type, col_list, col_forward_dir, to_otb);
 		}
-		if (document.getElementById("to_align_left").checked) {
-			html_table_arr = apply_on_cells(html_table_arr, table_list_type, table_list, row_list_type, row_list, row_forward_dir, col_list_type, col_list, col_forward_dir, to_align_left);
+		if (document.getElementById("to_text_left").checked) {
+			html_table_arr = apply_on_cells(html_table_arr, table_list_type, table_list, row_list_type, row_list, row_forward_dir, col_list_type, col_list, col_forward_dir, to_text_left);
 		}
-		if (document.getElementById("to_align_right").checked) {
-			html_table_arr = apply_on_cells(html_table_arr, table_list_type, table_list, row_list_type, row_list, row_forward_dir, col_list_type, col_list, col_forward_dir, to_align_right);
+		if (document.getElementById("to_text_right").checked) {
+			html_table_arr = apply_on_cells(html_table_arr, table_list_type, table_list, row_list_type, row_list, row_forward_dir, col_list_type, col_list, col_forward_dir, to_text_right);
 		}
-		if (document.getElementById("to_align_bottom").checked) {
-			html_table_arr = apply_on_cells(html_table_arr, table_list_type, table_list, row_list_type, row_list, row_forward_dir, col_list_type, col_list, col_forward_dir, to_align_bottom);
+		if (document.getElementById("to_text_bottom").checked) {
+			html_table_arr = apply_on_cells(html_table_arr, table_list_type, table_list, row_list_type, row_list, row_forward_dir, col_list_type, col_list, col_forward_dir, to_text_bottom);
 		}
-		if (document.getElementById("to_align_center").checked) {
-			html_table_arr = apply_on_cells(html_table_arr, table_list_type, table_list, row_list_type, row_list, row_forward_dir, col_list_type, col_list, col_forward_dir, to_align_center);
+		if (document.getElementById("to_text_center").checked) {
+			html_table_arr = apply_on_cells(html_table_arr, table_list_type, table_list, row_list_type, row_list, row_forward_dir, col_list_type, col_list, col_forward_dir, to_text_center);
 		}
 		if (document.getElementById("to_bg_white").checked) {
 			html_table_arr = apply_on_cells(html_table_arr, table_list_type, table_list, row_list_type, row_list, row_forward_dir, col_list_type, col_list, col_forward_dir, to_bg_white);
@@ -70,14 +70,14 @@ function format_table() {
 		if (document.getElementById("to_bg_light").checked) {
 			html_table_arr = apply_on_cells(html_table_arr, table_list_type, table_list, row_list_type, row_list, row_forward_dir, col_list_type, col_list, col_forward_dir, to_bg_light);
 		}
-		if (document.getElementById("to_indent_small").checked) {
-			html_table_arr = apply_on_cells(html_table_arr, table_list_type, table_list, row_list_type, row_list, row_forward_dir, col_list_type, col_list, col_forward_dir, to_indent_small);
+		if (document.getElementById("to_mrgn_lft_sm").checked) {
+			html_table_arr = apply_on_cells(html_table_arr, table_list_type, table_list, row_list_type, row_list, row_forward_dir, col_list_type, col_list, col_forward_dir, to_mrgn_lft_sm);
 		}
-		if (document.getElementById("to_indent_medium").checked) {
-			html_table_arr = apply_on_cells(html_table_arr, table_list_type, table_list, row_list_type, row_list, row_forward_dir, col_list_type, col_list, col_forward_dir, to_indent_medium);
+		if (document.getElementById("to_mrgn_lft_md").checked) {
+			html_table_arr = apply_on_cells(html_table_arr, table_list_type, table_list, row_list_type, row_list, row_forward_dir, col_list_type, col_list, col_forward_dir, to_mrgn_lft_md);
 		}
-		if (document.getElementById("to_indent_large").checked) {
-			html_table_arr = apply_on_cells(html_table_arr, table_list_type, table_list, row_list_type, row_list, row_forward_dir, col_list_type, col_list, col_forward_dir, to_indent_large);
+		if (document.getElementById("to_mrgn_lft_lg").checked) {
+			html_table_arr = apply_on_cells(html_table_arr, table_list_type, table_list, row_list_type, row_list, row_forward_dir, col_list_type, col_list, col_forward_dir, to_mrgn_lft_lg);
 		}
 		// for actions on setting thead/tbody/tfoot index, these only use rows and the first two row indices
 		if (document.getElementById("insert_thead").checked) {
@@ -478,20 +478,20 @@ function to_otb(table_arr, row, col) {
 	return add_class(table_arr, row, col, "osfi-txt--bold");
 }
 
-function to_align_left(table_arr, row, col) {
-	return add_class(table_arr, row, col, "align-left");
+function to_text_left(table_arr, row, col) {
+	return add_class(table_arr, row, col, "text-left");
 }
 
-function to_align_right(table_arr, row, col) {
-	return add_class(table_arr, row, col, "align-right");
+function to_text_right(table_arr, row, col) {
+	return add_class(table_arr, row, col, "text-right");
 }
 
-function to_align_bottom(table_arr, row, col) {
-	return add_class(table_arr, row, col, "align-bottom");
+function to_text_bottom(table_arr, row, col) {
+	return add_class(table_arr, row, col, "text-bottom");
 }
 
-function to_align_center(table_arr, row, col) {
-	return add_class(table_arr, row, col, "align-center");
+function to_text_center(table_arr, row, col) {
+	return add_class(table_arr, row, col, "text-center");
 }
 
 function to_bg_white(table_arr, row, col) {
@@ -502,16 +502,16 @@ function to_bg_light(table_arr, row, col) {
 	return add_class(table_arr, row, col, "background-light");
 }
 
-function to_indent_small(table_arr, row, col) {
-	return add_class(table_arr, row, col, "indent-small");
+function to_mrgn_lft_sm(table_arr, row, col) {
+	return add_class(table_arr, row, col, "mrgn-lft-sm");
 }
 
-function to_indent_medium(table_arr, row, col) {
-	return add_class(table_arr, row, col, "indent-medium");
+function to_mrgn_lft_md(table_arr, row, col) {
+	return add_class(table_arr, row, col, "mrgn-lft-md");
 }
 
-function to_indent_large(table_arr, row, col) {
-	return add_class(table_arr, row, col, "indent-large");
+function to_mrgn_lft_lg(table_arr, row, col) {
+	return add_class(table_arr, row, col, "mrgn-lft-lg");
 }
 
 /*

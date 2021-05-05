@@ -1,8 +1,8 @@
 // regex strings for common footnote formattings
-const en_wet_top = '<sup id="fnb[0-9\-a-z]+-ref"> *<a class="footnote-link" href="#fnb[0-9\-a-z]+"> *<span class="wb-invisible">Footnote </span>[0-9\-a-z]+</a>,*</sup>';
-const en_wet_bot = '<dt>Footnote [0-9\-a-z]+</dt>(?: |\n)*<dd id="fnb[0-9\-a-z]+">(?: |\n)*((.|\n)*?)<p class="footnote-return"> *<a href="#fnb[0-9\-a-z]+-ref"> *<span class="wb-invisible"> *Return to footnote *</span>[0-9\-a-z]+(<span class="wb-invisible"> *referrer *</span>)*</a> *</p>( |\n)*</dd>';
-const fr_wet_top = '<sup id="fnb[0-9\-a-z]+-ref"> *<a class="footnote-link" href="#fnb[0-9\-a-z]+"> *<span class="wb-invisible">Note de bas de page </span>[0-9\-a-z]+</a>,*</sup>';
-const fr_wet_bot = '<dt>Note de bas de page [0-9\-a-z]+</dt>(?: |\n)*<dd id="fnb[0-9\-a-z]+">(?: |\n)*((.|\n)*?)<p class="footnote-return"> *<a href="#fnb[0-9\-a-z]+-ref"> *<span class="wb-invisible"> *Retour à la référence de la note de bas de page *</span>[0-9\-a-z]+(<span class="wb-invisible"> *referrer *</span>)*</a> *</p>( |\n)*</dd>';
+const en_wet_top = '<sup id="fnb[0-9\-a-z]+-ref"> *<a class="f(oot)*n(ote)*-link" href="#fnb[0-9\-a-z]+"> *<span class="wb-inv(isible)*">Footnote </span>[0-9\-a-z]+</a>,*</sup>';
+const en_wet_bot = '<dt>Footnote [0-9\-a-z]+</dt>(?: |\n)*<dd id="fnb[0-9\-a-z]+">(?: |\n)*((.|\n)*?)<p class="f(oot)*n(ote)*-return"> *<a href="#fnb[0-9\-a-z]+-ref"> *<span class="wb-inv(isible)*"> *Return to footnote *</span>[0-9\-a-z]+(<span class="wb-inv(isible)*"> *referrer *</span>)*</a> *</p>( |\n)*</dd>';
+const fr_wet_top = '<sup id="fnb[0-9\-a-z]+-ref"> *<a class="f(oot)*n(ote)*-link" href="#fnb[0-9\-a-z]+"> *<span class="wb-inv(isible)*">Note de bas de page </span>[0-9\-a-z]+</a>,*</sup>';
+const fr_wet_bot = '<dt>Note de bas de page [0-9\-a-z]+</dt>(?: |\n)*<dd id="fnb[0-9\-a-z]+">(?: |\n)*((.|\n)*?)<p class="f(oot)*n(ote)*-return"> *<a href="#fnb[0-9\-a-z]+-ref"> *<span class="wb-inv(isible)*"> *Retour à la référence de la note de bas de page *</span>[0-9\-a-z]+(<span class="wb-inv(isible)*"> *referrer *</span>)*</a> *</p>( |\n)*</dd>';
 const dw_top = '<a href="#_ftn[0-9\-a-z]+" name="_ftnref[0-9\-a-z]+" title="">(.*?)</a>';
 const dw_bot = '<div id="ftn[0-9\-a-z]+">(?:.|\n)*?<a href="#_ftnref[0-9\-a-z]+" name="_ftn[0-9\-a-z]+" title=""> *</a>((.|\n)*?)((<[^>]*>)|\ |\n)*?</div>';
 const oca_top = '(<sup>)*\\([0-9\-a-z]+\\)(</sup>)*';
@@ -169,7 +169,7 @@ Generate and format WET footnotes
 
 // formats top WET footnote
 function get_top_footnote(init_id, footnote_ind, duplicate_id) {
-  return '<sup id="' + init_id + footnote_ind + duplicate_id + '-ref"><a class="footnote-link" href="#' + init_id + footnote_ind + '"><span class="wb-invisible">Footnote </span>' + footnote_ind + '</a></sup>';
+  return '<sup id="' + init_id + footnote_ind + duplicate_id + '-ref"><a class="fn-link" href="#' + init_id + footnote_ind + '"><span class="wb-inv">Footnote </span>' + footnote_ind + '</a></sup>';
 }
 
 // formats bottom WET footnote
@@ -177,7 +177,7 @@ function get_bot_footnote(init_id, ind, bot_footnote_content) {
   return '<dt>Footnote ' + ind + '</dt>\n' +
   '<dd id="' + init_id + ind + '">\n' +
   bot_footnote_content + '\n' +
-  '<p class="footnote-return"><a href="#' + init_id + ind + '-ref"><span class="wb-invisible">Return to footnote </span>' + ind + '</a></p>\n' +
+  '<p class="fn-return"><a href="#' + init_id + ind + '-ref"><span class="wb-inv">Return to footnote </span>' + ind + '</a></p>\n' +
   '</dd>';
 }
 
@@ -233,9 +233,9 @@ function replace_footnote_str(html_str, init_id, top_regex_str, bot_regex_str, b
 // creates WET div around bottom footnotes
 function add_footnote_div(html_str, init_id) {
   let output_str = html_str.replace(/<div>( |\n)*<dt>Footnote 1<\/dt>/,
-  `<div class="wet-boew-footnotes" role="note">
+  `<div class="wb-fnote" role="note">
   <section>
-    <h3 class="wb-invisible" id="` + init_id + `">Footnotes</h3>
+    <h3 class="wb-inv" id="` + init_id + `">Footnotes</h3>
     <dl>
     <dt>Footnote 1</dt>`);
   output_str = output_str.replace(/<\/dd>( |\n)*<\/div>/, `</dd>
@@ -247,8 +247,8 @@ return output_str;
 
 // adds commas for consecutive top footnotes
 function add_consecutive_commas(html_str, init_id) {
-  const consecutive_footnote_regex = new RegExp('Footnote *<\/span>([0-9 ]+)<\/a> *<\/sup> *<sup id="' + init_id + '([0-9\-a-z]+)-ref"> *<a class="footnote-link"', "g");
-  let output_str = html_str.replaceAll(consecutive_footnote_regex, 'Footnote </span>$1</a>,</sup><sup id="' + init_id + '$2-ref"><a class="footnote-link"');
+  const consecutive_footnote_regex = new RegExp('Footnote *<\/span>([0-9 ]+)<\/a> *<\/sup> *<sup id="' + init_id + '([0-9\-a-z]+)-ref"> *<a class="fn-link"', "g");
+  let output_str = html_str.replaceAll(consecutive_footnote_regex, 'Footnote </span>$1</a>,</sup><sup id="' + init_id + '$2-ref"><a class="fn-link"');
   return output_str;
 }
 

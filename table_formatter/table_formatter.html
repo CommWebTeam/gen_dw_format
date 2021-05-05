@@ -88,17 +88,17 @@
   <input type="checkbox" id="to_bold" name="to_bold">
   <label for="to_bold">Add <i>osfi-txt--bold</i> class</label>
   <br />
-  <input type="checkbox" id="to_align_left" name="to_align_left">
-  <label for="to_align_left">Add <i>align-left</i> class</label>
+  <input type="checkbox" id="to_text_left" name="to_text_left">
+  <label for="to_text_left">Add <i>text-left</i> class</label>
   <br />
-  <input type="checkbox" id="to_align_right" name="to_align_right">
-  <label for="to_align_right">Add <i>align-right</i> class</label>
+  <input type="checkbox" id="to_text_right" name="to_text_right">
+  <label for="to_text_right">Add <i>text-right</i> class</label>
   <br />
-  <input type="checkbox" id="to_align_bottom" name="to_align_bottom">
-  <label for="to_align_bottom">Add <i>align-bottom</i> class</label>
+  <input type="checkbox" id="to_text_bottom" name="to_text_bottom">
+  <label for="to_text_bottom">Add <i>text-bottom</i> class</label>
   <br />
-  <input type="checkbox" id="to_align_center" name="to_align_center">
-  <label for="to_align_center">Add <i>align-center</i> class</label>
+  <input type="checkbox" id="to_text_center" name="to_text_center">
+  <label for="to_text_center">Add <i>text-center</i> class</label>
   <br />
   <input type="checkbox" id="to_bg_white" name="to_bg_white">
   <label for="to_bg_white">Add <i>background-white</i> class</label>
@@ -106,14 +106,14 @@
   <input type="checkbox" id="to_bg_light" name="to_bg_light">
   <label for="to_bg_light">Add <i>background-light</i> class</label>
   <br />
-  <input type="checkbox" id="to_indent_small" name="to_indent_small">
-  <label for="to_indent_small">Add <i>indent-small</i> class</label>
+  <input type="checkbox" id="to_mrgn_lft_sm" name="to_mrgn_lft_sm">
+  <label for="to_mrgn_lft_sm">Add <i>mrgn-lft-sm</i> class</label>
   <br />
-  <input type="checkbox" id="to_indent_medium" name="to_indent_medium">
-  <label for="to_indent_medium">Add <i>indent-medium</i> class</label>
+  <input type="checkbox" id="to_mrgn_lft_md" name="to_mrgn_lft_md">
+  <label for="to_mrgn_lft_md">Add <i>mrgn-lft-md</i> class</label>
   <br />
-  <input type="checkbox" id="to_indent_large" name="to_indent_large">
-  <label for="to_indent_large">Add <i>indent-large</i> class</label>
+  <input type="checkbox" id="to_mrgn_lft_lg" name="to_mrgn_lft_lg">
+  <label for="to_mrgn_lft_lg">Add <i>mrgn-lft-lg</i> class</label>
   <br />
   <input type="checkbox" id="insert_thead" name="insert_thead">
   <label for="insert_thead">Set &lt;thead> and &lt;/thead> row index (always uses first and second row index given above, respectively)</label>
@@ -148,11 +148,11 @@
 <button type="button" onclick="format_table()">Format table</button>
 <br />
 <br />
-<p>This tool helps to apply WET formatting on HTML tables across rows or columns. <strong>Before using the tool, make sure that:</strong>
+<p>This tool helps to apply WET formatting on HTML tables across rows or columns. <strong>Before using the tool, make sure that the HTML document:</strong>
   <ol>
-    <li>you have accepted all tracked changes and removed all comments in the Word document.</li>
-    <li>the pasted HTML document has proper indentation (in Dreamweaver, Edit -> Code -> Apply Source Formatting).</li>
-    <li>the pasted HTML document uses double quotes (e.g. "x") instead of single quotes (e.g. 'x') for tag attributes.</li>
+    <li>has consistent space encoding (this is covered by the <a href="../dreamweaver_paste_formatter/dw_paste_format.html">general Dreamweaver formatting tool's</a> checks).</li>
+    <li>has proper indentation (in Dreamweaver, Edit -> Code -> Apply Source Formatting).</li>
+    <li>uses double quotes (e.g. "x") instead of single quotes (e.g. 'x') for tag attributes.</li>
   </ol>
 </p>
 <p>It removes indentation, so be sure to apply source formatting with Dreamweaver afterwards to fix it.</p>

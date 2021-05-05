@@ -27,7 +27,7 @@ The inputs are as follows:
         - convert the cell to a header (change td to th) with a scope of "col" or "row". If the scope is "col" and the cell also has a colspan attribute, then the scope is changed to "colgroup".
         - append the cell contents to the caption, then remove the cell by changing it to &lt;td class="background-light">&lt;/td>.
         - remove specific tags from the cell (e.g. "&lt;p>" tags).
-        - convert the cell to a specific class (e.g. "osfi-txt--bold" or "align-left").
+        - convert the cell to a specific class (e.g. "osfi-txt--bold" or "text-left").
     - actions to set or change the location of thead/tbody/tfoot in terms of index:
         - insert an opening thead, tbody, or tfoot tag at the first row index provided above, and the corresponding closing tag at the second row index provided above. For example, inserting the opening thead at row index 0 means placing it before all tr tags (rows). Only the first two row indices given are used. Since thead/tbody/tfoot are only used to group rows, the column indices given above are ignored.
     - actions that check for and edit tags outside of the tables. These actions are only applied once per table and do not pay attention to cell index; as such, they only use the table inputs above, ignoring the row/column inputs.
