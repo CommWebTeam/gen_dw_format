@@ -88,6 +88,18 @@ and only replace the first line, resulting in this:
 
 which contains an extra closing p tag. You will likely have to go through and fix any errors with the HTML structure yourself afterwards; the comments containing the original values above the lines that have been replaced should help with this as well.
 
+### Removing tags inside table of contents entries
+
+When cleaning each table of contents entry, the following tags are removed because they are usually introduced unnecessarily when pasting a document into Dreamweaver, and/or may produce formatting errors if kept.
+- em
+- i
+- cite
+- strong
+- b
+- div
+- p
+- br
+
 ## Lines for the table of contents
 
 I have noticed that Dreamweaver formats its table of contents either as a p tag separated by br, or a ul list (corresponding to the options for the first input of this tool).
