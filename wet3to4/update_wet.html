@@ -1,0 +1,27 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Convert WET 3 classes to WET 4</title>
+</head>
+
+<body>
+  File to convert:
+  <input id="html_file" type="file">
+  <br />
+  <br />
+<button onclick="convert_wet3_to_wet4()">Download converted file</button>
+<br />
+<br />
+<p>This tool converts WET 3 classes to WET 4 classes. <strong>Before using the tool, make sure that the HTML document:</strong>
+    <ol>
+      <li>has proper indentation (in Dreamweaver, Edit -> Code -> Apply Source Formatting).</li>
+      <li>uses double quotes (e.g. "x") instead of single quotes (e.g. 'x') for tag attributes.</li>
+    </ol>
+  </p>
+<p>Note that this tool only performs one-to-one replacements; you should do circumstantial replacements manually.</p>
+<p>More in-depth information can be found in the <a rel="external" href="https://commwebteam.github.io/gen_dw_format/wet3to4/">readme</a>.</p>
+<script src="../download.js"></script>
+<script src="wet_convert_helpers.js"></script>
+</body>
+</html>
