@@ -7,11 +7,25 @@
 
 <body>
 <p class="align-left">To convert 1</p>
-<p class="align-left align-right">To convert 2</p>
-<p class="align-left border-bottom x">To convert 3</p>
-<p class="x align-left border-bottom">To convert 4</p>
-<p class="x     align-left    border-bottom     x">To convert 5</p>
-<p class="text-left">Already converted</p>
-<p class="x align-center">Do not convert</p>
+<p test="x" class="align-left align-right">To convert 2</p>
+<p class="align-left border-bottom x" test2="x">To convert 3</p>
+<p test="x" class="x align-left border-bottom" test2="x">To convert 4</p>
+<p test="x" test2="x" class="x     align-left    border-bottom     x" test3="x" test4="x">To convert 5</p>
+<p class="x">Do not convert</p>
+<p class="align-center">center text</p>
+<div class="align-center">center div</div>
+<div test="x" class="align-center">center div 2
+    <p>center image</p>
+    <img class="align-center" alt="x"/>
+</div>
+
+<ol>
+    <li class="span-1">span 1</li>
+    <li class="span-2">span 2</li>
+    <li class="span-3">span 3</li>
+    <li class="span-4">span 4</li>
+    <li class="span-5">span 5</li>
+    <li class="span-6">span 6</li>
+</ol>
 </body>
 </html>

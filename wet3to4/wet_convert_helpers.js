@@ -102,9 +102,25 @@ function convert_wet3_to_wet4() {
 	let content_str = document.getElementById("html_file").files[0];
 	file_reader_content.onload = function(event) {
 		let html_doc_str = event.target.result.replaceAll("\r\n", "\n");
+        // default one-to-one mappings
 		for (let i = 0; i < classes_to_convert.length; i++) {
             html_doc_str = convert_class(html_doc_str, classes_to_convert[i].old, classes_to_convert[i].new);
         }
+        // fix align-center
+        if (document.getElementById("align_center").checked) {
+			html_doc_str = convert_tag_class(html_doc_str, "align-center", "center-block", "div");
+            html_doc_str = convert_tag_class(html_doc_str, "align-center", "center-block", "img");
+            html_doc_str = convert_class(html_doc_str, "align-center", "text-center");
+		}
+        // fix spans
+        if (document.getElementById("span").checked) {
+            html_doc_str = convert_class(html_doc_str, "span-1", "col-md-2");
+            html_doc_str = convert_class(html_doc_str, "span-2", "col-md-4");
+            html_doc_str = convert_class(html_doc_str, "span-3", "col-md-6");
+            html_doc_str = convert_class(html_doc_str, "span-4", "col-md-8");
+            html_doc_str = convert_class(html_doc_str, "span-5", "col-md-10");
+            html_doc_str = convert_class(html_doc_str, "span-6", "col-md-12");
+		}
 		download(html_doc_str, "formatted.html", "text/html");
 	}
 	file_reader_content.readAsText(content_str);
@@ -115,5 +131,11 @@ function convert_wet3_to_wet4() {
 // converts all instances of a class in the html string to another class
 function convert_class(html_str, old_class, new_class) {
     let old_class_regex = new RegExp('(class *= *("|("[^"]* )))' + old_class + '([" ])', "g");
+    return html_str.replaceAll(old_class_regex, "$1" + new_class + "$4");
+}
+
+// converts instances of a class for a specific tag in the html string to another class
+function convert_tag_class(html_str, old_class, new_class, tag) {
+    let old_class_regex = new RegExp('(<' + tag +' [^>]*class *= *("|("[^"]* )))' + old_class + '([" ])', "g");
     return html_str.replaceAll(old_class_regex, "$1" + new_class + "$4");
 }
