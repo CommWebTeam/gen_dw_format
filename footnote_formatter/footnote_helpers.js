@@ -1,3 +1,9 @@
+/*
+=================================
+fill in default inputs
+=================================
+*/
+
 // regex strings for common footnote formattings
 const en_wet_top = '<sup id="fnb[0-9\-a-z]+-ref"> *<a class="f(oot)*n(ote)*-link" href="#fnb[0-9\-a-z]+"> *<span class="wb-inv(isible)*">Footnote </span>[0-9\-a-z]+</a>,*</sup>';
 const en_wet_bot = '<dt>Footnote [0-9\-a-z]+</dt>(?: |\n)*<dd id="fnb[0-9\-a-z]+">(?: |\n)*((.|\n)*?)<p class="f(oot)*n(ote)*-return"> *<a href="#fnb[0-9\-a-z]+-ref"> *<span class="wb-inv(isible)*"> *Return to footnote *</span>[0-9\-a-z]+(<span class="wb-inv(isible)*"> *referrer *</span>)*</a> *</p>( |\n)*</dd>';
@@ -58,6 +64,12 @@ function set_bot_footnote_regex() {
   }
 }
 
+/*
+=================================
+fix footnotes
+=================================
+*/
+
 // get uploaded file, find footnotes, change their values, and download
 function add_footnotes() {
 	// read in uploaded file as string
@@ -65,6 +77,12 @@ function add_footnotes() {
 	let html_file = document.getElementById("html_file").files[0];
 	file_reader.onload = function(event) {
 		let html_str = event.target.result.replaceAll("\r\n", "\n");
+    // read in inputs
+    let init_id = document.getElementById("init_id").value;
+    let top_footnote = document.getElementById("top_footnote").value;
+    let bot_footnote = document.getElementById("bot_footnote").value;
+    let regex_sub = document.getElementById("regex_sub").value;
+    let dup_footnotes = document.getElementById("dup_footnotes").value;
     // get line numbers of input line range
     let html_arr = html_str.split("\n");
     let first_line = document.getElementById("footnote_start").value;
@@ -85,9 +103,19 @@ function add_footnotes() {
     let lines_to_edit = html_arr.slice(first_line, last_line).join("\n");
     // edit lines of input line range
     let edited_str = lines_to_edit;
-    edited_str = replace_footnote_str(edited_str, document.getElementById("init_id").value, document.getElementById("top_footnote").value, document.getElementById("bot_footnote").value, document.getElementById("regex_sub").value, document.getElementById("dup_footnotes").value);
-    edited_str = add_footnote_div(edited_str, document.getElementById("init_id").value);
-    edited_str = add_consecutive_commas(edited_str, document.getElementById("init_id").value);
+    // replace original footnote strings with WET footnotes
+    edited_str = replace_footnote_str(edited_str, init_id, top_footnote, bot_footnote, regex_sub, dup_footnotes);
+    // replace the div around bottom footnotes with WET module, if the div exists
+    edited_str = add_footnote_div(edited_str, init_id);
+    // regex search to find consecutive footnotes - note that this assumes English footnotes and no "referrer", as this is how WET footnotes were formatted in replace_footnote_str (footnotes are translated later if required)
+    const consecutive_footnote_regex = new RegExp('(Footnote *<\/span>[0-9 ]+<\/a>)([ ,]*)(<\/sup> *)(<sup id="' + init_id + '[0-9\-a-z]+-ref"> *<a class="fn-link")', "g");
+    // add comma between consecutive footnotes if option is selected
+    if (document.getElementById("consecutive_comma").checked) {
+      edited_str = edited_str.replaceAll(consecutive_footnote_regex, "$1,$3$4");
+    }
+    // add space between consecutive footnotes
+    edited_str = edited_str.replaceAll(consecutive_footnote_regex, "$1$2</sup> $4");
+    // translate footnote structure if needed
     if (document.getElementById("lang").value === 'f') {
       edited_str = translate_footnotes(edited_str);
     }
@@ -270,13 +298,6 @@ function add_footnote_div(html_str, init_id) {
   </section>
 </div>`);
 return output_str;
-}
-
-// adds commas for consecutive top footnotes
-function add_consecutive_commas(html_str, init_id) {
-  const consecutive_footnote_regex = new RegExp('Footnote *<\/span>([0-9 ]+)<\/a> *<\/sup> *<sup id="' + init_id + '([0-9\-a-z]+)-ref"> *<a class="fn-link"', "g");
-  let output_str = html_str.replaceAll(consecutive_footnote_regex, 'Footnote </span>$1</a>,</sup><sup id="' + init_id + '$2-ref"><a class="fn-link"');
-  return output_str;
 }
 
 /*

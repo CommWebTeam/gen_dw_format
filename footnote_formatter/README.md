@@ -13,13 +13,13 @@ This tool aims to use the input regex statements to find footnotes in the docume
 
 # Inputs
 
-## Starting and ending lines
+## 1. Starting and ending lines
 
 This tool assumes by default that all footnotes in the input html document should be put into a single module. If this is not the case, e.g. if individual tables should have their footnotes in their own modules, then you can choose the starting and ending lines of the document (beginning at index 0, meaning the first line of the document is on line 0) to run the tool on. For example, if a table is from lines 60 to 100 and the following three paragraphs, each of which is one line, describe the table footnotes, then you can enter 60 as the starting line and 103 as the ending line.
 
 When formatting footnotes for a Dreamweaver paste, I recommend **formatting inner footnote subsections first** before formatting outer footnote subsections - for example, formatting the footnotes for a single table before formatting the footnotes for the overall document - to minimize confusion when the tool uses regex statements to find and fix the div formatting that Dreamweaver generates around the bottom footnote text.
 
-## Footnote ID
+## 2. Footnote ID
 
 This is the initial string that begins all footnote links, by default "fnb". For example, "fnb" would label the first English top footnote marker as follows:
 
@@ -29,9 +29,11 @@ The first bottom footnote would link back to this top footnote accordingly.
 
 WET footnotes by default use "fnb" as the initial string for their ids.
 
-You should only change the footnote ID from the default value if you have multiple sets of footnotes in a document, such as for tables, as doing so will break some of the WET footnote module's functionality. If you do change the footnote IDs, I recommend constructing footnote ids out of numbers, letters, and regular dashes "-", as this is what is assumed by the tool's default regex statements.
+You should only change the footnote ID from the default value if you have multiple sets of footnotes in a document, such as for tables, as doing so will break some of the WET footnote module's functionality.
 
-## Top and bottom footnotes
+If you do change the footnote IDs, I recommend constructing footnote ids out of numbers, letters, and regular dashes "-", e.g. "fnb-tbl1" for footnotes in table 1, as this is what is assumed by the tool's default regex statements.
+
+## 3. Top and bottom footnotes
 
 These are regex strings to search for footnotes in the current document. The tool replaces the footnotes at these locations with WET footnotes.
 
@@ -43,7 +45,7 @@ I have included the option to set these regex statements to some common footnote
 
 The "group containing content" input for the bottom footnote regex is to indicate which regex group - subexpression in () - contains the footnote text. All provided bottom footnote formats use group 1 (meaning the footnote text is accessed with $1).
 
-### Extra steps
+### 3.1. Extra steps
 
 Note that WET footnotes and Dreamweaver footnotes are the two primary use cases, and you may have to manually format the results afterwards for other cases. For example, for the OCA table regex statements provided, you will have to additionally do the following:
 
@@ -55,15 +57,11 @@ Note that WET footnotes and Dreamweaver footnotes are the two primary use cases,
 
 (I have chosen not to code the above steps because I don't think the OCA table case is actually very common.)
 
-### Debugging
+### 3.2. Debugging
 
 You can view the number of top and bottom footnotes found by the regex statements in the console (ctrl+shift+i). These should be the same unless you have duplicate top footnotes (see below). If the number of top and bottom footnotes don't match up after considering duplicates, then you should fix the regex statements to catch all the required markers/footnote text.
 
-## Language
-
-Whether you want the WET footnote structure to be in English or French.
-
-## Duplicate top footnotes
+## 4. Duplicate top footnotes
 
 You can include which top footnote markers should be duplicated - that is, when multiple top footnote markers point to the same bottom footnote text. The internal counter will not increment for these footnote markers.
 
@@ -82,9 +80,9 @@ For example, with the following input:
 - The 5th footnote marker in the main body would point to the 3rd footnote text in the bottom module.
 - The 7th footnote marker in the main body would point to the 1st footnote text in the bottom module.
 
-### Duplicate top footnote IDs
+### 4.1. Duplicate top footnote IDs
 
-Duplicate top footnote IDs do not increment the footnote number counter. Instead, they have a letter appended to their ID. In the above example, the top footnote IDs would be:
+When creating IDs for top duplicate footnotes, the footnote number counter is not incremented. Instead, the top footnote has a letter appended to its ID. In the above example, the top footnote IDs would be:
 - fnb1a
 - fnb2
 - fnb3a
@@ -93,7 +91,23 @@ Duplicate top footnote IDs do not increment the footnote number counter. Instead
 - fnb4
 - fnb1b
 
+This follows WET formatting.
+
 The WET table of contents module allows the "Return to Footnote" link in a bottom footnote to return to the last corresponding top footnote accessed. For example, if top footnote fnb3b (the 4th footnote marker) was used to jump to the 3rd bottom footnote, then clicking "Return to Footnote 3" in the 3rd bottom footnote will return to fnb3b instead of fnb3a.
+
+## 5. Language
+
+Whether you want the WET footnote structure to be in English or French.
+
+## 6. Consecutive commas
+
+Whether to include commas between consecutive footnotes. For example, if footnotes 2 and 3 are next to each other in an html document, they would be formatted as so if this option is checked:
+
+&lt;sup id="fnb2-ref">&lt;a class="fn-link" href="#fnb2">&lt;span class="wb-inv">Footnote &lt;/span>2&lt;/a>,&lt;/sup> &lt;sup id="fnb3-ref">&lt;a class="fn-link" href="#fnb3">&lt;span class="wb-inv">Footnote &lt;/span>3&lt;/a>&lt;/sup>
+
+Otherwise, they would be formatted as so (no comma after &lt;/span>2&lt;/a>):
+
+&lt;sup id="fnb2-ref">&lt;a class="fn-link" href="#fnb2">&lt;span class="wb-inv">Footnote &lt;/span>2&lt;/a>&lt;/sup> &lt;sup id="fnb3-ref">&lt;a class="fn-link" href="#fnb3">&lt;span class="wb-inv">Footnote &lt;/span>3&lt;/a>&lt;/sup>
 
 # Implementation details
 
