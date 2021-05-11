@@ -5,6 +5,8 @@ To conform a document's footnotes to WET standards, the footnotes should be form
 2. The footnote text should be put into WET modules. For consistency, we put all of the footnote text into a single **div class="wet-boew-footnotes" role="note"** module at the end of the document or section that the footnotes encompass.
 3. The entry for each footnote in the footnote module should follow WET formatting.
 
+[WET footnote documentation here.](https://wet-boew.github.io/wet-boew-legacy/v3.1/docs/ref/footnotes/footnotes-en.html)
+
 This tool aims to use the input regex statements to find footnotes in the document and format them to WET standards. It numbers the footnotes using an internal counter beginning at 1.
 
 [HTML page of tool here.](footnote_gen.html)
@@ -23,9 +25,15 @@ This is the initial string that begins all footnote links, by default "fnb". For
 
 &lt;sup id="fnb1-ref">&lt;a class="footnote-link" href="#fnb1">&lt;span class="wb-invisible">Footnote &lt;/span>1&lt;/a>&lt;/sup>
 
-I recommend constructing footnote ids out of numbers, letters, and regular dashes "-", as this is what is assumed by the tool's default regex statements.
+The first bottom footnote would link back to this top footnote accordingly.
+
+WET footnotes by default use "fnb" as the initial string for their ids.
+
+You should only change the footnote ID from the default value if you have multiple sets of footnotes in a document, such as for tables, as doing so will break some of the WET footnote module's functionality. If you do change the footnote IDs, I recommend constructing footnote ids out of numbers, letters, and regular dashes "-", as this is what is assumed by the tool's default regex statements.
 
 ## Top and bottom footnotes
+
+These are regex strings to search for footnotes in the current document. The tool replaces the footnotes at these locations with WET footnotes.
 
 **Top footnotes** refers to the footnote markers in the main body of the text. **Bottom footnotes** refers to the module containing the text for the footnotes, which we put at the end of the document.
 
@@ -33,11 +41,7 @@ The default regex statements for these inputs are to find existing English WET f
 
 I have included the option to set these regex statements to some common footnote formats, including English/French WET footnotes and Dreamweaver-generated footnotes.
 
-The "group containing content" input for the bottom footnote regex is to indicate which group - subexpression in () - contains the footnote text; the tool will access this with $ to create the bottom module. All provided bottom footnote formats use group 1 (meaning the footnote text is accessed with $1).
-
-## Language
-
-Whether you want the WET footnote structure to be in English or French.
+The "group containing content" input for the bottom footnote regex is to indicate which regex group - subexpression in () - contains the footnote text. All provided bottom footnote formats use group 1 (meaning the footnote text is accessed with $1).
 
 ### Extra steps
 
@@ -54,6 +58,10 @@ Note that WET footnotes and Dreamweaver footnotes are the two primary use cases,
 ### Debugging
 
 You can view the number of top and bottom footnotes found by the regex statements in the console (ctrl+shift+i). These should be the same unless you have duplicate top footnotes (see below). If the number of top and bottom footnotes don't match up after considering duplicates, then you should fix the regex statements to catch all the required markers/footnote text.
+
+## Language
+
+Whether you want the WET footnote structure to be in English or French.
 
 ## Duplicate top footnotes
 
@@ -72,7 +80,20 @@ For example, with the following input:
 4,3;5,3;10,1
 - The 4th footnote marker in the main body would point to the 3rd footnote text in the bottom module.
 - The 5th footnote marker in the main body would point to the 3rd footnote text in the bottom module.
-- The 10th footnote marker in the main body would point to the 1st footnote text in the bottom module.
+- The 7th footnote marker in the main body would point to the 1st footnote text in the bottom module.
+
+### Duplicate top footnote IDs
+
+Duplicate top footnote IDs do not increment the footnote number counter. Instead, they have a letter appended to their ID. In the above example, the top footnote IDs would be:
+- fnb1a
+- fnb2
+- fnb3a
+- fnb3b
+- fnb3c
+- fnb4
+- fnb1b
+
+The WET table of contents module allows the "Return to Footnote" link in a bottom footnote to return to the last corresponding top footnote accessed. For example, if top footnote fnb3b (the 4th footnote marker) was used to jump to the 3rd bottom footnote, then clicking "Return to Footnote 3" in the 3rd bottom footnote will return to fnb3b instead of fnb3a.
 
 # Implementation details
 

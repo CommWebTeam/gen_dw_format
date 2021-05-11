@@ -114,8 +114,8 @@ function sort_duplicate_footnotes(a, b) {
 
 /* takes in a string formatted as i1, v1; i2, v2; ...
 returns an array of objects with two properties:
-1) the location of the duplicate top footnote relative to all top footnotes
-2) the bottom footnote location that the duplicate top footnote points to
+1) top_location - the location of the duplicate top footnote relative to all top footnotes
+2) bot_location - the bottom footnote location that the duplicate top footnote points to
 sorted by the first property
 */
 function get_duplicate_arr(duplicate_footnote_str) {
@@ -138,17 +138,21 @@ function get_duplicate_arr(duplicate_footnote_str) {
 }
 
 // creates array for footnote number ids, including duplicates
-function get_top_footnote_ids(footnote_count, duplicate_footnotes) {
+function get_top_footnote_ids(footnote_count, duplicate_footnotes, bot_duplicates) {
   // array of footnote number ids to return
   let footnote_nums = [];
+  /*
+  Add numbers for all top footnotes
+  */
   // counter for current footnote id for non-duplicates
   let footnote_id = 1;
   // counter for current index in duplicate footnote array
   let duplicate_arr_ind = 0;
   // loop through number of top footnotes
   for (let i = 1; i <= footnote_count; i++) {
-    // check if current top footnote is a duplicate and use its bot footnote location if so
+    // check if current top footnote is a duplicate
     if ((duplicate_footnotes.length > duplicate_arr_ind) && (i === duplicate_footnotes[duplicate_arr_ind].top_location)) {
+      // if so, use its bottom footnote location
       footnote_nums.push(duplicate_footnotes[duplicate_arr_ind].bot_location);
       duplicate_arr_ind++;
     }
@@ -157,6 +161,25 @@ function get_top_footnote_ids(footnote_count, duplicate_footnotes) {
       footnote_nums.push(footnote_id);
       footnote_id++;
     }
+  }
+  /*
+  Add letters for duplicate top footnotes
+  */
+  // counter for current letter to append
+  let letters = "abcdefghijklmnopqrstuvwxyz";
+  let curr_letter_ind = 0;
+  // loop through bottom footnotes that have multiple top footnote references
+  for (let i = 0; i < bot_duplicates.length; i++) {
+    // loop through top footnote ids to check whether they point to the current multiple reference bottom footnote
+    for (let j = 0; j < footnote_nums.length; j++) {
+      if (footnote_nums[j] === bot_duplicates[i]) {
+        // if so, append a letter to the top footnote id to try to keep it unique
+        footnote_nums[j] = footnote_nums[j] + letters[curr_letter_ind % 26];
+        curr_letter_ind++;
+      }
+    }
+    // reset letter counter for next multiple reference bottom footnote
+    curr_letter_ind = 0;
   }
   return footnote_nums;
 }
@@ -169,15 +192,15 @@ Generate and format WET footnotes
 
 // formats top WET footnote
 function get_top_footnote(init_id, footnote_ind, duplicate_id) {
-  return '<sup id="' + init_id + footnote_ind + duplicate_id + '-ref"><a class="fn-link" href="#' + init_id + footnote_ind + '"><span class="wb-inv">Footnote </span>' + footnote_ind + '</a></sup>';
+  return '<sup id="' + init_id + footnote_ind + '-ref"><a class="fn-link" href="#' + init_id + footnote_ind + '"><span class="wb-inv">Footnote </span>' + footnote_ind + '</a></sup>';
 }
 
 // formats bottom WET footnote
-function get_bot_footnote(init_id, ind, bot_footnote_content) {
+function get_bot_footnote(init_id, ind, top_ref_id, bot_footnote_content) {
   return '<dt>Footnote ' + ind + '</dt>\n' +
   '<dd id="' + init_id + ind + '">\n' +
   bot_footnote_content + '\n' +
-  '<p class="fn-return"><a href="#' + init_id + ind + '-ref"><span class="wb-inv">Return to footnote </span>' + ind + '</a></p>\n' +
+  '<p class="fn-return"><a href="#' + init_id + top_ref_id + '-ref"><span class="wb-inv">Return to footnote </span>' + ind + '</a></p>\n' +
   '</dd>';
 }
 
@@ -197,35 +220,39 @@ function replace_footnote_str(html_str, init_id, top_regex_str, bot_regex_str, b
     if (bot_matches.length === 0) {
       return html_str;
     }
+    // check for duplicate top footnotes
+    let duplicate_footnotes = get_duplicate_arr(duplicate_footnote_str);
+    // get unique array of bottom footnotes that have duplicate top footnote references
+    let bot_duplicates = [];
+    for (let i = 0; i < duplicate_footnotes.length; i++) {
+      if (!bot_duplicates.includes(duplicate_footnotes[i].bot_location)) {
+        bot_duplicates.push(duplicate_footnotes[i].bot_location);
+      }
+    }
     // loop through footnotes and number them with counter
     let output_str = html_str;
-    // replace bot footnotes first
+    // replace top footnotes, accounting for duplicates
+    let top_footnote_ids = get_top_footnote_ids(top_matches.length, duplicate_footnotes, bot_duplicates);
+    for (i = 0; i < top_matches.length; i++) {
+        let top_footnote = get_top_footnote(init_id, top_footnote_ids[i]);
+        output_str = output_str.replace(top_matches[i], top_footnote);
+    }
+    // replace bottom footnotes
     for (let i = 0; i < bot_matches.length; i++) {
         let bot_footnote_str = bot_matches[i];
         let ind = i + 1;
         let bot_footnote_content = bot_footnote_str.replace(bot_regex, "$" + bot_regex_sub);
-        // add paragraph tag if needed
+        // add paragraph tag around content if needed
         if (!bot_footnote_content.includes("<p>")) {
           bot_footnote_content = "<p>" + bot_footnote_content + "</p>";
         }
-        let bot_footnote = get_bot_footnote(init_id, ind, bot_footnote_content);
-        output_str = output_str.replace(bot_footnote_str, bot_footnote);
-    }
-    // replace top footnotes - check for duplicate footnotes
-    let duplicate_footnotes = get_duplicate_arr(duplicate_footnote_str);
-    let top_footnote_ids = get_top_footnote_ids(top_matches.length, duplicate_footnotes);
-    // keep track of top footnote ids used so far
-    let used_top_footnote_ids = [];
-    for (i = 0; i < top_matches.length; i++) {
-        let footnote_id = top_footnote_ids[i];
-        // use default footnote id if it doesn't exist yet
-        let top_footnote = get_top_footnote(init_id, footnote_id, "");
-        // if it does exist, append top footnote index to prevent duplicate ids
-        if (used_top_footnote_ids.includes(top_footnote)) {
-          top_footnote = get_top_footnote(init_id, footnote_id, "-" + i);
+        // get top footnote to link back to, which is the first top footnote that points to this bot footnote if there are duplicates
+        let top_ref_id = ind;
+        if (bot_duplicates.includes(ind)) {
+          top_ref_id = top_ref_id + "a";
         }
-        used_top_footnote_ids.push(top_footnote);
-        output_str = output_str.replace(top_matches[i], top_footnote);
+        let bot_footnote = get_bot_footnote(init_id, ind, top_ref_id, bot_footnote_content);
+        output_str = output_str.replace(bot_footnote_str, bot_footnote);
     }
     return output_str;
 }
