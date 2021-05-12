@@ -455,7 +455,7 @@ function fix_footnotes(html_str) {
 	// use wet footnote formatting functions
 	let edited_html_str = replace_footnote_str(html_str, "fnb", dw_top, dw_bot, 1, "");
 	edited_html_str = add_footnote_div(edited_html_str, "fnb");
-	edited_html_str = add_consecutive_commas(edited_html_str, "fnb");
+	edited_html_str = format_consecutive_footnotes(edited_html_str, "fnb", false);
 	return edited_html_str;
 }
 

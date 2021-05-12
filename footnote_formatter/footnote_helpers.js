@@ -1,6 +1,6 @@
 /*
 =================================
-fill in default inputs
+Fill in default inputs
 =================================
 */
 
@@ -66,7 +66,7 @@ function set_bot_footnote_regex() {
 
 /*
 =================================
-fix footnotes
+Fix footnotes
 =================================
 */
 
@@ -107,14 +107,8 @@ function add_footnotes() {
     edited_str = replace_footnote_str(edited_str, init_id, top_footnote, bot_footnote, regex_sub, dup_footnotes);
     // replace the div around bottom footnotes with WET module, if the div exists
     edited_str = add_footnote_div(edited_str, init_id);
-    // regex search to find consecutive footnotes - note that this assumes English footnotes and no "referrer", as this is how WET footnotes were formatted in replace_footnote_str (footnotes are translated later if required)
-    const consecutive_footnote_regex = new RegExp('(Footnote *<\/span>[0-9 ]+<\/a>)([ ,]*)(<\/sup> *)(<sup id="' + init_id + '[0-9\-a-z]+-ref"> *<a class="fn-link")', "g");
-    // add comma between consecutive footnotes if option is selected
-    if (document.getElementById("consecutive_comma").checked) {
-      edited_str = edited_str.replaceAll(consecutive_footnote_regex, "$1,$3$4");
-    }
-    // add space between consecutive footnotes
-    edited_str = edited_str.replaceAll(consecutive_footnote_regex, "$1$2</sup> $4");
+    // add spaces and optionally commas between consecutive footnotes
+    edited_str = format_consecutive_footnotes(edited_str, init_id, document.getElementById("consecutive_comma").checked);
     // translate footnote structure if needed
     if (document.getElementById("lang").value === 'f') {
       edited_str = translate_footnotes(edited_str);
@@ -131,7 +125,7 @@ function add_footnotes() {
 
 /*
 =================================
-deal with duplicate top footnotes
+Deal with duplicate top footnotes
 =================================
 */
 
@@ -298,6 +292,19 @@ function add_footnote_div(html_str, init_id) {
   </section>
 </div>`);
 return output_str;
+}
+
+// and spaces and optionally a comma between consecutive footnotes
+function format_consecutive_footnotes(html_str, init_id, consecutive_comma) {
+  let edited_str = html_str;
+  // regex search to find consecutive footnotes - note that this assumes English footnotes and no "referrer", as this is how WET footnotes were formatted in replace_footnote_str (footnotes are translated later if required)
+  const consecutive_footnote_regex = new RegExp('(Footnote *<\/span>[0-9 ]+<\/a>)([ ,]*)(<\/sup> *)(<sup id="' + init_id + '[0-9\-a-z]+-ref"> *<a class="fn-link")', "g");
+  // add comma between consecutive footnotes if option is checked
+  if (consecutive_comma) {
+    edited_str = edited_str.replaceAll(consecutive_footnote_regex, "$1,$3$4");
+  }
+  // add space between consecutive footnotes
+  return edited_str.replaceAll(consecutive_footnote_regex, "$1$2</sup> $4");
 }
 
 /*
