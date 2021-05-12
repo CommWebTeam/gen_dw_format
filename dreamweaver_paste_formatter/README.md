@@ -12,6 +12,7 @@ The current formatting checks are as follows (the user can select which to apply
 - Remove Dreamweaver-generated links:
     - removes empty links, or those that consist only of spaces, since they can't be easily accessed.
         - Example: the string <span style="color:red">&lt;a href="google.com">&lt;/a>"</span> is removed.
+        - Note that this removes Dreamweaver-generated footnotes, which consist of empty links, so you should only use this check if you have already used the above check to fix the footnotes to follow WET formatting (which do not use empty links, and so are not removed).
     - removes the referential links that Dreamweaver generates (which don't properly function).
         - Example: the string <span style="color:red">&lt;a href="#_Ref123">Reference link 1&lt;/a></span> has its link removed, so it is replaced with  <span style="color:green">Reference link 1</span>.
     - removes the table of contents links that Dreamweaver generates (which don't properly function).
@@ -25,13 +26,13 @@ The current formatting checks are as follows (the user can select which to apply
     - makes all space encoding consistent by converting invisible non-breaking spaces (where it just looks like a regular space in the editor), tabs, and so on into regular spaces.
     - replaces multiple spaces with a single space for neatness. You should apply source formatting in Dreamweaver to fix indentation if you include this check.
     - removes spaces at the end of tags.
-        - Example: replaces the string <span style="color:red">&lt;p >Extra   spacing&lt;/p    ></span> with <span style="color:green">&lt;p>Extra spacing&lt;/p></span>.
+        - Example: replaces the string <span style="color:red">&lt;p&nbsp;&nbsp;&nbsp;>Extra&nbsp;&nbsp;&nbsp;spacing&lt;/p&nbsp;&nbsp;&nbsp;></span> with <span style="color:green">&lt;p>Extra spacing&lt;/p></span>.
     - removes empty attribute-less tags, and replaces all attribute-less tags that consist solely of spaces or nbsp; with a single regular space. This excludes br and td tags.
-        - Example: replaces the string <span style="color:red">&lt;a> &lt;/a></span> has its empty tag removed, so it is replaced with a single space <span style="color:green"> </span>.
+        - Example: replaces the string <span style="color:red">&lt;a> &lt;/a></span> has its empty tag removed, so it is replaced with a single space "<span style="color:green"> </span>".
     - removes extra spaces after opening p, li, th, td, and header (h1, h2 etc.) tags for neatness.
-        - Example: replaces the string <span style="color:red">&lt;li> list item 1&lt;/li></span> with <span style="color:green">&lt;li>list item 1&lt;/li></span>.
+        - Example: replaces the string <span style="color:red">&lt;li>&nbsp;&nbsp;&nbsp;list item 1&lt;/li></span> with <span style="color:green">&lt;li>list item 1&lt;/li></span>.
     - removes extra spaces before closing p, li, th, td, and header (h1, h2 etc.) tags for neatness.
-        - Example: replaces the string <span style="color:red">&lt;li>list item 1 &lt;/li></span> with <span style="color:green">&lt;li>list item 1&lt;/li></span>.
+        - Example: replaces the string <span style="color:red">&lt;li>list item 1&nbsp;&nbsp;&nbsp;&lt;/li></span> with <span style="color:green">&lt;li>list item 1&lt;/li></span>.
 
 - Replace word-formatted characters/html entities:
     - replaces the HTML entities for straight quotes apos, quot, #39, and #34 with their actual values.
@@ -57,19 +58,77 @@ The current formatting checks are as follows (the user can select which to apply
         - Example 3: replaces the string <span style="color:red">&lt;em>italics 1&lt;/em>, &lt;em>italics 2&lt;/em></span> with <span style="color:green">&lt;em>italics 1, italics 2&lt;/em></span>.
         - Unchecked by default.
     - joins consecutive ul tags into a single list.
-        - Example: replaces <span style="color:red">&lt;ul test="x">&lt;li>list item 1&lt;/li>&lt;li>list item 2&lt;/li>&lt;/ul>&lt;ul test="x">&lt;li>list item 3&lt;/li>&lt;/ul></span> with <span style="color:green">&lt;ul test="x">&lt;li>list item 1&lt;/li>&lt;li>list item 2&lt;/li>&lt;li>list item 3&lt;/li>&lt;/ul></span>.
+        - Example: replaces
+        <div style="color:red">
+        &lt;ul test="x"> <br/>
+        &nbsp;&nbsp;&lt;li>list item 1&lt;/li> <br/>
+        &nbsp;&nbsp;&lt;li>list item 2&lt;/li> <br/>
+        &lt;/ul> <br/>
+        &lt;ul test="x"> <br/>
+        &nbsp;&nbsp;&lt;li>list item 3&lt;/li> <br/>
+        &lt;/ul>
+        </div>
+        with
+        <div style="color:green">
+        &lt;ul test="x"> <br/>
+        &nbsp;&nbsp;&lt;li>list item 1&lt;/li> <br/>
+        &nbsp;&nbsp;&lt;li>list item 2&lt;/li> <br/>
+        &nbsp;&nbsp;&lt;li>list item 3&lt;/li> <br/>
+        &lt;/ul>
+        </div>
     - joins consecutive ol tags into a single list.
-        - Example: replaces <span style="color:red">&lt;ol test="x">&lt;li>list item 1&lt;/li>&lt;li>list item 2&lt;/li>&lt;/ol>&lt;ol test="x">&lt;li>list item 3&lt;/li>&lt;/ol></span> with <span style="color:green">&lt;ol test="x">&lt;li>list item 1&lt;/li>&lt;li>list item 2&lt;/li>&lt;li>list item 3&lt;/li>&lt;/ol></span>.
-        - This should be unchecked if the input document is already WET formatted, as the ol lists may have been purposefully split up due to differing numbering systems (e.g. if the first ol list is lower-alpha while the second is lower-roman).
+        - Example: replaces
+        <div style="color:red">
+        &lt;ol test="x"> <br/>
+        &nbsp;&nbsp;&lt;li>list item 1&lt;/li> <br/>
+        &nbsp;&nbsp;&lt;li>list item 2&lt;/li> <br/>
+        &lt;/ol> <br/>
+        &lt;ol test="x"> <br/>
+        &nbsp;&nbsp;&lt;li>list item 3&lt;/li> <br/>
+        &lt;/ol>
+        </div>
+        with
+        <div style="color:green">
+        &lt;ol test="x"> <br/>
+        &nbsp;&nbsp;&lt;li>list item 1&lt;/li> <br/>
+        &nbsp;&nbsp;&lt;li>list item 2&lt;/li> <br/>
+        &nbsp;&nbsp;&lt;li>list item 3&lt;/li> <br/>
+        &lt;/ol>
+        </div>
+        - This should be unchecked if the input document is already WET formatted, as the ol lists may have been purposefully split up due to differing numbering systems (e.g. if the first ol list is lowercase roman while the second is uppercase roman).
 
 - Replace/remove/format &lt;br> tags:
     - removes br tags at the start or end of p, li, td, th, and header (h1, h2 etc.) tags.
-        - Example: replaces <span style="color:red">&lt;p> &lt;br>empty br&lt;br>&lt;/p></span> with <span style="color:green">&lt;p>empty br&lt;/p></span>.
+        - Example: replaces
+        <div style="color:red">
+        &lt;p> &lt;br> <br/>
+        &nbsp;&nbsp;empty br&lt;br> <br/>
+        &lt;/p>
+        </div>
+        with
+        <div style="color:green">
+        &lt;p>empty br&lt;/p>
+        </div>
     - splits up blocks of text that are separated from each other by br within a single &lt;p> tag, by moving each block into its own &lt;p> tag.
-        - Example: replaces <span style="color:red">&lt;p>break &lt;br>following text&lt;/p></span> with <span style="color:green">&lt;p>break&lt;/p>&lt;p>following text&lt;/p></span>.
+        - Example: replaces
+        <div style="color:red">&lt;p>break &lt;br> <br/>
+        &nbsp;&nbsp;following text&lt;/p>
+        </div>
+        with
+        <div style="color:green">
+        &lt;p>break&lt;/p> <br/>
+        &lt;p>following text&lt;/p>
+        </div>
         - Unchecked by default.
     - splits up blocks of text that are separated from each other by br within a single &lt;p> tag, by moving each block into its own &lt;p> tag, if the chunk before the br ends in one of the following punctuation symbols: . , ; : ! ? ) " ’ ”
-        - Does not implement the example for the above check, but does replace <span style="color:red">&lt;p>break punctuation. &lt;br>following text&lt;/p></span> with <span style="color:green">&lt;p>break punctuation.&lt;/p>&lt;p>following text&lt;/p></span>.
+        - Does not implement the example for the above check, but does replace
+        <div style="color:red">
+        &lt;p>break punctuation. &lt;br> <br/>
+        &nbsp;&nbsp;following text&lt;/p>
+        </div>
+        with
+        <div style="color:green">&lt;p>break punctuation.&lt;/p> <br/>
+        &lt;p>following text&lt;/p></div>
     - changes all &lt;br> and &lt;br/> to &lt;br />.
 
 - Fix formatting around the period (.), comma (,), colon (:), and semicolon (;) punctuation symbols:

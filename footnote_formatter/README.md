@@ -103,11 +103,11 @@ Whether you want the WET footnote structure to be in English or French.
 
 Whether to include commas between consecutive footnotes. For example, if footnotes 2 and 3 are next to each other in an html document, they would be formatted as so if this option is checked:
 
-&lt;sup id="fnb2-ref">&lt;a class="fn-link" href="#fnb2">&lt;span class="wb-inv">Footnote &lt;/span>2&lt;/a>,&lt;/sup> &lt;sup id="fnb3-ref">&lt;a class="fn-link" href="#fnb3">&lt;span class="wb-inv">Footnote &lt;/span>3&lt;/a>&lt;/sup>
+`<sup id="fnb2-ref"><a class="fn-link" href="#fnb2"><span class="wb-inv">Footnote </span>2</a>,</sup> <sup id="fnb3-ref"><a class="fn-link" href="#fnb3"><span class="wb-inv">Footnote </span>3</a></sup>`
 
-Otherwise, they would be formatted as so (no comma after &lt;/span>2&lt;/a>):
+Otherwise, they would be formatted as so (no comma after `</span>2</a>`):
 
-&lt;sup id="fnb2-ref">&lt;a class="fn-link" href="#fnb2">&lt;span class="wb-inv">Footnote &lt;/span>2&lt;/a>&lt;/sup> &lt;sup id="fnb3-ref">&lt;a class="fn-link" href="#fnb3">&lt;span class="wb-inv">Footnote &lt;/span>3&lt;/a>&lt;/sup>
+`<sup id="fnb2-ref"><a class="fn-link" href="#fnb2"><span class="wb-inv">Footnote </span>2</a></sup> <sup id="fnb3-ref"><a class="fn-link" href="#fnb3"><span class="wb-inv">Footnote </span>3</a></sup>`
 
 # Implementation details
 

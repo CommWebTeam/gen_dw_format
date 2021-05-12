@@ -12,22 +12,26 @@ Different Word documents produce very different content structures when pasted i
 
 ## Inputs
 
-1. How the Dreamweaver table of contents is structured, i.e. which entry separators are used.  The following have been implemented so far:
-    - All entries are placed into a single &lt;p> tag, and each entry is separated by &lt;br/> or &lt;br>, e.g.
-        - &lt;p>Entry 1 &lt;br>
-        - Entry 2 &lt;br>
-        - Entry 3 &lt;&lt;/p>
-    - All entries are placed into a single &lt;ul> tag, and each entry is its own &lt;li> element, e.g.
-        - &lt;ul>
-            - &lt;li>Entry 1&lt;/li>
-            - &lt;li>Entry 2&lt;/li>
-            - &lt;li>Entry 3&lt;/li>
-        - &lt;/ul>
+1. How the Dreamweaver table of contents is structured, i.e. which entry separators are used. The following have been implemented so far:
+    - All entries are placed into a single `<p>` tag, and each entry is separated by `<br>`, `<br/>`, or `<br />`, e.g.
+        ```
+        <p>Entry 1 <br>
+          Entry 2 <br>
+          Entry 3 </p>
+        ```
+    - All entries are placed into a single `<ul>` tag, and each entry is its own `<li>` element, e.g.
+        ```
+        <ul>
+          <li>Entry 1</li>
+          <li>Entry 2</li>
+          <li>Entry 3</li>
+        </ul>
+        ```
 2. Inputs for where the table of contents is located in the document.
     - This can optionally consist of two inputs explicitly indicating which line the table of contents starts on, and which it ends on.
         - These should start at index 0, i.e. the first line in the document is 0, the second line is 1, and so on.
         - These should include the entire encompassing structure of the Dreamweaver-formatted table of contents, including the div tag that Dreamweaver usually puts the table into. Everything between these two lines, inclusive, will be removed and replaced with a WET-formatted div for the updated table of contents, so include all surrounding lines that you do not want to appear in the cleaned document.
-    - From what I have seen, Dreamweaver usually formats the table of contents tables to be surrounded by two lines that consist of &lt;br clear="all">. So if the start/end lines are not provided, then the tool searches for a block of text between two &lt;br clear="all"> that contains at least two instances of entry separators (described in the first input).
+    - From what I have seen, Dreamweaver usually formats the table of contents tables to be surrounded by two lines that consist of `<br clear="all">`. So if the start/end lines are not provided, then the tool searches for a block of text between two `<br clear="all">` that contains at least two instances of entry separators (described in the first input).
 3. The initial string for a table of contents entry ID (to differentiate it from regular links).
     - By default, this is "toc_". For conciseness, the rest of the documentation will assume the default value.
         - This means that, for example, an entry ID link may be formatted as "#toc_1".
@@ -35,19 +39,22 @@ Different Word documents produce very different content structures when pasted i
     - use existing list numberings from the document (explanation [#list-numbering](in this section)).
     - use manually inserted list numberings (differences from using existing list numberings explained [#manual-list-numbering](in this section)).
     - use existing indentation in the table. This is only helpful if the Dreamweaver table is formatted as a list, as described in the first input.
-5.  The list type for the output WET-formatted table of contents. For example, if &lt;ol lst-num> is selected, then the WET table of contents might be formatted as so:
-    - &lt;ol class="lst-num">
-        - &lt;li>Entry 1
-        - &lt;ol class="lst-num">
-            - &lt;li>Entry 2&lt;/li>
-            - &lt;li>Entry 3&lt;/li>
-        - &lt;/ol>&lt;/li>
-    - &lt;/ol>
-6. The option for whether to remove table of contents page numbers from entries. Page numbers are expected to be at the end of the table of contents entry, and to use one of the following two formats. If the page numbers follow a different format, then you should remove them from the document manually *before* running the tool.
+5.  The list type for the output WET-formatted table of contents. For example, if `<ol lst-num>` is selected, then the WET table of contents might be formatted as so:
+    ```
+    <ol class="lst-num">
+        <li>Entry 1
+            <ol class="lst-num">
+                <li>Entry 2</li>
+                <li>Entry 3</li>
+            </ol>
+        </li>
+    </ol>
+    ```
+6. The option for whether to remove table of contents page numbers from entries. When searching for page numbers, the tool expects them to be at the end of the table of contents entry, and to use one of the following two formats. If the page numbers follow a different format, then you should remove them from the document manually *before* running the tool.
     - at least two periods, followed by any number of spaces, followed by a number, such as the following:
-        - &lt;li>Entry........ 5&lt;/li>
+        - `<li>Entry........ 5</li>`
     - at least one period, followed by at least one space, followed by a number, such as the following:
-        - &lt;Entry . 3&lt;/li>
+        - `<li>Entry . 3</li>`
 
 ## Details
 
@@ -58,15 +65,17 @@ This tool does two things:
 
 Individual entries in a WET table of contents table use formatting similar to this example:
 
-&lt;li>&lt;a href="#toc_3.1">3.1 Overview&lt;/a>&lt;/li>
+`<li><a href="#toc_3.1">3.1 Overview</a></li>`
 
 This entry should represent a header in the main document, which should then be linked to in the table of contents entry by ID. For the above entry, there would be the following header later in the document:
 
-&lt;h3 id="toc_3.1">3.1 Overview&lt;/h3>
+`<h3 id="toc_3.1">3.1 Overview</h3>`
 
 Notice how the table of contents entry contains the link "#toc_3.1", which links to this header with an ID of "toc_3.1".
 
 ### Misformatting introduced in step 3
+
+#### False positives
 
 Step 3 is very likely to produce false positives because it replaces *all* tags and lines, except for &lt;li> and &lt;td> tags, that have the same value as each table of contents entry. For example, if there is a table of contents entry containing "3.1 Overview", then if there are multiple paragraphs later in the document that consist solely of "3.1 Overview" or "Overview", all of them will be replaced, even though only one of them can be the actual header.
 
@@ -76,17 +85,23 @@ The tool adds a comment above every tag/line that is replaced which consists of 
 
 &lt;li> and &lt;td> tags in particular are ignored by the tool in this step because headers are usually not formatted as list or table data items, so those tags are almost always false positives.
 
+#### Poorly structured HTML
+
 In addition, since the entire tag or line is replaced, the resulting HTML may not be well structured. For example, it may find the following lines:
 
-- &lt;p>Overview&lt;br>
-- &amp;nbsp;&lt;/p>
+```
+<p>Overview<br>
+  &nbsp;</p>
+```
 
 and only replace the first line, resulting in this:
 
-- &lt;h3 id="toc_3.1">3.1 Overview&lt;/h3>
-- &amp;nbsp;&lt;/p>
+```
+<h3 id="toc_3.1">3.1 Overview</h3>
+  &nbsp;</p>
+```
 
-which contains an extra closing p tag. You will likely have to go through and fix any errors with the HTML structure yourself afterwards; the comments containing the original values above the lines that have been replaced should help with this as well.
+which contains an extra closing p tag. You will have to go through and fix any errors with the HTML structure yourself afterwards; the comments containing the original values above the lines that have been replaced should help with this as well.
 
 ### Removing tags inside table of contents entries
 
@@ -106,7 +121,9 @@ I have noticed that Dreamweaver formats its table of contents either as a p tag 
 
 If this assumption is incorrect, then the tool will not work.
 
-I have also noticed that the table of contents tables are usually surrounded by two lines that consist of &lt;br clear="all">. So if no inputs are provided for the start/end line positions of the table of contents in the HTML document, then the tool searches for a block of text between two &lt;br clear="all"> that contains at least two &lt;br>, and uses that block of text as the table of contents. If this does not properly find the lines of the HTML document that consist of the table of contents, then you should manually enter the start/end line positions instead.
+As mentioned earlier, I have noticed that the table of contents tables are usually surrounded by two lines that consist of `<br clear="all">`. So if no inputs are provided for the start/end line positions of the table of contents in the HTML document, then the tool searches for a block of text between two `<br clear="all">` that contains at least two &lt;br>, and uses that block of text as the table of contents.
+
+If this does not properly find the lines of the HTML document that consist of the table of contents, then you should manually enter the start/end line positions instead.
 
 ## Header IDs
 
@@ -135,13 +152,13 @@ For the header level, the tool checks how many times a period followed by a numb
 - "3.1.2." also has a level of 4 because the last period is not followed by a number. It uses a header tag of h4.
 - "3.1.2.1" has a level of 5. It uses a header tag of h5.
 
-Any initial list numberings are set to be optional in step 3's regex statement that searches for tags/lines consisting of entries. So if a table of contents entry consists of "Overview", both of the following tags would match:
-- &lt;p>3.1 Overview&lt;/p>
-- &lt;p>Overview&lt;/p>
+Any initial list numberings are set to be optional in step 3's regex statement that searches for tags/lines consisting of table of contents entries. So if a table of contents entry consists of "Overview", both of the following tags would match:
+- `<p>3.1 Overview</p>`
+- `<p>Overview</p>`
 
 ### Entries without list numbering
 
-For entries that do not have list numberings, the level is set to be to be [the level of the last list numbering that did exist] + 1. If there have been no list numberings so far, then the tool uses a level of 2. The list numbering value itself is set to a blank string, so it will not be included in the entry.
+For entries that do not have list numberings, the level is set to be to be [the level of the last list numbering that did exist] + 1. If there have been no list numberings so far, then the tool uses a level of 2. For entries without a list numbering, the list numbering value itself is set to a blank string, so it will not be included in the entry.
 
 For example, if the table of contents has the following entries:
 - Introduction
