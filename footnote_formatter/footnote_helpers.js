@@ -295,12 +295,12 @@ return output_str;
 }
 
 // and spaces and optionally a comma between consecutive footnotes
-function format_consecutive_footnotes(html_str, init_id, consecutive_comma) {
+function format_consecutive_footnotes(html_str, init_id, include_consecutive_comma) {
   let edited_str = html_str;
   // regex search to find consecutive footnotes - note that this assumes English footnotes and no "referrer", as this is how WET footnotes were formatted in replace_footnote_str (footnotes are translated later if required)
   const consecutive_footnote_regex = new RegExp('(Footnote *<\/span>[0-9 ]+<\/a>)([ ,]*)(<\/sup> *)(<sup id="' + init_id + '[0-9\-a-z]+-ref"> *<a class="fn-link")', "g");
   // add comma between consecutive footnotes if option is checked
-  if (consecutive_comma) {
+  if (include_consecutive_comma) {
     edited_str = edited_str.replaceAll(consecutive_footnote_regex, "$1,$3$4");
   }
   // add space between consecutive footnotes
