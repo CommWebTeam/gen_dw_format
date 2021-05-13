@@ -31,7 +31,7 @@ WET footnotes by default use "fnb" as the initial string for their ids.
 
 You should only change the footnote ID from the default value if you have multiple sets of footnotes in a document, such as for tables, as doing so will break some of the WET footnote module's functionality.
 
-If you do change the footnote IDs, I recommend constructing footnote ids out of numbers, letters, and regular dashes "-", e.g. "fnb-tbl1" for footnotes in table 1, as this is what is assumed by the tool's default regex statements.
+If you do change the footnote IDs, I recommend constructing footnote ids out of numbers, letters, and regular dashes "-", e.g. "fnb-tbl1" for footnotes in table 1, as this is what is currently assumed by the tool's default regex statements.
 
 ## 3. Top and bottom footnotes
 
@@ -43,7 +43,7 @@ The default regex statements for these inputs are to find existing English WET f
 
 I have included the option to set these regex statements to some common footnote formats, including English/French WET footnotes and Dreamweaver-generated footnotes.
 
-The "group containing content" input for the bottom footnote regex is to indicate which regex group - subexpression in () - contains the footnote text. All provided bottom footnote formats use group 1 (meaning the footnote text is accessed with $1).
+The "group containing content" input for the bottom footnote regex is to indicate which regex group - subexpression in () - captures the footnote text. This is used to maintain the footnote text when replacing the current bottom footnote with a WET bottom footnote. All provided bottom footnote formats use group 1 (meaning the footnote text is accessed with $1).
 
 ### 3.1. Extra steps
 

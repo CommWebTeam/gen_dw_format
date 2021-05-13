@@ -91,13 +91,13 @@ function add_footnotes() {
       first_line = 0;
     }
     else {
-      first_line = parseInt(first_line);
+      first_line = parseInt(first_line) - 1;
     }
     if (last_line.trim() === "") {
       last_line = html_arr.length;
     }
     else {
-      last_line = parseInt(last_line) + 1;
+      last_line = parseInt(last_line);
     }
     // get original lines of input line range
     let lines_to_edit = html_arr.slice(first_line, last_line).join("\n");
@@ -213,8 +213,9 @@ Generate and format WET footnotes
 */
 
 // formats top WET footnote
-function get_top_footnote(init_id, footnote_ind, duplicate_id) {
-  return '<sup id="' + init_id + footnote_ind + '-ref"><a class="fn-link" href="#' + init_id + footnote_ind + '"><span class="wb-inv">Footnote </span>' + footnote_ind + '</a></sup>';
+function get_top_footnote(init_id, footnote_ind) {
+  let id_num = footnote_ind.toString().replaceAll(/[a-z]/g, "");
+  return '<sup id="' + init_id + footnote_ind + '-ref"><a class="fn-link" href="#' + init_id + id_num + '"><span class="wb-inv">Footnote </span>' + id_num + '</a></sup>';
 }
 
 // formats bottom WET footnote

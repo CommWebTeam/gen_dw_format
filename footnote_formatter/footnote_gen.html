@@ -2,24 +2,25 @@
 <html>
 <head>
 <meta charset="utf-8">
-<title>Generate footnotes</title>
+<title>Format footnotes</title>
 </head>
 
 <body>
+<p>This tool finds top and bottom footnotes using the regex provided, and replaces them with WET-valid footnotes that are numbered using an internal counter.</p>
 <form>
   HTML file:
   <input id="html_file" type="file" />
   <br />
   <br />
-  (Optional) Enter which line to start checking footnotes from (starting at index 0):
+  (Optional) Enter which line to start checking footnotes from (starting at line 1):
   <input id="footnote_start" type="number" value=""/>
   <br />
   <br />
-  (Optional) Enter which line to stop checking footnotes at (starting at index 0):&nbsp;
+  (Optional) Enter which line to stop checking footnotes at (starting at line 1):&nbsp;
   <input id="footnote_end" type="number" value=""/>
   <br />
   <br />
-  Initial string for footnote IDs: <br />
+  Initial string for footnote IDs - you should only change this if you have multiple sets of footnotes in a document, such as for tables, as doing so will break some of the WET footnote module's functionality. If you do change this, I recommend constructing footnote ids out of numbers, letters, and regular dashes "-", e.g. "fnb-tbl1" for footnotes in table 1, as this is what is assumed by the tool's default regex statements. <br />
   <input id="init_id" type="text" value="fnb" />
   <br />
   <br />
@@ -40,7 +41,7 @@
   <br />
   <textarea id="bot_footnote" rows="10" cols="100"></textarea>
   <br />
-  Group containing content:<br />
+  Group containing content (for regex replacements):<br />
   <input id="regex_sub" type="number" value="1"/>
   <br />
   <label for="bot_footnote_format">Bottom footnote formatting:</label>
@@ -55,7 +56,7 @@
   <div id="bot_warning"> </div>
   <br />
   <br />
-  Duplicate top footnotes - format as so (make sure they're in order of appearance from the top): <br />
+  (Optional) Duplicate top footnotes - format as so (make sure they're in order of appearance from the top): <br />
   [top footnote location],[bottom footnote location];[top footnote location],[bottom footnote location];...<br />
   where the top footnote marker points to the paired bottom footnote, instead of the bottom footnote at the same position from the beginning of the document. Indexing starts at 1. <br />
   e.g. 4,3;5,3;10,1<br />
@@ -76,10 +77,32 @@
   <br />
 </form>
 <button type="button" onclick="add_footnotes()">Download with WET footnotes</button>
-<p>This tool finds top and bottom footnotes using the regex provided, and replaces them with WET-valid footnotes that are numbered using an internal counter.</p>
-<p>You can also indicate duplicate top footnotes (when multiple top footnotes reference the same bottom footnote). If you don't have any duplicate references, then you can ignore this.</p>
+<p>Steps:
+  <ol>
+    <li>Upload the HTML file containing the footnotes you would like to format.</li>
+    <li>If you are only formatting footnotes for a subset of lines in the document, e.g. the lines of a table, enter the starting and ending line to format footnotes on. If you are formatting footnotes across the entire document, then you can ignore this.</li>
+    <li>Only change the initial footnote ID substring if needed.</li>
+    <li>Select the regex search string for the current top footnote locations in the HTML document.
+      <ul>
+        <li>If you haven't done any formatting after pasting a Word document into Dreamweaver, select Dreamweaver-generated.</li>
+        <li>If you have already converted the document to WET and are just renumbering the footnotes, select WET (English or French depending on the language of the document).</li>
+        <li>If you are just working on a single OCA table, select OCA table.</li>
+      </ul>
+      If none of the default options describe how the footnotes are formatted, you can use your own regex search string.
+    </li>
+    <li>Select the regex search string for the current bottom footnotes in the HTML document, along with the regex replacement group for the footnote's content.
+      <ul>
+        <li>If you haven't done any formatting after pasting a Word document into Dreamweaver, select Dreamweaver-generated.</li>
+        <li>If you have already converted the document to WET and are just renumbering the footnotes, select WET (English or French depending on the language of the document).</li>
+        <li>If you are just working on a single OCA table, select OCA table.</li>
+      </ul>
+      If none of the default options describe how the footnotes are formatted, you can use your own regex search string.
+    </li>
+    <li>Enter the locations of the duplicate top footnotes (when multiple top footnotes reference the same bottom footnote) in the format described. If you don't have any duplicate references, then you can ignore this.</li>
+    <li>Select the language the output WET-formatted footnotes should be in.
+    <li>
 <p>Make sure all instances of the bottom footnotes come after the top footnotes in your html document, since the entire document is being treated as a single string.</p>
-<p>The number of top and bottom footnotes found using the regex statements should be the same unless you have duplicate footnotes. <strong>The number of bottom and top footnotes this tool finds is printed in the console.</strong></p>
+<p>The number of top and bottom footnotes found using the regex statements should be the same unless you have duplicate footnotes. <strong>The number of bottom and top footnotes this tool finds is printed in the console</strong> (ctrl+shift+i).</p>
 <p>More in-depth information can be found in the <a rel="external" href="https://commwebteam.github.io/gen_dw_format/footnote_formatter/">readme</a>.</p>
 <script src="../download.js"></script> 
 <script src="../format_helpers.js"></script> 
