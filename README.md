@@ -1,6 +1,6 @@
 This repository contains several tools for formatting Dreamweaver documents that have been pasted from Word to conform them to WET standards.
 
-[BC formatter](https://commwebteam.github.io/gen_dw_format/bc_formatter/format_bc.html): removes false positives for Beyond Comparing a cleaned document.
+[Beyond Compare formatter](https://commwebteam.github.io/gen_dw_format/bc_formatter/format_bc.html): removes false positives for Beyond Comparing a cleaned document.
 
 [Readme here](https://commwebteam.github.io/gen_dw_format/bc_formatter/).
 
@@ -20,6 +20,6 @@ This repository contains several tools for formatting Dreamweaver documents that
 
 [Readme here](https://commwebteam.github.io/gen_dw_format/table_of_contents_formatter/).
 
-[Table formatter](https://commwebteam.github.io/gen_dw_format/wet3to4/update_wet.html): converts wet 3 classes to wet 4 classes.
+[Update WET](https://commwebteam.github.io/gen_dw_format/wet3to4/update_wet.html): converts wet 3 classes to wet 4 classes.
 
 [Readme here](https://commwebteam.github.io/gen_dw_format/wet3to4/).
