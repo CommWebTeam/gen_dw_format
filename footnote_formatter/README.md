@@ -9,7 +9,7 @@ To conform a document's footnotes to WET standards, the footnotes should be form
 
 This tool aims to use the input regex statements to find footnotes in the document and format them to WET standards. It numbers the footnotes using an internal counter beginning at 1.
 
-[HTML page of tool here.](footnote_gen.html)
+[HTML page of tool here.](format_footnote.html)
 
 # Inputs
 

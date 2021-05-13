@@ -4,6 +4,8 @@ This tool searches for WET 3 classes in an html document and converts them to th
 
 This tool is mainly for one-to-one replacements, and will not cover every change that should be made from WET 3 to WET 4. The remaining changes should be implemented manually.
 
+[HTML page of tool here.](update_wet.html)
+
 ## List of default replacements made
 <table>
     <tr>

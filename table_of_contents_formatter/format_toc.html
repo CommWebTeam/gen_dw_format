@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta charset="utf-8">
-<title>Format table of contents</title>
+<title>Format ToC (table of contents)</title>
 </head>
 
 <body>
@@ -72,7 +72,7 @@
 </p>
 <p>Note that since this code adds/removes tags while making specific assumptions about formatting / tags used, <strong>the immediate output WILL contain formatting errors</strong> if the original Dreamweaver paste is malformed enough. Be sure to go through the document and manually fix any resulting errors - Dreamweaver is helpful for this.</p>
 <p>This tool will search for each entry in the table of contents and replace all instances of it in the Word document with a header (that the table of contents entry links to). This is one of the most common sources of errors that the tool creates. You will have to fix these manually; to aid in this, the original line is included as a comment above the replaced line.</p>
-<p>This tool assumes the input has <strong>proper HTML formatting</strong> (in Dreamweaver, Edit -> Code -> Apply Source Formatting). It may also be worth running through the <a rel="external" href="https://commwebteam.github.io/gen_dw_format/dreamweaver_paste_formatter/">general Dreamweaver formatting tool</a> if the current document is malformed enough.</p>
+<p>This tool assumes the input has <strong>proper HTML formatting</strong> (in Dreamweaver, Edit -> Code -> Apply Source Formatting). It may also be worth running through the <a href="../dreamweaver_paste_formatter/format_dw_paste.html">general Dreamweaver formatting tool</a> if the current document is malformed enough.</p>
 <p>Check the console (ctrl + shift + i) for logs on number of entries found, entries that did not have any content matches to link to, and potential error messages.</p>
 <p>---</p>
 <p>Details on list numberings:</p>
@@ -87,7 +87,7 @@
   <p>More in-depth information can be found in the <a rel="external" href="https://commwebteam.github.io/gen_dw_format/table_of_contents_formatter/">readme</a>.</p>
 <script src="../format_helpers.js"></script> 
 <script src="../download.js"></script>
-<script src="../dreamweaver_paste_formatter/dw_paste_format_helpers.js"></script>
-<script src="format_toc_array.js"></script>
+<script src="../dreamweaver_paste_formatter/format_dw_paste_helpers.js"></script>
+<script src="format_toc_helpers.js"></script>
 </body>
 </html>

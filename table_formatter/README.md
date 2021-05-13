@@ -1,7 +1,7 @@
 # HTML table formatting
 Provides WET-related options for formatting cells in the specified rows and columns of the specified tables in an HTML document.
 
-[Click here to access the table formatter.](https://commwebteam.github.io/gen_dw_format/table_formatter/table_formatter.html)
+[Click here to access the table formatter.](https://commwebteam.github.io/gen_dw_format/table_formatter/format_table.html)
 
 ## Inputs
 
@@ -36,7 +36,7 @@ The inputs are as follows:
         - prepend the div following a table, either immediately below the table or separated by &lt;br>, to the table's tfoot.
         - put the WET footnotes immediately following a table into a WET div module, and then run the above action.
         - format an OCA table, and the paragraphs for OCA footnotes immediately following the table, into WET footnotes, and then run the above action.
-            - Note that for the last two checks, the WET structure is in English. To translate it to French, you can use the [general Dreamweaver formatting tool](https://commwebteam.github.io/gen_dw_format/dreamweaver_paste_formatter/dw_paste_format.html).
+            - Note that for the last two checks, the WET structure is in English. To translate it to French, you can use the [general Dreamweaver formatting tool](https://commwebteam.github.io/gen_dw_format/dreamweaver_paste_formatter/format_dw_paste.html).
 
 ### Running the tool multiple times
 
