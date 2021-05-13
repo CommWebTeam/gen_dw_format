@@ -6,11 +6,13 @@
 </head>
 
 <body>
+  <p>This tool converts WET 3 classes to WET 4 classes.</p>
+  <br />
   File to convert:
   <input id="html_file" type="file">
   <br />
   <br />
-  <br />
+  Optional conversions: <br />
   <input type="checkbox" id="align_center" name="align_center" checked>
   <label for="align_center">Change "align-center" class to "text-center" or "center-block" depending on tag</label>
   <br />
@@ -21,12 +23,7 @@
 <button onclick="convert_wet3_to_wet4()">Download converted file</button>
 <br />
 <br />
-<p>This tool converts WET 3 classes to WET 4 classes. <strong>Before using the tool, make sure that the HTML document:</strong>
-    <ol>
-      <li>has proper indentation (in Dreamweaver, Edit -> Code -> Apply Source Formatting).</li>
-      <li>uses double quotes (e.g. "x") instead of single quotes (e.g. 'x') for tag attributes.</li>
-    </ol>
-  </p>
+<p><strong>Before using the tool</strong>, make sure that the HTML document uses double quotes (e.g. "x") instead of single quotes (e.g. 'x') for tag attributes.</p>
 <p>Note that this tool only performs one-to-one replacements; you should do circumstantial replacements manually.</p>
 <p>More in-depth information can be found in the <a rel="external" href="https://commwebteam.github.io/gen_dw_format/wet3to4/">readme</a>.</p>
 <script src="../download.js"></script>

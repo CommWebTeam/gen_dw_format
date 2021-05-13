@@ -6,10 +6,11 @@
 </head>
 
 <body>
+<p>This tool helps to apply various formatting actions on HTML tables across the given tables, rows, and columns.</p>
+<br />
 <form>
-  HTML file:
+  HTML file with tables:
   <input id="html_file" type="file" />
-  <br />
   <br />
   <br />
   <h3>Tables</h3>
@@ -46,7 +47,6 @@
   </select>
   </div>
   <br />
-  <br />
   <h4>Columns</h4>
   <label for="col_list_type">Columns to perform actions on (only within the rows specified above):</label>
   <select name="col_list_type" id="col_list_type" onChange = "toggle_inds('col')">
@@ -59,7 +59,6 @@
   e.g. 0,1,2 (indicating first three columns) <br />
   <input id="col_list" type="text" value="0" />
   <br />
-  <br />
   <label for="col_list_dir">Direction to read indices in:</label>
   <select name="col_list_dir" id="col_list_dir">
     <option value="forward">Top to bottom - first column is at index 0</option>
@@ -67,9 +66,7 @@
   </select>
   </div>
   <br />
-  <br />
   <h3>Action(s) to perform on selected cells</h3>
-  <br />
   <input type="checkbox" id="to_header_col" name="to_header_col">
   <label for="to_header_col">Convert cells to a header &lt;th> col scope tag</label>
   <br />
@@ -143,19 +140,17 @@
   <label for="create_oca_footnotes">Convert an OCA table, and the paragraphs for OCA footnotes below the table, to WET (English) footnotes, and move them into the table tfoot</label>
   <br />
   <br />
-  <br />
 </form>
 <button type="button" onclick="format_table()">Format table</button>
 <br />
-<br />
-<p>This tool helps to apply WET formatting on HTML tables across rows or columns. <strong>Before using the tool, make sure that the HTML document:</strong>
+<p><strong>Before using the tool, make sure that the HTML document:</strong>
   <ol>
-    <li>has consistent space encoding (this is covered by the <a href="../dreamweaver_paste_formatter/dw_paste_format.html">general Dreamweaver formatting tool's</a> checks).</li>
+    <li>has consistent space encoding (this is covered by the <a href="../dreamweaver_paste_formatter/dw_paste_format.html">general Dreamweaver formatting tool's</a> checks if you run that on the HTML document first).</li>
     <li>has proper indentation (in Dreamweaver, Edit -> Code -> Apply Source Formatting).</li>
     <li>uses double quotes (e.g. "x") instead of single quotes (e.g. 'x') for tag attributes.</li>
   </ol>
 </p>
-<p>It removes indentation, so be sure to apply source formatting with Dreamweaver afterwards to fix it.</p>
+<p>This tool removes indentation, so be sure to apply source formatting with Dreamweaver afterwards to fix it.</p>
 <p>More in-depth information can be found in the <a rel="external" href="https://commwebteam.github.io/gen_dw_format/table_formatter/">readme</a>.</p>
 <script src="../download.js"></script> 
 <script src="../format_helpers.js"></script> 
