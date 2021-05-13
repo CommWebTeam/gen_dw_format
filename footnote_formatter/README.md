@@ -17,7 +17,7 @@ This tool aims to use the input regex statements to find footnotes in the docume
 
 This tool assumes by default that all footnotes in the input html document should be put into a single module. If this is not the case, e.g. if individual tables should have their footnotes in their own modules, then you can choose the starting and ending lines of the document (beginning at index 0, meaning the first line of the document is on line 0) to run the tool on. For example, if a table is from lines 60 to 100 and the following three paragraphs, each of which is one line, describe the table footnotes, then you can enter 60 as the starting line and 103 as the ending line.
 
-When formatting footnotes for a Dreamweaver paste, I recommend **formatting inner footnote subsections first** before formatting outer footnote subsections - for example, formatting the footnotes for a single table before formatting the footnotes for the overall document - to minimize confusion when the tool uses regex statements to find and fix the div formatting that Dreamweaver generates around the bottom footnote text.
+When formatting footnotes for a Dreamweaver paste, I recommend **formatting inner footnote subsections last** after formatting outer footnote subsections - for example, formatting the footnotes for a single table before formatting the footnotes for the overall document - to minimize confusion when the tool uses regex statements to find and fix the div formatting that Dreamweaver generates around the bottom footnote text.
 
 ## 2. Footnote ID
 
