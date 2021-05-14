@@ -1,7 +1,7 @@
 # Remove false positives for Beyond Compare
 Performs some basic string formatting on WET HTML documents that gets rid of common false flags that appear in the process of Beyond Comparing an HTML document to the Word document it was based on.
 
-[HTML page of tool here.](format_bc.html)
+[HTML page of tool here.](https://commwebteam.github.io/gen_dw_format/bc_formatter/format_bc.html)
 
 This is NOT intended to be used to produce properly formatted documents to be further edited upon, as it intentionally misformats the documents so that those false flags are removed. Any further edits should instead be done on the original HTML document.
 
