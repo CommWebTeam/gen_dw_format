@@ -232,7 +232,7 @@ This tool looks for strings indicating subscript/superscript tags in the html do
 11. Click "OK". You are now replacing superscript text.
 12. Click "Replace All" to surround all superscripts with &lt;sup> and &lt;/sup>.
 
-Afterwards, repeat these steps for subscripts.
+Afterwards, repeat these steps for subscripts, but use &lt;sub>\1&lt;/sub> for step 8 instead.
 
 ### Mathml
 
