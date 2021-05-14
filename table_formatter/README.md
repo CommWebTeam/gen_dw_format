@@ -12,24 +12,28 @@ The inputs are as follows:
         1. "Only the listed tables"
         2. "All tables except those listed"
         3. "All tables"
-    - If option 1 or 2 is selected above, you will have to fill in the textbox with the comma-separated values of the indices for the tables to include / exclude. These are the positions the tables appear in from the start of the document, beginning at 0.
-        - For example, if you want to exclude the first 2 tables, then you would select "all tables excluding the following", and enter "0,1" into the textbox.
+    - If option 1 or 2 is selected above, you will have to fill in the textbox with the comma-separated values of the indices, beginning at 1, for the tables to include / exclude. These are the positions the tables appear in from the start of the document.
+        - For example, if you want to exclude the first 2 tables, then you would select "all tables excluding the following", and enter "1,2" into the textbox.
 - the rows to edit:
     - a selection for which rows to perform the actions on, which can be one of the following:
         1. "Only the listed rows"
         2. "All rows except those listed"
         3. "All rows"
-    - If option 1 or 2 is selected above, you will have to fill in the textbox with the comma-separated values of the indices for which rows to include / exclude. These are the positions the rows appear in from the start or end of the table, depending on the direction selected below, beginning at 0.
-    - the direction to read the table in for the row indices provided above. If "top to bottom" is selected, then the rows are read in their regular order; the first row is at index 0, the second row is at index 1, and so on. If "bottom to top" is selected, then they are read in reverse order instead; the last row is at index 0, the second last row is at index 1, and so on.
-- the columns to edit, formatted in the same way as the rows to edit. Note that only cells that are part of both the specified rows and columns will be edited. For example, if only row 0 and column 0 is specified, then (0,0) will be the only cell that is edited.
+    - If option 1 or 2 is selected above, you will have to fill in the textbox with the comma-separated values of the indices, beginning at 1, for which rows to include / exclude. These are the positions the rows appear in from the start or end of the table, depending on the direction selected below.
+    - the direction to read the table in for the row indices provided above. If "top to bottom" is selected, then the rows are read in their regular order; the first row is at index 1, the second row is at index 2, and so on. If "bottom to top" is selected, then they are read in reverse order instead; the last row is at index 1, the second last row is at index 2, and so on.
+- the columns to edit, formatted in the same way as the rows to edit. Note that only cells that are part of both the specified rows and columns will be edited. For example, if only row 1 and column 1 is specified, then (1,1) will be the only cell that is edited.
 - the actions to apply and how to apply them:
     - actions to apply on a cell. So far, the following actions have been implemented:
         - convert the cell to a header (change td to th) with a scope of "col" or "row". If the scope is "col" and the cell also has a colspan attribute, then the scope is changed to "colgroup".
-        - append the cell contents to the caption, then remove the cell by changing it to &lt;td class="background-light">&lt;/td>.
+        - append the cell contents to the caption, then make the cell invisible by changing it to &lt;td class="background-light">&lt;/td>.
         - remove specific tags from the cell (e.g. "&lt;p>" tags).
+        - remove specific attributes from tags in the cell (e.g. remove all style attributes).
         - convert the cell to a specific class (e.g. "osfi-txt--bold" or "text-left").
     - actions to set or change the location of thead/tbody/tfoot in terms of index:
-        - insert an opening thead, tbody, or tfoot tag at the first row index provided above, and the corresponding closing tag at the second row index provided above. For example, inserting the opening thead at row index 0 means placing it before all tr tags (rows). Only the first two row indices given are used. Since thead/tbody/tfoot are only used to group rows, the column indices given above are ignored.
+        - insert an opening thead, tbody, or tfoot tag at the first row index provided above, and the corresponding closing tag at the second row index provided above. 
+            - For example, if the input provided is `1,3`, then `<thead>` is placed at row index 1, before all tr tags (rows); and `</thead>` is placed at row index 3, after 2 tr tags.
+            - Only the first two row indices given are used.
+            - Since thead/tbody/tfoot are only used to group rows, the column indices given above are ignored.
     - actions that check for and edit tags outside of the tables. These actions are only applied once per table and do not pay attention to cell index; as such, they only use the table inputs above, ignoring the row/column inputs.
         - remove the div surrounding a table, either immediately surrounding the table or separated by &lt;br>.
         - append the paragraph or header preceding a table, either immediately above the table or separated by &lt;br>, to the table's caption.
@@ -60,7 +64,7 @@ The tables in the HTML document are stored in an array. Each table is an object 
     - attr: a string for the thead tag itself, including its attributes.
         - example: '&lt;thead>'
     - open_tag_ind: an integer for the row index that the opening &lt;thead tag appears at (i.e. the number of tr tags before thead); -1 if it doesn't exist.
-        - example: if &lt;thead is before any &lt;tr tags, then the index is 0.
+        - example: if &lt;thead is before any &lt;tr tags, then the index is 0. (Note that this indexing system is different from the user input, as it begins at 0, whereas the user input uses 1 to indicate the first row.)
     - close_tag_ind: an integer for the row index that the closing &lt;/thead tag appears at; -1 if it doesn't exist.
         - example: if there are 5 &lt;tr rows from &lt;table to &lt;/thead, then the index is 5.
 - tbody: an object with the same properties as thead, but for tbody tags.

@@ -49,6 +49,9 @@ function format_table() {
 		if (document.getElementById("rm_strong_tag").checked) {
 			html_table_arr = apply_on_cells(html_table_arr, table_list_type, table_list, row_list_type, row_list, row_forward_dir, col_list_type, col_list, col_forward_dir, rm_strong_tag);
 		}
+		if (document.getElementById("rm_style_attr").checked) {
+			html_table_arr = apply_on_cells(html_table_arr, table_list_type, table_list, row_list_type, row_list, row_forward_dir, col_list_type, col_list, col_forward_dir, rm_style_attr);
+		}
 		if (document.getElementById("to_bold").checked) {
 			html_table_arr = apply_on_cells(html_table_arr, table_list_type, table_list, row_list_type, row_list, row_forward_dir, col_list_type, col_list, col_forward_dir, to_otb);
 		}
@@ -342,7 +345,8 @@ function int_csv_to_arr(csv_str) {
 	int_arr = rm_empty_lines(int_arr);
 	// convert values to int
 	for (let i = 0; i < int_arr.length; i++) {
-		int_arr[i] = parseInt(int_arr[i]);
+		// reduce one to get actual index
+		int_arr[i] = parseInt(int_arr[i]) - 1;
 	}
 	return int_arr;
 }
@@ -395,7 +399,7 @@ function apply_on_cells(table_arr, table_list_type, table_list, row_list_type, r
 	return edited_table_arr;
 }
 
-// converts td to th with input scope
+// helper function - converts td to th with input scope
 function to_header(table_arr, row, col, scope) {
 	let curr_cell = table_arr.rows[row].cells[col];
 	// replace td with th
@@ -413,13 +417,10 @@ function to_header(table_arr, row, col, scope) {
 	return table_arr;
 }
 
-
-// converts td to th scope col
 function to_header_col(table_arr, row, col) {
 	return to_header(table_arr, row, col, "col");
 }
 
-// converts td to th scope row
 function to_header_row(table_arr, row, col) {
 	return to_header(table_arr, row, col, "row");
 }
@@ -441,6 +442,7 @@ function set_caption(table_arr, row, col) {
 	return table_arr;
 }
 
+// helper function - removes opening and closing tag inside cell
 function remove_tag(table_arr, row, col, tag_type) {
 	let curr_cell = table_arr.rows[row].cells[col];
 	// find and remove instances of tag
@@ -456,6 +458,15 @@ function rm_p_tag(table_arr, row, col) {
 
 function rm_strong_tag(table_arr, row, col) {
 	return remove_tag(table_arr, row, col, "strong");
+}
+
+// remove style attributes from tags in cell
+function rm_style_attr(table_arr, row, col) {
+	let curr_cell = table_arr.rows[row].cells[col];
+	// find and remove instances of style attribute
+	curr_cell = curr_cell.replaceAll(/ *style=".*?"/g, "");
+	table_arr.rows[row].cells[col] = curr_cell;
+	return table_arr;
 }
 
 // helper function - adds class to cell
