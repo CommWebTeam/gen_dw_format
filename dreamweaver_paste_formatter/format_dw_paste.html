@@ -14,14 +14,13 @@
   <br />
   <br />
   <label for="select_checks">Select default checks for:</label>
-  <select name="select_checks" id="select_checks">
+  <select name="select_checks" id="select_checks" onchange="set_default_checks()">
     <option value="en_dw">English Word document pasted into Dreamweaver</option>
     <option value="fr_dw">French Word document pasted into Dreamweaver</option>
     <option value="en_wet">English partially WET-formatted document</option>
     <option value="fr_wet">French partially WET-formatted document</option>
     <option value="uncheck">Uncheck all</option>
   </select>
-  <button onclick="set_default_checks()">Select</button>
   <br />
   <br />
   <b>Format Dreamweaver footnotes</b> (use the <a href="../footnote_formatter/format_footnote.html"> footnote formatter</a> if the footnotes don't use Dreamweaver's formatting): <br />
