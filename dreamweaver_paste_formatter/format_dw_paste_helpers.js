@@ -227,6 +227,19 @@ function set_default_checks() {
 	}
 }
 
+// toggle steps for scripts
+function toggle_script_steps() {
+  let script_steps = document.getElementById("script_steps");
+  let script_steps_button = document.getElementById("script_steps_button");
+  if (script_steps.style.display === "none") {
+    script_steps.style.display = "block";
+	script_steps_button.innerHTML = "Hide steps to add/remove superscripts and subscripts"
+  } else {
+    script_steps.style.display = "none";
+	script_steps_button.innerHTML = "Show steps to add/remove superscripts and subscripts";
+  }
+}
+
 // perform general formatting for user-selected options
 function format_file() {
 	let file_reader_content = new FileReader();

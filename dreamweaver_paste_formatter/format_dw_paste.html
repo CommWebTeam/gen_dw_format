@@ -6,7 +6,15 @@
 </head>
 
 <body>
-  <p>This tool performs some basic formatting checks on Dreamweaver documents pasted from Word.</p>
+  <p>This tool performs some basic formatting checks on Dreamweaver documents pasted from Word. <strong>Before using the tool, make sure that:</strong>
+    <ol>
+      <li>you have accepted all tracked changes and removed all comments in the Word document.</li>
+      <li>the pasted HTML document has proper indentation (in Dreamweaver, Edit -> Code -> Apply Source Formatting).</li>
+      <li>the pasted HTML document uses double quotes (e.g. "x") instead of single quotes (e.g. 'x') for tag attributes.</li>
+      <li>if required, superscripts/subscripts have been converted to fake tags (see the <a rel="external" href="https://commwebteam.github.io/gen_dw_format/dreamweaver_paste_formatter/#details-on-changing-strings-indicating-tags-to-actual-tags">readme</a> for details).</li>
+      <li>if required, math equations have been converted to MathML.</li>
+    </ol>
+  </p>
   <br />
   File to format:
   <input id="html_file" type="file">
@@ -21,6 +29,7 @@
     <option value="fr_wet">French partially WET-formatted document</option>
     <option value="uncheck">Uncheck all</option>
   </select>
+  <br />
   <br />
   <br />
   <b>Format Dreamweaver footnotes</b> (use the <a href="../footnote_formatter/format_footnote.html"> footnote formatter</a> if the footnotes don't use Dreamweaver's formatting): <br />
@@ -166,30 +175,37 @@
   <label for="nbsp_pct">Add &amp;nbsp; in front of % and $</label>
   <br />
   <br />
-  <b>Convert manually inserted fake tags to actual tags</b> (see the <a rel="external" href="https://commwebteam.github.io/gen_dw_format/dreamweaver_paste_formatter/#details-on-changing-strings-indicating-tags-to-actual-tags">readme</a> for details): <br />
+  <b>Convert manually inserted fake tags to actual tags</b> (see <a rel="external" href="https://commwebteam.github.io/gen_dw_format/dreamweaver_paste_formatter/#details-on-changing-strings-indicating-tags-to-actual-tags">this readme section</a> for details): <br />
   <input type="checkbox" id="fake_script_tag" name="fake_script_tag" checked>
-  <label for="fake_script_tag">*Convert visual superscript/subscript tags (with &amp;lt; and so on) to actual tags</label>
+  <label for="fake_script_tag">*Convert visual superscript/subscript tags (with &amp;lt; and so on) to actual tags</label> <br />
+  <button id="script_steps_button" onclick="toggle_script_steps()">Show steps to add/remove superscripts and subscripts</button>
+  <div id="script_steps" style="border:solid;display:none">
+    <p>See the readme for an explanation of what this is for.</p>
+    <p>Steps to mark superscripts and subscripts in word:</p>
+    <ol>
+      <li>Open the "replace" box in Word (ctrl+h).</li>
+      <li>Select "More >>" for additional options.</li>
+      <li>Check "Use wildcards".</li>
+      <li>In the "Find what" box, enter ([!(^2)]).</li>
+      <li>While in the "Find what" box, select "Format", then "Font".</li>
+      <li>Only check the "Superscript" box. Leave the "Subscript" box unchecked; all other boxes should be filled in, but not checked.</li>
+      <li>Click "OK". You are now searching for superscript text.</li>
+      <li>In the "Replace with" box, enter &lt;sup>\1&lt;/sup>.</li>
+      <li>While in the "Replace with" box, select "Format", then "Font".</li>
+      <li>Only check the "Superscript" box. Leave the "Subscript" box unchecked; all other boxes should be filled in, but not checked.</li>
+      <li>Click "OK". You are now replacing superscript text.</li>
+      <li>Click "Replace All" to surround all superscripts with &lt;sup> and &lt;/sup>.</li>
+    </ol>
+    <p>Afterwards, repeat these steps for subscripts, but use &lt;sub>\1&lt;/sub> for step 8 instead.</p>
+  </div>
   <br />
-  <i>Wildcard superscript find and replace (explanations in the readme):</i>
-  <ul>
-    <li>([!(^2)])</li>
-    <li>&lt;sup>\1&lt;/sup></li>
-  </ul>
   <input type="checkbox" id="fake_math_tag" name="fake_math_tag" checked>
   <label for="fake_math_tag">*Convert visual math tags (with &amp;lt; and so on) to actual tags - to be used alongside the macro</label>
   <br />
   <br />
 <button onclick="format_file()">Download formatted file</button>
 <br />
-<p><strong>Before using the tool, make sure that:</strong>
-  <ol>
-    <li>you have accepted all tracked changes and removed all comments in the Word document.</li>
-    <li>the pasted HTML document has proper indentation (in Dreamweaver, Edit -> Code -> Apply Source Formatting).</li>
-    <li>the pasted HTML document uses double quotes (e.g. "x") instead of single quotes (e.g. 'x') for tag attributes.</li>
-    <li>if required, superscripts/subscripts have been converted to fake tags (see the <a rel="external" href="https://commwebteam.github.io/gen_dw_format/dreamweaver_paste_formatter/#details-on-changing-strings-indicating-tags-to-actual-tags">readme</a> for details).</li>
-    <li>if required, math equations have been converted to MathML.</li>
-  </ol>
-</p>
+<br />
 <p>A few of these checks assume Dreamweaver formatting when searching for values, and may not be useful if the document has already been partially converted to WET formatting.
   <ul>
     <li>The checks that explicitly search for strings that Dreamweaver formatting generates (e.g. links beginning in _Ref) have been marked with *. These have no effect if the document has already been manually formatted, and can be left checked or unchecked.</li>
