@@ -36,8 +36,8 @@ Different Word documents produce very different content structures when pasted i
     - By default, this is "toc_". For conciseness, the rest of the documentation will assume the default value.
         - This means that, for example, an entry ID link may be formatted as "#toc_1".
 4. How the tool should attempt to indent the output WET-formatted table of contents, decide header tag level, and generate IDs. The options are as follows:
-    - use existing list numberings from the document (explanation [#list-numbering](in this section)).
-    - use manually inserted list numberings (differences from using existing list numberings explained [#manual-list-numbering](in this section)).
+    - use existing list numberings from the document (explanation [in this section](#list-numbering)).
+    - use manually inserted list numberings (differences from using existing list numberings explained [in this section](#manual-list-numberingo decide the level of the header ta)).
     - use existing indentation in the table. This is only helpful if the Dreamweaver table is formatted as a list, as described in the first input.
 5.  The list type for the output WET-formatted table of contents. For example, if `<ol lst-num>` is selected, then the WET table of contents might be formatted as so:
     ```
@@ -58,10 +58,10 @@ Different Word documents produce very different content structures when pasted i
 
 ## Details
 
-This tool does two things:
+This tool has the three following functionalities:
 1. It formats the table containing the table of contents to fit WET standards. This includes adding in the surrounding div.
 2. It removes bold and italics formatting in the table of contents entries.
-3. It looks for tags/lines with the same values as the entries in the table of contents, and converts them to header tags containing IDs to be linked to by the table of contents.
+3. It looks for tags/lines in the document with the same values as the entries in the table of contents, and converts them to header tags containing IDs to be linked to by the table of contents.
 
 Individual entries in a WET table of contents table use formatting similar to this example:
 
@@ -73,11 +73,11 @@ This entry should represent a header in the main document, which should then be 
 
 Notice how the table of contents entry contains the link "#toc_3.1", which links to this header with an ID of "toc_3.1".
 
-### Misformatting introduced in step 3
+### Misformatting introduced in functionality 3
 
 #### False positives
 
-Step 3 is very likely to produce false positives because it replaces *all* tags and lines, except for &lt;li> and &lt;td> tags, that have the same value as each table of contents entry. For example, if there is a table of contents entry containing "3.1 Overview", then if there are multiple paragraphs later in the document that consist solely of "3.1 Overview" or "Overview", all of them will be replaced, even though only one of them can be the actual header.
+Functionality 3 (where tags/lines in the main body of the document are converted to headers that are linked to by table of contents entries) is very likely to produce false positives because it replaces *all* tags and lines, except for &lt;li> and &lt;td> tags, that have the same value as each table of contents entry. For example, if there is a table of contents entry containing "3.1 Overview", then if there are multiple paragraphs later in the document that consist solely of "3.1 Overview" or "Overview", all of them will be replaced, even though only one of them can be the actual header.
 
 These false positives will have to be manually fixed afterward. Since the IDs will be duplicated as well, this will show up as an error in the HTML structure (IDs have to be unique), which should make them easier to locate in Dreamweaver.
 
@@ -137,11 +137,9 @@ In either case, the internal counter increments at each table of contents entry 
 
 ## List numbering
 
-List numberings are only checked for if the option to do so is selected. If the option isn't selected, then the table of contents will have no indentation, and all of the headers will default to h3.
-
 Most of the usefulness in the tool comes from its attempt at guessing the hierarchy of the table of contents, which it does using list numberings at the start of each entry. List numberings must be formatted with numbers and periods. The hierarchy of the table of contents is used for two things:
-- in step 1 (described [earlier](#details)), to indent the table; and
-- in step 3, to decide the level of the header tag being linked to.
+- in functionality 1 [described in the details section](#details), to indent the table; and
+- in functionality 3 described in the details section, to decide the level of the header tag being linked to.
 
 For indentation, each entry is compared to the previous entry to see whether it is higher or lower in the hierarchy; a sublist is created if it is higher, and the previous sublist is closed if it is lower.
 

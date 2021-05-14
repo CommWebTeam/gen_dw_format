@@ -7,6 +7,13 @@
 
 <body>
 <p>This application takes in an HTML file with default Dreamweaver table of contents formatting and reformats the table of contents to follow WET guidelines. It also generates clearer links for the table of contents, and replaces the old links in the main document with these new links.</p>
+<p><strong>Before using the tool, make sure that:</strong>
+  <ol>
+    <li>you have accepted all tracked changes and removed all comments in the Word document.</li>
+    <li>the pasted HTML document has proper indentation (in Dreamweaver, Edit -> Code -> Apply Source Formatting).</li>
+    <li>the pasted HTML document uses double quotes (e.g. "x") instead of single quotes (e.g. 'x') for tag attributes.</li>
+  </ol>
+</p>
 <br />
 <form>
   HTML file:
@@ -20,11 +27,11 @@
   </select>
   <br />
   <br />
-  (Optional) Enter which line the table of contents starts on in the HTML file, starting at index 0:
+  (Optional) Enter which line the table of contents starts on in the HTML file (beginning from line 1):
   <input id="toc_start" type="number" value=""/>
   <br />
   <br />
-  (Optional) Enter which line the table of contents ends on in the HTML file, starting at index 0:&nbsp;
+  (Optional) Enter which line the table of contents ends on in the HTML file (beginning from line 1):&nbsp;
   <input id="toc_end" type="number" value=""/>
   <br />
   <br />
@@ -63,19 +70,13 @@
 </form>
 <button type="button" onclick="format_toc()">Download with WET table of contents</button>
 <br />
-<p><strong>Before using the tool, make sure that:</strong>
-  <ol>
-    <li>you have accepted all tracked changes and removed all comments in the Word document.</li>
-    <li>the pasted HTML document has proper indentation (in Dreamweaver, Edit -> Code -> Apply Source Formatting).</li>
-    <li>the pasted HTML document uses double quotes (e.g. "x") instead of single quotes (e.g. 'x') for tag attributes.</li>
-  </ol>
-</p>
+<br />
 <p>Note that since this code adds/removes tags while making specific assumptions about formatting / tags used, <strong>the immediate output WILL contain formatting errors</strong> if the original Dreamweaver paste is malformed enough. Be sure to go through the document and manually fix any resulting errors - Dreamweaver is helpful for this.</p>
 <p>This tool will search for each entry in the table of contents and replace all instances of it in the Word document with a header (that the table of contents entry links to). This is one of the most common sources of errors that the tool creates. You will have to fix these manually; to aid in this, the original line is included as a comment above the replaced line.</p>
 <p>This tool assumes the input has <strong>proper HTML formatting</strong> (in Dreamweaver, Edit -> Code -> Apply Source Formatting). It may also be worth running through the <a href="../dreamweaver_paste_formatter/format_dw_paste.html">general Dreamweaver formatting tool</a> if the current document is malformed enough.</p>
 <p>Check the console (ctrl + shift + i) for logs on number of entries found, entries that did not have any content matches to link to, and potential error messages.</p>
-<p>---</p>
-<p>Details on list numberings:</p>
+<br/>
+<h3>Details on list numberings</h3>
 <p>If the option to search for list numberings is selected, the tool checks each line in the table of contents to see if it starts with a list number, e.g. 3.1. The list numbering must be formatted with numbers and periods.</p>
 <p>For example, if there is a line that consists of "3.1 Overview", then "3.1" is extracted as the list numbering.</p>
 <p>This list numbering is used for two things:

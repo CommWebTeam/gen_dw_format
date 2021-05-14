@@ -307,8 +307,8 @@ function format_toc_arr(html_str, toc_struc, input_start_line, input_end_line, i
         cleaned_html_str = cleaned_html_str.replaceAll("@", '<br clear="all">');
         cleaned_html_str = cleaned_html_str.replace(table_str, "\n@@\n");
     } else {
-        // use inputs for start/end line if both are provided
-        let table_lines = html_arr.slice(parseInt(input_start_line), parseInt(input_end_line) + 1);
+        // use inputs for start/end line if both are provided - convert inputs (starting at 1) to indices (starting at 0)
+        let table_lines = html_arr.slice(parseInt(input_start_line) - 1, parseInt(input_end_line));
         table_str = table_lines.join("\n");
         // mark position of original table
         cleaned_html_str = cleaned_html_str.replace(table_str, "\n@@\n");
