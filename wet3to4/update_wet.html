@@ -20,10 +20,14 @@
   <label for="span">Switch between <span style="color:red">"span-[1-6]" (WET 3)</span> and <span style="color:green">"col-md-[2-12]" (WET 4)</span> classes</label>
   <br />
   <br />
-<button onclick="convert_wet3_to_wet4()">Convert WET 3 to WET 4</button>
-<br />
-<br />
-<button onclick="convert_wet4_to_wet3()">Convert WET 4 to WET 3</button>
+  <label for="wet_conversion">WET version to convert to:</label>
+  <select name="wet_conversion" id="wet_conversion">
+    <option value="to_wet4">WET 3 to WET 4</option>
+    <option value="to_wet3">WET 4 to WET 3</option>
+  </select>
+  <br />
+  <br />
+<button onclick="convert_wet()">Convert WET version</button>
 <br />
 <br />
 <p><strong>Before using the tool</strong>, make sure that the HTML document uses double quotes (e.g. "x") instead of single quotes (e.g. 'x') for tag attributes.</p>

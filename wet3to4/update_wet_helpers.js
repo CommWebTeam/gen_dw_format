@@ -96,60 +96,21 @@ const classes_to_convert = [{wet3: "align-left", wet4: "text-left"},
                             {wet3: "wb-invisible", wet4: "wb-inv"},
                             {wet3: "wrap-none", wet4: "nowrap"}];
 
-// Converts wet 3 classes to equivalent wet 4 classes
-function convert_wet3_to_wet4() {
+// Convert between WET 3 and WET 4 classes
+function convert_wet() {
 	let file_reader_content = new FileReader();
 	let content_str = document.getElementById("html_file").files[0];
 	file_reader_content.onload = function(event) {
 		let html_doc_str = event.target.result.replaceAll("\r\n", "\n");
-        // default one-to-one mappings
-		for (let i = 0; i < classes_to_convert.length; i++) {
-            html_doc_str = convert_class(html_doc_str, classes_to_convert[i].wet3, classes_to_convert[i].wet4);
+        // get options
+        let check_align_center = document.getElementById("align_center").checked;
+        let check_span = document.getElementById("span").checked;
+        // convert WET version
+        if (document.getElementById("wet_conversion").value === "to_wet4") {
+            html_doc_str = convert_wet3_to_wet4(html_doc_str, check_align_center, check_span);
+        } else {
+            html_doc_str = convert_wet4_to_wet3(html_doc_str, check_align_center, check_span);
         }
-        // fix align-center
-        if (document.getElementById("align_center").checked) {
-			html_doc_str = convert_tag_class(html_doc_str, "align-center", "center-block", "div");
-            html_doc_str = convert_tag_class(html_doc_str, "align-center", "center-block", "img");
-            html_doc_str = convert_class(html_doc_str, "align-center", "text-center");
-		}
-        // fix spans
-        if (document.getElementById("span").checked) {
-            html_doc_str = convert_class(html_doc_str, "span-1", "col-md-2");
-            html_doc_str = convert_class(html_doc_str, "span-2", "col-md-4");
-            html_doc_str = convert_class(html_doc_str, "span-3", "col-md-6");
-            html_doc_str = convert_class(html_doc_str, "span-4", "col-md-8");
-            html_doc_str = convert_class(html_doc_str, "span-5", "col-md-10");
-            html_doc_str = convert_class(html_doc_str, "span-6", "col-md-12");
-		}
-		download(html_doc_str, "formatted.html", "text/html");
-	}
-	file_reader_content.readAsText(content_str);
-}
-
-// Converts wet 4 classes to equivalent wet 3 classes
-function convert_wet4_to_wet3() {
-	let file_reader_content = new FileReader();
-	let content_str = document.getElementById("html_file").files[0];
-	file_reader_content.onload = function(event) {
-		let html_doc_str = event.target.result.replaceAll("\r\n", "\n");
-        // default one-to-one mappings
-		for (let i = 0; i < classes_to_convert.length; i++) {
-            html_doc_str = convert_class(html_doc_str, classes_to_convert[i].wet4, classes_to_convert[i].wet3);
-        }
-        // fix align-center
-        if (document.getElementById("align_center").checked) {
-            html_doc_str = convert_class(html_doc_str, "text-center", "align-center");
-			html_doc_str = convert_class(html_doc_str, "center-block", "align-center");
-		}
-        // fix spans
-        if (document.getElementById("span").checked) {
-            html_doc_str = convert_class(html_doc_str, "col-md-2", "span-1");
-            html_doc_str = convert_class(html_doc_str, "col-md-4", "span-2");
-            html_doc_str = convert_class(html_doc_str, "col-md-6", "span-3");
-            html_doc_str = convert_class(html_doc_str, "col-md-8", "span-4");
-            html_doc_str = convert_class(html_doc_str, "col-md-10", "span-5");
-            html_doc_str = convert_class(html_doc_str, "col-md-12", "span-6");
-		}
 		download(html_doc_str, "formatted.html", "text/html");
 	}
 	file_reader_content.readAsText(content_str);
@@ -157,14 +118,63 @@ function convert_wet4_to_wet3() {
 
 /* helpers */
 
-// converts all instances of a class in the html string to another class
+// Converts instances of a class in the html string to another class
 function convert_class(html_str, old_class, new_class) {
     let old_class_regex = new RegExp('(class *= *("|("[^"]* )))' + old_class + '([" ])', "g");
     return html_str.replaceAll(old_class_regex, "$1" + new_class + "$4");
 }
 
-// converts instances of a class for a specific tag in the html string to another class
+// Converts instances of a class for a specific tag in the html string to another class
 function convert_tag_class(html_str, old_class, new_class, tag) {
     let old_class_regex = new RegExp('(<' + tag +' [^>]*class *= *("|("[^"]* )))' + old_class + '([" ])', "g");
     return html_str.replaceAll(old_class_regex, "$1" + new_class + "$4");
+}
+
+// Converts wet 4 classes to equivalent wet 3 classes
+function convert_wet3_to_wet4(html_doc_str, check_align_center, check_span) {
+    let edited_html_str = html_doc_str;
+    // default one-to-one mappings
+    for (let i = 0; i < classes_to_convert.length; i++) {
+        edited_html_str = convert_class(edited_html_str, classes_to_convert[i].wet3, classes_to_convert[i].wet4);
+    }
+    // fix align-center
+    if (check_align_center) {
+        edited_html_str = convert_tag_class(edited_html_str, "align-center", "center-block", "div");
+        edited_html_str = convert_tag_class(edited_html_str, "align-center", "center-block", "img");
+        edited_html_str = convert_class(edited_html_str, "align-center", "text-center");
+    }
+    // fix spans
+    if (check_span) {
+        edited_html_str = convert_class(edited_html_str, "span-1", "col-md-2");
+        edited_html_str = convert_class(edited_html_str, "span-2", "col-md-4");
+        edited_html_str = convert_class(edited_html_str, "span-3", "col-md-6");
+        edited_html_str = convert_class(edited_html_str, "span-4", "col-md-8");
+        edited_html_str = convert_class(edited_html_str, "span-5", "col-md-10");
+        edited_html_str = convert_class(edited_html_str, "span-6", "col-md-12");
+    }
+    return edited_html_str;
+}
+
+// Converts WET 4 classes to equivalent WET 3 classes
+function convert_wet4_to_wet3(html_doc_str, check_align_center, check_span) {
+    let edited_html_str = html_doc_str;
+    // default one-to-one mappings
+    for (let i = 0; i < classes_to_convert.length; i++) {
+        edited_html_str = convert_class(edited_html_str, classes_to_convert[i].wet4, classes_to_convert[i].wet3);
+    }
+    // fix align-center
+    if (check_align_center) {
+        edited_html_str = convert_class(edited_html_str, "text-center", "align-center");
+        edited_html_str = convert_class(edited_html_str, "center-block", "align-center");
+    }
+    // fix spans
+    if (check_span) {
+        edited_html_str = convert_class(edited_html_str, "col-md-2", "span-1");
+        edited_html_str = convert_class(edited_html_str, "col-md-4", "span-2");
+        edited_html_str = convert_class(edited_html_str, "col-md-6", "span-3");
+        edited_html_str = convert_class(edited_html_str, "col-md-8", "span-4");
+        edited_html_str = convert_class(edited_html_str, "col-md-10", "span-5");
+        edited_html_str = convert_class(edited_html_str, "col-md-12", "span-6");
+    }
+    return edited_html_str;
 }
