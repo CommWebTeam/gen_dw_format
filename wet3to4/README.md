@@ -1,6 +1,8 @@
-# Convert WET 3 classes to WET 4 classes
+# Switch between WET 3 and WET 4 classes
 
-This tool searches for WET 3 classes in an html document and converts them to their WET 4 equivalents.
+This tool can do one of two things:
+= it can search for WET 3 classes in an html document and convert them to their WET 4 equivalents; or
+= the opposite - it can search for WET 4 classes and convert them to their WET 3 equivalents.
 
 This tool is mainly for one-to-one replacements, and will not cover every change that should be made from WET 3 to WET 4. The remaining changes should be implemented manually.
 
@@ -10,7 +12,7 @@ This tool is mainly for one-to-one replacements, and will not cover every change
 <table>
     <tr>
         <th scope="col">WET 3 value</th>
-        <th scope="col">WET 4 replacement</th>
+        <th scope="col">WET 4 value</th>
     </tr>
     <tr>
         <td>align-left</td>
@@ -404,7 +406,7 @@ The user can select whether to apply the following replacements.
 
 ### align-center
 
-The "align-center" class is replaced with "center-block" for the following tags:
+When converting from **WET 3 to WET 4**, the "align-center" class is replaced with "center-block" for the following tags:
 - div
 - img
 
@@ -414,14 +416,16 @@ For example,
 - <span style="color:red">&lt;div class="align-center"></span> becomes <span style="color:green">&lt;div class="center-block"></span>.
 - <span style="color:red">&lt;p class="align-center"></span> becomes <span style="color:green">&lt;p class="text-center"></span>.
 
+When converting from **WET 4 to WET 3**, both of the above WET 4 classes, "center-block" and "text-center", are changed back to "align-center".
+
 ### span#
 
-The "span-#" classes are replaced with their "col-md-#" equivalents as follows:
+The "span-#" WET 3 classes are changed to / from their "col-md-#" WET 4 equivalents:
 
 <table>
     <tr>
         <th scope="col">WET 3 value</th>
-        <th scope="col">WET 4 replacement</th>
+        <th scope="col">WET 4 value</th>
     </tr>
     <tr>
         <td>span-1</td>

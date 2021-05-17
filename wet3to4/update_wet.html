@@ -2,11 +2,11 @@
 <html>
 <head>
 <meta charset="utf-8">
-<title>Convert WET 3 classes to WET 4</title>
+<title>Switch between WET 3 and WET 4 classes</title>
 </head>
 
 <body>
-  <p>This tool converts WET 3 classes to WET 4 classes.</p>
+  <p>This tool converts WET 3 classes to WET 4 classes, or WET 4 classes back to WET 3 classes.</p>
   <br />
   File to convert:
   <input id="html_file" type="file">
@@ -14,13 +14,16 @@
   <br />
   Optional conversions: <br />
   <input type="checkbox" id="align_center" name="align_center" checked>
-  <label for="align_center">Change "align-center" class to "text-center" or "center-block" depending on tag</label>
+  <label for="align_center">Switch <span style="color:red">"align-center" (WET 3)</span> and <span style="color:green">"text-center" or "center-block" (WET 4)</span> classes depending on tag</label>
   <br />
   <input type="checkbox" id="span" name="span" checked>
-  <label for="span">Change "span-[1-6]" classes to "col-md-[2-12]"</label>
+  <label for="span">Switch between <span style="color:red">"span-[1-6]" (WET 3)</span> and <span style="color:green">"col-md-[2-12]" (WET 4)</span> classes</label>
   <br />
   <br />
-<button onclick="convert_wet3_to_wet4()">Download converted file</button>
+<button onclick="convert_wet3_to_wet4()">Convert WET 3 to WET 4</button>
+<br />
+<br />
+<button onclick="convert_wet4_to_wet3()">Convert WET 4 to WET 3</button>
 <br />
 <br />
 <p><strong>Before using the tool</strong>, make sure that the HTML document uses double quotes (e.g. "x") instead of single quotes (e.g. 'x') for tag attributes.</p>
