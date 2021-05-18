@@ -11,6 +11,10 @@ function format_toc() {
     file_reader.onload = function(event) {
         let html_str = event.target.result.replaceAll("\r\n", "\n");
         let edited_str = format_toc_arr(html_str, document.getElementById("toc_struc").value, document.getElementById("toc_start").value, document.getElementById("toc_end").value, document.getElementById("init_id").value, document.getElementById("indent_type").value, document.getElementById("list_type").value, document.getElementById("page_nums").checked);
+        // convert to wet 3 if required
+		if (document.getElementById("wet3").checked) {
+			edited_str = convert_wet4_to_wet3(edited_str, true, true);
+		}
         download(edited_str, "toc.html", "text/html");
     }
     file_reader.readAsText(html_file);

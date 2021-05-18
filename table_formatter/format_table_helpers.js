@@ -139,6 +139,10 @@ function format_table() {
 			let old_vers = input_file_name.replace(/formatted_tables_([0-9]+)/g, "$1");
 			output_file_name = "formatted_tables_" + (parseInt(old_vers) + 1) + ".html";
 		}
+		// convert to wet 3 if required
+		if (document.getElementById("wet3").checked) {
+			html_doc_str = convert_wet4_to_wet3(html_doc_str, true, true);
+		}
 		download(html_doc_str, output_file_name, "text/html");
 	}
 	file_reader_content.readAsText(content_str);

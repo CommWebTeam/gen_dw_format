@@ -451,6 +451,10 @@ function format_file() {
 		if (document.getElementById("fake_math_tag").checked) {
 			html_doc_str = fix_fake_math(html_doc_str);
 		}
+		// convert to wet 3 if required
+		if (document.getElementById("wet3").checked) {
+			html_doc_str = convert_wet4_to_wet3(html_doc_str, true, true);
+		}
 		download(html_doc_str, "formatted.html", "text/html");
 	}
 	file_reader_content.readAsText(content_str);

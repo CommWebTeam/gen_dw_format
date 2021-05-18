@@ -115,6 +115,10 @@ function add_footnotes() {
     }
     // replace original document lines with edited lines
     html_str = html_str.replace(lines_to_edit, edited_str);
+    // convert to wet 3 if required
+		if (document.getElementById("wet3").checked) {
+			html_str = convert_wet4_to_wet3(html_str, true, true);
+		}
     // download edited document
 		download(html_str, "footnotes.html", "text/html");
 	}

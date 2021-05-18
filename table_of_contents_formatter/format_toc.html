@@ -70,6 +70,9 @@
 </form>
 <button type="button" onclick="format_toc()">Download with WET table of contents</button>
 <br />
+<input type="checkbox" id="wet3" name="wet3" checked>
+<label for="wet3">Use WET 3 classes instead (see the <a rel="external" href="https://commwebteam.github.io/gen_dw_format/wet3to4/">WET conversion tool</a>)</label>
+<br />
 <br />
 <p>Note that since this code adds/removes tags while making specific assumptions about formatting / tags used, <strong>the immediate output WILL contain formatting errors</strong> if the original Dreamweaver paste is malformed enough. Be sure to go through the document and manually fix any resulting errors - Dreamweaver is helpful for this.</p>
 <p>This tool will search for each entry in the table of contents and replace all instances of it in the Word document with a header (that the table of contents entry links to). This is one of the most common sources of errors that the tool creates. You will have to fix these manually; to aid in this, the original line is included as a comment above the replaced line.</p>
@@ -89,6 +92,7 @@
 <script src="../format_helpers.js"></script> 
 <script src="../download.js"></script>
 <script src="../dreamweaver_paste_formatter/format_dw_paste_helpers.js"></script>
+<script src="../wet3to4/update_wet_helpers.js"></script>
 <script src="format_toc_helpers.js"></script>
 </body>
 </html>
