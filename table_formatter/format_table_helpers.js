@@ -728,7 +728,7 @@ function oca_footnotes_to_footer(html_doc_str, html_table_arr, table_list_type, 
 	edited_html_doc_str = html_doc_str.replaceAll("</table>", table_placeholder);
 	// regex to find a single oca footnote paragraph
 	const oca_footnote_para_regex = /<p[^>]*> *\(([0-9]+)\)(.*?)<\/p>/g;
-	// regex to find oca footnote paragraphs after the current table
+	// regex to find all oca footnote paragraphs after the current table
 	const oca_footnotes_regex = new RegExp(curr_table_placeholder + "( |\n|(<br[^>]*>))*((?:<p[^>]*> *\\([0-9]+\\).*?<\/p>(?: |\n)*)+)", "g");
 	// loop through tables to apply function to
 	let i = 0;

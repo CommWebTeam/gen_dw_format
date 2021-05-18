@@ -436,8 +436,8 @@ function format_file() {
 		if (document.getElementById("translate_script").checked) {
 			html_doc_str = add_fr_num_superscript(html_doc_str);
 		}
-		// add nbsp in front of % and $
-		if (document.getElementById("nbsp_pct").checked) {
+		// add nbsp in front of %, :, and $
+		if (document.getElementById("nbsp_char").checked) {
 			html_doc_str = format_fr_space(html_doc_str);
 		}
 		/*
@@ -528,7 +528,7 @@ function rm_end_tag_space(html_str) {
 function rm_empty_tags(html_str) {
 	const empty_tag_regex = /<[a-zA-Z0-9 ]*><\/[a-zA-Z0-9 ]*>/g;
 	const space_tag_regex = /<[a-zA-Z0-9 ]*> *(&nbsp;)* *<\/[a-zA-Z0-9 ]*>/g;
-	// temporarily exclude br and td tags, since they can be empty
+	// temporarily exclude (attribute-less) br and td tags, since they are allowed to be empty
 	let edited_html_str = html_str.replaceAll("<br>", "<br///>");
 	edited_html_str = edited_html_str.replaceAll("<td>", "<td///>");
 	// replace empty tags until there are none left
@@ -806,15 +806,14 @@ function rm_ol_ul_attributes(html_str) {
 function rm_table_attributes(html_str) {
 	// remove attributes from table, th, and tr tags 
 	let edited_html_str = html_str.replaceAll(/<table [^>]*>/g,  "<table>");
-	edited_html_str = edited_html_str.replaceAll(/<th [^>]*>/g,  "<th>");
 	edited_html_str = edited_html_str.replaceAll(/<tr [^>]*>/g,  "<tr>");
-	// for td tags, keep span attributes - temporarily move them out of the tag
-	edited_html_str = edited_html_str.replaceAll(/<td( [^>]*)colspan *= *["']([ 0-9]+)["']/g, "COLSPAN$2<td$1");
-	edited_html_str = edited_html_str.replaceAll(/<td( [^>]*)rowspan *= *["']([ 0-9]+)["']/g, "ROWSPAN$2<td$1");
+	// for th and td tags, keep span attributes - temporarily move them out of the tag
+	edited_html_str = edited_html_str.replaceAll(/(<t[hd] [^>]*)colspan *= *"([ 0-9]+)"/g, "COLSPAN$2$1");
+	edited_html_str = edited_html_str.replaceAll(/(<t[hd] [^>]*)rowspan *= *"([ 0-9]+)"/g, "ROWSPAN$2$1");
 	// remove other attributes from td tags, then move span attributes back in
-	edited_html_str = edited_html_str.replaceAll(/<td [^>]*>/g,  "<td>");
-	edited_html_str = edited_html_str.replaceAll(/ROWSPAN([ 0-9]+)<td/g,  '<td rowspan="$1"');
-	edited_html_str = edited_html_str.replaceAll(/COLSPAN([ 0-9]+)<td/g,  '<td colspan="$1"');
+	edited_html_str = edited_html_str.replaceAll(/(<t[hd]) [^>]*>/g,  "$1>");
+	edited_html_str = edited_html_str.replaceAll(/ROWSPAN([ 0-9]+)(<t[hd])/g,  '$2 rowspan="$1"');
+	edited_html_str = edited_html_str.replaceAll(/COLSPAN([ 0-9]+)(<t[hd])/g,  '$2 colspan="$1"');
 	return edited_html_str;
 }
 
@@ -839,9 +838,10 @@ function add_fr_num_superscript(html_str) {
 	return edited_html_str;
 }
 
-// format french % and $ with nbsp
+// format french %, :, and $ with nbsp
 function format_fr_space(html_str) {
 	let edited_html_str = html_str.replaceAll(/([a-zA-Z0-9]) *%/g, "$1&nbsp;%");
+	edited_html_str = edited_html_str.replaceAll(/([a-zA-Z0-9]) *:/g, "$1&nbsp;:");
 	edited_html_str = edited_html_str.replaceAll(/([a-zA-Z0-9]) *\$/g, "$1&nbsp;$$");
 	return edited_html_str;
 }

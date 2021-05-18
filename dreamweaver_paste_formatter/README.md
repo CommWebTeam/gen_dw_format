@@ -191,8 +191,8 @@ These checks take precedence in the given order. For example, if both "change em
  - replaces 1er with 1&lt;sup>er&lt;/sup>, and other French list numberings formatted as #e with #&lt;sup>e&lt;/sup>.
     - Example: replaces the string <span style="color:red">1er 2e</span> with <span style="color:green">1&lt;sup>er&lt;/sup> 2&lt;sup>e&lt;/sup></span>.
     - Only checked by default for French documents.
- - ensures that "%" and "$" symbols have an &amp;nbsp; in front of them (for French spacing around those punctuation symbols).
-    - Example: replaces the string <span style="color:red">dollar $ percent%</span> with <span style="color:green">dollar&nbsp;$ percent&nbsp;%</span>.
+ - ensures that "%", ":", and "$" symbols have an &amp;nbsp; in front of them (for French spacing around those punctuation symbols).
+    - Example: replaces the string <span style="color:red">dollar $ percent%</span> with <span style="color:green">dollar&amp;nbsp;$ percent&amp;nbsp;%</span>.
     - Only checked by default for French documents.
 
 ### Convert manually inserted fake tags to actual tags (see below for details):

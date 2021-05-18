@@ -60,7 +60,7 @@ Different Word documents produce very different content structures when pasted i
 
 This tool has the three following functionalities:
 1. It formats the table containing the table of contents to fit WET standards. This includes adding in the surrounding div.
-2. It removes bold and italics formatting in the table of contents entries.
+2. It removes formatting tags (bold, italics, and so on) in the table of contents entries.
 3. It looks for tags/lines in the document with the same values as the entries in the table of contents, and converts them to header tags containing IDs to be linked to by the table of contents.
 
 Individual entries in a WET table of contents table use formatting similar to this example:
@@ -97,6 +97,7 @@ In addition, since the entire tag or line is replaced, the resulting HTML may no
 and only replace the first line, resulting in this:
 
 ```
+<!-- Original tag: <p>Overview<br> -->
 <h3 id="toc_3.1">3.1 Overview</h3>
   &nbsp;</p>
 ```

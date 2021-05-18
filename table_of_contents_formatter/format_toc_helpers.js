@@ -279,7 +279,7 @@ function format_toc_arr(html_str, toc_struc, input_start_line, input_end_line, i
     cleaned_html_str = fix_br(cleaned_html_str);
     // this will be used for regex statements, so escape regex special chars
     cleaned_html_str = replace_special_chars(cleaned_html_str);
-    // need to use @ as placeholders, so remove them for now
+    // need to use @ as placeholders for table location later, so remove them for now
     cleaned_html_str = cleaned_html_str.replaceAll("@", at_placeholder);
     // remove indentation
     let html_arr = cleaned_html_str.split("\n");
