@@ -765,10 +765,7 @@ function fix_align(html_str) {
 function fix_ref_links(html_str) {
 	let edited_html_str = html_str;
 	// get links
-	let orig_links = html_str.match(/<a (.*?)>/g);
-	if (orig_links === null) {
-		return html_str;
-	}
+	let orig_links = match_with_empty(html_str, /<a (.*?)>/g);
 	// loop through links
 	for (i = 0; i < orig_links.length; i++) {
 		let curr_link = orig_links[i];

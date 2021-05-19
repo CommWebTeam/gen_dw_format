@@ -152,6 +152,34 @@ function format_table() {
 
 /*
 =================================
+Convert string of csv indices to array
+=================================
+*/
+
+// convert comma-separated string of integers to array of indices
+function int_csv_to_arr(csv_str) {
+	// return empty array for empty inputs or misformatted strings
+	if (csv_str.trim() === "") {
+		return [];
+	}
+	if (/[^0-9, ]/g.test(csv_str) || /, *,/g.test(csv_str)) {
+		console.log("Misformatted input: " + csv_str);
+		return [];
+	}
+	// split string by comma and clean values
+	let int_arr = csv_str.split(",");
+	int_arr = int_arr.map(x => x.trim());
+	int_arr = rm_empty_lines(int_arr);
+	// convert values to int
+	for (let i = 0; i < int_arr.length; i++) {
+		// reduce one to get actual index
+		int_arr[i] = parseInt(int_arr[i]) - 1;
+	}
+	return int_arr;
+}
+
+/*
+=================================
 Convert html tables to arrays
 =================================
 */
@@ -325,34 +353,6 @@ function table_arr_to_doc(html_str, html_table_arr) {
 		edited_html_str = edited_html_str.replace(table_placeholder, table_str);
 	}
 	return edited_html_str;
-}
-
-/*
-=================================
-Convert string of csv indices to array
-=================================
-*/
-
-// convert comma-separated string of integers to array of indices
-function int_csv_to_arr(csv_str) {
-	// return empty array for empty inputs or misformatted strings
-	if (csv_str.trim() === "") {
-		return [];
-	}
-	if (/[^0-9, ]/g.test(csv_str) || /, *,/g.test(csv_str)) {
-		console.log("Misformatted input: " + csv_str);
-		return [];
-	}
-	// split string by comma and clean values
-	let int_arr = csv_str.split(",");
-	int_arr = int_arr.map(x => x.trim());
-	int_arr = rm_empty_lines(int_arr);
-	// convert values to int
-	for (let i = 0; i < int_arr.length; i++) {
-		// reduce one to get actual index
-		int_arr[i] = parseInt(int_arr[i]) - 1;
-	}
-	return int_arr;
 }
 
 /*
@@ -751,12 +751,12 @@ function oca_footnotes_to_footer(html_doc_str, html_table_arr, table_list_type, 
 					// format bot footnotes using footnote formatter function
 					let footnote_ind = oca_footnotes[j].replace(oca_footnote_para_regex, "$1");
 					let footnote_content = oca_footnotes[j].replace(oca_footnote_para_regex, "$2");
-					oca_footnotes[j] = get_bot_footnote(footnote_id, footnote_ind, footnote_content);
+					oca_footnotes[j] = create_bot_footnote_str(footnote_id, footnote_ind, footnote_content);
 					// replace marker in caption with WET top footnote
 					let oca_top_footnote = new RegExp("(<sup>)*\\(" + footnote_ind + "\\)(</sup>)*", "g");
 					let curr_dup = "";
 					if (oca_top_footnote.test(curr_table.caption)) {
-						curr_table.caption = curr_table.caption.replaceAll(oca_top_footnote, get_top_footnote(footnote_id, footnote_ind, curr_dup));
+						curr_table.caption = curr_table.caption.replaceAll(oca_top_footnote, create_top_footnote_str(footnote_id, footnote_ind, curr_dup));
 						curr_dup = curr_dup + "#";
 					}
 					// loop through all cells in the current table and replace markers for current bot footnote with WET top footnote
@@ -765,7 +765,7 @@ function oca_footnotes_to_footer(html_doc_str, html_table_arr, table_list_type, 
 						for (let m = 0; m < curr_row.cells.length; m++) {
 							let curr_cell = curr_row.cells[m];
 							if (oca_top_footnote.test(curr_cell)) {
-								curr_cell = curr_cell.replaceAll(oca_top_footnote, get_top_footnote(footnote_id, footnote_ind, curr_dup));
+								curr_cell = curr_cell.replaceAll(oca_top_footnote, create_top_footnote_str(footnote_id, footnote_ind, curr_dup));
 								curr_dup = curr_dup + "#";
 							}
 							curr_row.cells[m] = curr_cell;

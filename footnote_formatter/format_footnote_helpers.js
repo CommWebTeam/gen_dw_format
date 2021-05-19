@@ -172,7 +172,7 @@ function get_top_footnote_ids(footnote_count, duplicate_footnotes, bot_duplicate
   */
   // counter for current footnote id for non-duplicates
   let footnote_id = 1;
-  // counter for current index in duplicate footnote array
+  // counter for current index in (sorted) duplicate footnote array
   let duplicate_arr_ind = 0;
   // loop through number of top footnotes
   for (let i = 1; i <= footnote_count; i++) {
@@ -216,14 +216,14 @@ Generate and format WET footnotes
 =================================
 */
 
-// formats top WET footnote
-function get_top_footnote(init_id, footnote_ind) {
+// formats top WET footnote string
+function create_top_footnote_str(init_id, footnote_ind) {
   let id_num = footnote_ind.toString().replaceAll(/[a-z]/g, "");
   return '<sup id="' + init_id + footnote_ind + '-ref"><a class="fn-link" href="#' + init_id + id_num + '"><span class="wb-inv">Footnote </span>' + id_num + '</a></sup>';
 }
 
-// formats bottom WET footnote
-function get_bot_footnote(init_id, ind, top_ref_id, bot_footnote_content) {
+// formats bottom WET footnote string
+function create_bot_footnote_str(init_id, ind, top_ref_id, bot_footnote_content) {
   return '<dt>Footnote ' + ind + '</dt>\n' +
   '<dd id="' + init_id + ind + '">\n' +
   bot_footnote_content + '\n' +
@@ -261,7 +261,7 @@ function replace_footnote_str(html_str, init_id, top_regex_str, bot_regex_str, b
     // replace top footnotes, accounting for duplicates
     let top_footnote_ids = get_top_footnote_ids(top_matches.length, duplicate_footnotes, bot_duplicates);
     for (i = 0; i < top_matches.length; i++) {
-        let top_footnote = get_top_footnote(init_id, top_footnote_ids[i]);
+        let top_footnote = create_top_footnote_str(init_id, top_footnote_ids[i]);
         output_str = output_str.replace(top_matches[i], top_footnote);
     }
     // replace bottom footnotes
@@ -278,7 +278,7 @@ function replace_footnote_str(html_str, init_id, top_regex_str, bot_regex_str, b
         if (bot_duplicates.includes(ind)) {
           top_ref_id = top_ref_id + "a";
         }
-        let bot_footnote = get_bot_footnote(init_id, ind, top_ref_id, bot_footnote_content);
+        let bot_footnote = create_bot_footnote_str(init_id, ind, top_ref_id, bot_footnote_content);
         output_str = output_str.replace(bot_footnote_str, bot_footnote);
     }
     return output_str;
@@ -296,7 +296,7 @@ function add_footnote_div(html_str, init_id) {
     </dl>
   </section>
 </div>`);
-return output_str;
+  return output_str;
 }
 
 // and spaces and optionally a comma between consecutive footnotes
