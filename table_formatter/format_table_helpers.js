@@ -743,30 +743,41 @@ function oca_footnotes_to_footer(html_doc_str, html_table_arr, table_list_type, 
 			let oca_footnote_match = match_with_empty(edited_html_doc_str, oca_footnotes_regex);
 			if (oca_footnote_match.length > 0) {
 				let curr_table = html_table_arr[i];
+				// if there are, create footnote id based on table position
 				let footnote_id = "fnb-tbl" + (i + 1) + "-";
-				// if there are, get bottom footnotes
-				let oca_footnotes = match_with_empty(oca_footnote_match[0], oca_footnote_para_regex);
+				// get oca bot footnotes
+				let oca_bot_footnotes = match_with_empty(oca_footnote_match[0], oca_footnote_para_regex);
 				// loop through oca bot footnotes and convert them to WET
-				for (let j = 0; j < oca_footnotes.length; j++) {
-					// format bot footnotes using footnote formatter function
-					let footnote_ind = oca_footnotes[j].replace(oca_footnote_para_regex, "$1");
-					let footnote_content = oca_footnotes[j].replace(oca_footnote_para_regex, "$2");
-					oca_footnotes[j] = create_bot_footnote_str(footnote_id, footnote_ind, footnote_content);
+				for (let j = 0; j < oca_bot_footnotes.length; j++) {
+					// format bot footnote using footnote_formatter function
+					let footnote_num = oca_bot_footnotes[j].replace(oca_footnote_para_regex, "$1");
+					let footnote_content = oca_bot_footnotes[j].replace(oca_footnote_para_regex, "$2");
+					oca_bot_footnotes[j] = create_bot_footnote_str(footnote_id, footnote_num, footnote_num + "a", footnote_content);
+					/*
+					replace oca top footnote markers for this bot footnote with WET top footnotes
+					- for brevity, assume that each caption or cell has at most one reference to this bot footnote
+					*/
+					// regex for oca top footnote
+					let oca_top_footnote = new RegExp("(<sup>)*\\(" + footnote_num + "\\)(</sup>)*", "g");
+					// counter for current letter to append to WET top footnote id (in case of duplicates)
+					let letters = "abcdefghijklmnopqrstuvwxyz";
+					let curr_letter_ind = 0;
 					// replace marker in caption with WET top footnote
-					let oca_top_footnote = new RegExp("(<sup>)*\\(" + footnote_ind + "\\)(</sup>)*", "g");
-					let curr_dup = "";
 					if (oca_top_footnote.test(curr_table.caption)) {
-						curr_table.caption = curr_table.caption.replaceAll(oca_top_footnote, create_top_footnote_str(footnote_id, footnote_ind, curr_dup));
-						curr_dup = curr_dup + "#";
+						let curr_top_footnote = create_top_footnote_str(footnote_id, footnote_num + letters[curr_letter_ind % 26]);
+						curr_table.caption = curr_table.caption.replaceAll(oca_top_footnote, curr_top_footnote);
+						curr_letter_ind++;
 					}
-					// loop through all cells in the current table and replace markers for current bot footnote with WET top footnote
+					// loop through all cells in the current table
 					for (let k = 0; k < curr_table.rows.length; k++) {
 						let curr_row = curr_table.rows[k];
 						for (let m = 0; m < curr_row.cells.length; m++) {
 							let curr_cell = curr_row.cells[m];
+							// replace marker in cell with WET top footnote
 							if (oca_top_footnote.test(curr_cell)) {
-								curr_cell = curr_cell.replaceAll(oca_top_footnote, create_top_footnote_str(footnote_id, footnote_ind, curr_dup));
-								curr_dup = curr_dup + "#";
+								let curr_top_footnote = create_top_footnote_str(footnote_id, footnote_num + letters[curr_letter_ind % 26]);
+								curr_cell = curr_cell.replaceAll(oca_top_footnote, curr_top_footnote);
+								curr_letter_ind++;
 							}
 							curr_row.cells[m] = curr_cell;
 						}
@@ -775,7 +786,7 @@ function oca_footnotes_to_footer(html_doc_str, html_table_arr, table_list_type, 
 				}
 				html_table_arr[i] = curr_table;
 				// change oca bot footnotes to WET bot footnotes in the html document
-				edited_html_doc_str = edited_html_doc_str.replace(oca_footnotes_regex, curr_table_placeholder + "\n" + oca_footnotes.join("\n"));
+				edited_html_doc_str = edited_html_doc_str.replace(oca_footnotes_regex, curr_table_placeholder + "\n" + oca_bot_footnotes.join("\n"));
 			}
 		}
 		// revert current table placeholder to table tag and skip to next table
