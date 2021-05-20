@@ -46,7 +46,7 @@ function clean_entry(curr_content, rm_page_nums) {
 }
 
 /* get toc table values while checking for list numberings
-the toc table values consist of an array of objects with four values for each table of contents entry:
+the toc table values consist of an array of objects with four properties for each table of contents entry:
 - list numbering extracted from the start of the entry's content
 - link id to be used in the main body that includes list numbering
 - indentation level, based on list numbering
@@ -72,16 +72,16 @@ function get_toc_table_listnum(table_str, init_id, toc_struc, rm_page_nums) {
     let default_id_counter = 0;
     // loop through toc entries
     for (let i = 0; i < toc_arr.length; i++) {
-        let curr_line = toc_arr[i];
+        let curr_entry = toc_arr[i];
         // placeholders
         let link_id = "";
         let indent_level = 0;
         // set list numbering and id number without list numbering initially
         let list_numbering = "";
         // check if entry has a list numbering
-        if (list_ind_regex.test(curr_line)) {
+        if (list_ind_regex.test(curr_entry)) {
             // if so, use that for id instead (remove consecutive periods first)
-            list_numbering = curr_line.match(list_ind_regex)[0].trim().replaceAll(/\.+/g, ".");
+            list_numbering = curr_entry.match(list_ind_regex)[0].trim().replaceAll(/\.+/g, ".");
             link_id = init_id + list_numbering;
             // get level of id based on periods followed by numbers in list numbering
             indent_level = match_with_empty(list_numbering, /\.[0-9]/g).length + 2;
@@ -89,20 +89,20 @@ function get_toc_table_listnum(table_str, init_id, toc_struc, rm_page_nums) {
         }
         else {
             // otherwise, increment internal id counter to keep it unique
-            link_id = init_id + "nonum_" + default_id_counter;
             default_id_counter++;
+            link_id = init_id + "nonum_" + default_id_counter;
             // set level of id to be previous properly generated header level + 1
             indent_level = last_indent_level + 1;
         }
         // get content without list numbering
-        let content = curr_line.replace(list_ind_regex, "").trim();
+        let content = curr_entry.replace(list_ind_regex, "").trim();
         toc_values.push({list_numbering: list_numbering, link_id: link_id, indent_level: indent_level, content: content});
     }
     return toc_values;
 }
 
 /* get toc table values using existing indentation without checking for list numberings
-the toc table values consist of an array of objects with four values for each table of contents entry:
+the toc table values consist of an array of objects with four properties for each table of contents entry:
 - list numbering extracted from the start of the entry's content
 - link id to be used in the main body that includes list numbering
 - indentation level, based on list numbering
@@ -127,7 +127,6 @@ function get_toc_table_prev_indent(table_str, init_id, toc_struc, rm_page_nums) 
             // use index for id, assume empty list numbering, set header level to a default of 3 (for h3)
             toc_values.push({list_numbering: "", link_id: init_id + i, indent_level: 3, content: content});
         }
-        
         return toc_values;
     }
     /*
@@ -164,11 +163,14 @@ function get_toc_table_prev_indent(table_str, init_id, toc_struc, rm_page_nums) 
             else if (curr_line.includes("<li") || curr_line === "</li>") {
                 continue;
             }
-            // otherwise, assume it is part of previous entry's content
+            // otherwise, assume it is part of previous entry's content (probably broken up by <br>)
             else {
                 if (toc_values.length > 0) {
                     // clean up content
                     let curr_content = clean_entry(curr_line, rm_page_nums);
+                    // remove closing list at the end of content if it exists
+                    curr_content = curr_content.replace(/<\/li>$/, "");
+                    // append this line's content to previous entry's content
                     toc_values[toc_values.length - 1].content = toc_values[toc_values.length - 1].content + " " + curr_content;
                 }
             }
@@ -186,7 +188,7 @@ function create_toc_table(toc_values, manual_list, list_type) {
     }
     // get list type from input
     const list_type_map = {"ul": ["<ul>", "</ul>"], "ol": ["<ol>", "</ol>"],
-                           "no_bullet": ['<ol class="list-bullet-none">', "</ol>"], "ol_numeric": ['<ol class="lst-num">', "</ol>"],
+                           "no_bullet": ['<ol class="list-unstyled">', "</ol>"], "ol_numeric": ['<ol class="lst-num">', "</ol>"],
                            "ol_lower_alpha": ['<ol class="lst-lwr-alph">', "</ol>"], "ol_upper_alpha": ['<ol class="lst-upr-alph">', "</ol>"],
                            "ol_lower_roman": ['<ol class="lst-lwr-rmn">', "</ol>"], "ol_upper_roman": ['<ol class="lst-upr-rmn">', "</ol>"]}
     const list_open = list_type_map[list_type][0];
@@ -196,8 +198,8 @@ function create_toc_table(toc_values, manual_list, list_type) {
     // create counter for number of sublists to close after looping through all entries
     let sublist_counter = 0;
     // set first entry - push its contents without closing the list element (in case the next element is a sublist)
-    if (manual_list) {
-        // exclude list numbering in the entry's value if it was manually input
+    if (manual_list || (toc_values[0].list_numbering === "")) {
+        // exclude list numbering in the entry's value if it was manually input (or if it doesn't exist)
         toc_html_lines.push('<li><a href="#' + toc_values[0].link_id + '">' + toc_values[0].content + "</a>");
     }
     else {
@@ -237,8 +239,8 @@ function create_toc_table(toc_values, manual_list, list_type) {
             toc_html_lines.push("<li>");
         }
         // push current contents without closing the list element (in case the next element is a sublist)
-        if (manual_list) {
-            // exclude list numbering in the entry's value if it was manually input
+        if (manual_list || (toc_values[i].list_numbering === "")) {
+            // exclude list numbering in the entry's value if it was manually input (or if it doesn't exist)
             toc_html_lines.push('<a href="#' + toc_values[i].link_id + '">' + toc_values[i].content + "</a>");
         }
         else {
@@ -327,7 +329,7 @@ function format_toc_arr(html_str, toc_struc, input_start_line, input_end_line, i
         <li><a href="{link id}">{list numbering} {content of link text}</a></li>
     {</ul> based on level of indentation}
 
-    organize info for each entry into an array of objects with four values:
+    organize info for each entry into an array of objects with four properties:
     - list numbering extracted from the start of the entry's content
     - link id to be used in the main body that includes list numbering
     - indentation level (based on list numbering or existing indentation depending on user input)
@@ -372,8 +374,8 @@ function format_toc_arr(html_str, toc_struc, input_start_line, input_end_line, i
         // in the replacement string, include a comment of original tag for easier removal of false positives
         let replacement =  "\n<!-- Original tag: $1 -->\n";
         // replace original tag with header tag following the formatting of <h3 id="toc_3.1">3.1 Overview</h3>
-        if (manual_list) {
-            // exclude list values in replacement if they were manually input
+        if (manual_list || (curr_numbering === "")) {
+            // exclude list values in replacement if they were manually input (or if they don't exist)
             replacement = replacement + "<h" + curr_level + ' id="' + curr_link + '">' + curr_content + "</h" + curr_level + ">\n";
         }
         else {
