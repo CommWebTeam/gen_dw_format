@@ -115,6 +115,8 @@ When cleaning each table of contents entry, the following tags are removed becau
 - div
 - p
 - br
+- ul
+- li
 
 ## Lines for the table of contents
 

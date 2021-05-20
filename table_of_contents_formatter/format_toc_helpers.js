@@ -33,6 +33,10 @@ function clean_entry(curr_content, rm_page_nums) {
     cleaned_content = cleaned_content.replaceAll(/<[/]*div( [^>]*)*>/g, "");
     cleaned_content = cleaned_content.replaceAll(/<[/]*p( [^>]*)*>/g, "");
     cleaned_content = cleaned_content.replaceAll(/<[/]*br( [^>]*)*>/g, "");
+    cleaned_content = cleaned_content.replaceAll(/<[/]*ul( [^>]*)*>/g, "");
+    cleaned_content = cleaned_content.replaceAll(/<[/]*li( [^>]*)*>/g, "");
+    // remove newlines inside content
+    cleaned_content = cleaned_content.replaceAll("\n", " ");
     // remove page numbers if option is selected
     if (rm_page_nums) {
         cleaned_content = cleaned_content.replaceAll(/(\.)+\. *[0-9]+ *$/g, "");
@@ -59,7 +63,7 @@ function get_toc_table_listnum(table_str, init_id, toc_struc, rm_page_nums) {
         toc_arr = table_str.split("<br />");
     }
     else if (toc_struc === "ul_li") {
-        toc_arr = table_str.match(/<li>(.|\n)*?<\/li>/g);
+        toc_arr = table_str.split("<li>");
     }
     console.log("Number of contents: " + toc_arr.length);
     // clean up content
