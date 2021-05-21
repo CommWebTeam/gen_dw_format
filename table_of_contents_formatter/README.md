@@ -198,3 +198,41 @@ This option is ignored if the option to use list numberings isn't also selected.
 - If there are multiple table of contents (e.g. one for sections and one for tables), you can run the tool multiple times. **Make sure to apply source formatting in between each time.**
 - It may be worth running the general Dreamweaver formatting tool on the document first to fix spacing issues that may prevent string matching.
 - don't forget to manually fix any structural errors that may result from running this tool on badly formatted documents.
+
+## Implementation details
+
+I have structured format_toc_helpers.js as follows:
+- The **format_toc()** function interacts with the html page and passes the required inputs into **format_toc_arr()**.
+- The **format_toc_arr()** function performs the following steps:
+    1. Perform some basic cleaning on the HTMl document using general Dreamweaver formatting functions.
+    2. Store the current lines of the unformatted ToC in a variable, and replace these lines in the overall HTML document with a placeholder.
+    3. Get the cleaned entries of the ToC from the unformatted ToC lines.
+    4. Replace the tags in the overall HTML document that correspond to the ToC entries. Replacing the actual ToC with a placeholder in step 1 prevents this step from overwriting the ToC entries themselves.
+    5. Format the ToC entries to WET standards, and add them back in over the placeholder.
+
+### ToC entry array formatting
+
+For neatness, I split step 3 of the above implementation details into two helper functions. Only one of the two helper functions is called, depending on how the ToC indentation should be generated.
+- **get_toc_table_listnum()** is called if the indentation should be generated using list numbering.
+- **get_toc_table_prev_indent()** is called if the indentation should be generated using existing indentation.
+
+Both functions return an array with the same structure. Each value in the array is an object with four properties:
+    - list numbering, which is extracted from the start of the entry's content.
+    - link id for the link to the header, created [as described earlier](##header-ids).
+    - indentation level.
+    - the content of the entry, passed into **clean_entry()** to clean it.
+
+These four properties are what is required to create a WET-formatted ToC entry. For example, suppose we have the following ToC entry:
+
+`<li><a href="#toc_3.1">3.1 Overview</a></li>`
+
+which produces the following header:
+
+`<h3>3.1 Overview</h3>`
+
+- The list numbering would be "3.1".
+- The link id would be "toc_3.1".
+- The indentation level would be 3, so the header is an `<h3>`.
+- The content of the entry would be "Overview".
+
+This array of objects containing ToC entry properties is then used for steps 4 and 5.
