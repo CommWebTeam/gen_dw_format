@@ -1,6 +1,7 @@
 // array of objects representing classes to convert
 const classes_to_convert = [{wet3: "align-left", wet4: "text-left"},
                             {wet3: "align-right", wet4: "text-right"},
+                            {wet3: "align-bottom", wet4: "text-bottom"},
                             {wet3: "background-accent ", wet4: "bg-primary"},
                             {wet3: "background-highlight ", wet4: "bg-warning"},
                             {wet3: "border-all", wet4: "brdr-tp brdr-lft brdr-bttm brdr-rght"},
