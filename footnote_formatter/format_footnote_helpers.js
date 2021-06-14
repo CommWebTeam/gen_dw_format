@@ -219,7 +219,7 @@ Generate and format WET footnotes
 // formats top WET footnote string
 function create_top_footnote_str(init_id, footnote_ind) {
   let id_num = footnote_ind.toString().replaceAll(/[a-z]/g, "");
-  return '<sup id="' + init_id + footnote_ind + '-ref"><a class="fn-link" href="#' + init_id + id_num + '"><span class="wb-inv">Footnote </span>' + id_num + '</a></sup>';
+  return '<sup id="' + init_id + footnote_ind + '-ref"><a class="footnote-link" href="#' + init_id + id_num + '"><span class="wb-inv">Footnote </span>' + id_num + '</a></sup>';
 }
 
 // formats bottom WET footnote string
@@ -227,7 +227,7 @@ function create_bot_footnote_str(init_id, ind, top_ref_id, bot_footnote_content)
   return '<dt>Footnote ' + ind + '</dt>\n' +
   '<dd id="' + init_id + ind + '">\n' +
   bot_footnote_content + '\n' +
-  '<p class="fn-return"><a href="#' + init_id + top_ref_id + '-ref"><span class="wb-inv">Return to footnote </span>' + ind + '</a></p>\n' +
+  '<p class="footnote-return"><a href="#' + init_id + top_ref_id + '-ref"><span class="wb-inv">Return to footnote </span>' + ind + '</a></p>\n' +
   '</dd>';
 }
 
@@ -303,7 +303,7 @@ function add_footnote_div(html_str, init_id) {
 function format_consecutive_footnotes(html_str, init_id, include_consecutive_comma) {
   let edited_str = html_str;
   // regex search to find consecutive footnotes - note that this assumes English footnotes and no "referrer", as this is how WET footnotes were formatted in replace_footnote_str (footnotes are translated later if required)
-  const consecutive_footnote_regex = new RegExp('(Footnote *<\/span>[0-9 ]+<\/a>)([ ,]*)(<\/sup> *)(<sup id="' + init_id + '[0-9\-a-z]+-ref"> *<a class="fn-link")', "g");
+  const consecutive_footnote_regex = new RegExp('(Footnote *<\/span>[0-9 ]+<\/a>)([ ,]*)(<\/sup> *)(<sup id="' + init_id + '[0-9\-a-z]+-ref"> *<a class="footnote-link")', "g");
   // add comma between consecutive footnotes if option is checked
   if (include_consecutive_comma) {
     edited_str = edited_str.replaceAll(consecutive_footnote_regex, "$1,$3$4");
